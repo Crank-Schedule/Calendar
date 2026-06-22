@@ -1,212 +1,320 @@
 {
   "1": [
     {
-      "color": "#FF00FF",
-      "title": "RTS, 스타 II, ONSYDE 소식 활협전",
-      "time": ""
+      "title": "RTS, 스타 II, ONSYDE 소식",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "활협전",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "2": [
     {
-      "color": "#FF00FF",
       "title": "활협전",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "3": [
     {
-      "color": "#00FFFF",
       "title": "휴방",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "4": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL 조성주 입중계 응원 [7PM] 롤",
-      "time": "7PM"
+      "title": "스타 II RSL 조성주 입중계 응원",
+      "time": "7PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "롤",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "5": [
     {
-      "color": "#FF00FF",
       "title": "롤",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "6": [
     {
-      "color": "#FF00FF",
       "title": "롤, 스타",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "7": [
     {
-      "color": "#FF00FF",
-      "title": "롤, 스타 스타 II 대회 리플레이",
-      "time": ""
+      "title": "롤, 스타",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "스타 II 대회 리플레이",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "8": [
     {
-      "color": "#FF00FF",
-      "title": "롤, 디아 II 스타 II 대회 리플레이",
-      "time": ""
+      "title": "롤, 디아 II",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II 대회 리플레이",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "9": [
     {
-      "color": "#FF00FF",
       "title": "롤, 스타",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "10": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II WardiTV 팀리그 [8PM]",
-      "time": "8PM"
+      "title": "스타 II WardiTV 팀리그",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "11": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II WardiTV 팀리그 [8PM]",
-      "time": "8PM"
+      "title": "스타 II WardiTV 팀리그",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "12": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II WardiTV 팀리그 [8PM]",
-      "time": "8PM"
+      "title": "스타 II WardiTV 팀리그",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "13": [
     {
-      "color": "#FF00FF",
       "title": "롤",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "14": [
     {
-      "color": "#00FFFF",
       "title": "휴방 롤 방송 2회",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "15": [
     {
-      "color": "#FF00FF",
-      "title": "상대성 이론 공부 클로버핏 야구",
-      "time": ""
+      "title": "상대성 이론 공부",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "클로버핏",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "야구",
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
     }
   ],
   "16": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II TLMC [8PM]",
-      "time": "8PM"
+      "title": "스타 II TLMC",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "17": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II TLMC [8PM]",
-      "time": "8PM"
+      "title": "스타 II TLMC",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "18": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II TLMC [8PM]",
-      "time": "8PM"
+      "title": "스타 II TLMC",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "19": [
     {
-      "color": "#FF00FF",
-      "title": "프래그마타 스타 II TLMC [8PM]",
-      "time": "8PM"
+      "title": "프래그마타",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II TLMC",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "20": [
     {
-      "color": "#FF00FF",
       "title": "프래그마타",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "21": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II TLMC [8PM]",
-      "time": "8PM"
+      "title": "스타 II TLMC",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "22": [
     {
-      "color": "#FF00FF",
       "title": "프래그마타",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "23": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II TLMC [8PM]",
-      "time": "8PM"
+      "title": "스타 II TLMC",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "24": [
     {
-      "color": "#FF00FF",
       "title": "오버워치",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "25": [
     {
-      "color": "#FF00FF",
-      "title": "인디게임엑스포 [6PM] 스타 II TLMC [8PM]",
-      "time": "6PM"
+      "title": "인디게임엑스포",
+      "time": "6PM",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II TLMC",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "26": [
     {
-      "color": "#FF00FF",
-      "title": "2026년 굿즈 판매 개시 [5월 13일까지] 스타 II TLMC [8PM]",
-      "time": "8PM"
+      "title": "2026년 굿즈 판매 개시 [5월 13일까지]",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II TLMC",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "27": [
     {
-      "color": "#FF00FF",
-      "title": "오버워치 스타 II 로그라이크",
-      "time": ""
+      "title": "오버워치",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II 로그라이크",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "28": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 로그라이크 유로트럭",
-      "time": ""
+      "title": "스타 II 로그라이크",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "유로트럭",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "29": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II GSL 박한솔 입중계 응원방 [7PM] 롤",
-      "time": "7PM"
+      "title": "스타 II GSL 박한솔 입중계 응원방",
+      "time": "7PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "롤",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "30": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 로그라이크 디아블로 4 확장팩",
-      "time": ""
+      "title": "스타 II 로그라이크",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "디아블로 4 확장팩",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ]
 }

@@ -1,219 +1,412 @@
 {
   "1": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 로그라이크 디아블로 4 확장팩",
-      "time": ""
+      "title": "스타 II 로그라이크",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "디아블로 4 확장팩",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "2": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL 조성주 입중계 응원 [8PM] LEC 1경기만 시청 [밤 12시]",
-      "time": "8PM"
+      "title": "스타 II RSL 조성주 입중계 응원",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "LEC 1경기만 시청 [밤 12시]",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "3": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 로그라이크 LEC 1경기만 시청 [밤 12시]",
-      "time": ""
+      "title": "스타 II 로그라이크",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "LEC 1경기만 시청 [밤 12시]",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "4": [
     {
-      "color": "#FF00FF",
       "title": "스타 II 로그라이크",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "5": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II WardiTV [8PM] 포켓몬스터 블루",
-      "time": "8PM"
+      "title": "스타 II WardiTV",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "포켓몬스터 블루",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "6": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II GSL 조성주 입중계 응원 [7PM] 포켓몬스터 블루",
-      "time": "7PM"
+      "title": "스타 II GSL 조성주 입중계 응원",
+      "time": "7PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "포켓몬스터 블루",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "7": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II GSL 박한솔 입중계 응원 [6:30PM]",
-      "time": "6:30PM"
+      "title": "스타 II GSL 박한솔 입중계 응원",
+      "time": "6:30PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "8": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II WardiTV [8PM] LEC 1경기만 시청 [11PM]",
-      "time": "8PM"
+      "title": "스타 II WardiTV",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "LEC 1경기만 시청",
+      "time": "11PM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "9": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II WardiTV [8PM] LEC 1경기만 시청 [11PM]",
-      "time": "8PM"
+      "title": "스타 II WardiTV",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "LEC 1경기만 시청",
+      "time": "11PM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "10": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL 박한솔 입중계 응원 [7PM] LEC 1경기만 시청 [11PM]",
-      "time": "7PM"
+      "title": "스타 II RSL 박한솔 입중계 응원",
+      "time": "7PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "LEC 1경기만 시청",
+      "time": "11PM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "11": [
     {
-      "color": "#FF00FF",
       "title": "새벽 아침 롤",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "12": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 로그라이크 스타 데모 캠페인 리메이크",
-      "time": ""
+      "title": "스타 II 로그라이크",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "스타 데모 캠페인 리메이크",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "13": [
     {
-      "color": "#FF00FF",
-      "title": "2026년 굿즈 판매 종료일 스타 데모 캠페인 리메이크 나츠키님 스타 강의",
-      "time": ""
+      "title": "2026년 굿즈 판매 종료일",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 데모 캠페인 리메이크",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "나츠키님 스타 강의",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "14": [
     {
-      "color": "#FF00FF",
-      "title": "아침 롤 조금 스타 데모 캠페인 리메이크 GSL 티켓 추첨",
-      "time": ""
+      "title": "아침 롤 조금",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 데모 캠페인 리메이크",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "GSL 티켓 추첨",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "15": [
     {
-      "color": "#FF00FF",
       "title": "롤 짧방",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "16": [
     {
-      "color": "#FF00FF",
-      "title": "채현찌 스타 강의 LCK 시청 [5PM]",
-      "time": "5PM"
+      "title": "채현찌 스타 강의",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "LCK 시청",
+      "time": "5PM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "17": [
     {
-      "color": "#FF00FF",
-      "title": "올리비아 출장 스타 II GSL 조성주 입중계 응원 [6PM] 에리스, 타비 스타 강의 [10PM]",
-      "time": "6PM"
+      "title": "올리비아 출장",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II GSL 조성주 입중계 응원",
+      "time": "6PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "에리스, 타비 스타 강의",
+      "time": "10PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "18": [
     {
-      "color": "#FF00FF",
       "title": "허츄님 스타 대회 중계",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "19": [
     {
-      "color": "#FF00FF",
       "title": "허츄님 스타 대회 중계",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "20": [
     {
-      "color": "#00FFFF",
-      "title": "휴방인 척 낮 롤 저녁 롤",
-      "time": ""
+      "title": "휴방인 척",
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
+    },
+    {
+      "title": "낮 롤",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "저녁 롤",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "21": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II GSL 박한솔 입중계 응원 [7PM] 포켓몬스터 블루",
-      "time": "7PM"
+      "title": "스타 II GSL 박한솔 입중계 응원",
+      "time": "7PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "포켓몬스터 블루",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "22": [
     {
-      "color": "#00FFFF",
-      "title": "휴방인 척 낮 롤 저녁 하소연",
-      "time": ""
+      "title": "휴방인 척",
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
+    },
+    {
+      "title": "낮 롤",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "저녁 하소연",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "23": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II WardiTV [8PM]",
-      "time": "8PM"
+      "title": "스타 II WardiTV",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "24": [
     {
-      "color": "#FF9900",
-      "title": "올리비아 귀국 스타 II WardiTV [8PM]",
-      "time": "8PM"
+      "title": "올리비아 귀국",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II WardiTV",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "25": [
     {
-      "color": "#00FFFF",
       "title": "휴방",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "26": [
     {
-      "color": "#FF00FF",
-      "title": "포키쨩과 롤 [4PM] 갑자기 히오스 납치됐었었음",
-      "time": "4PM"
+      "title": "포키쨩과 롤",
+      "time": "4PM",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "갑자기 히오스 납치됐었었음",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "27": [
     {
-      "color": "#FF00FF",
-      "title": "스타 데모 캠페인 리메이크 포켓몬스터 블루",
-      "time": ""
+      "title": "스타 데모 캠페인 리메이크",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "포켓몬스터 블루",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "28": [
     {
-      "color": "#FF00FF",
-      "title": "올리비아 출장 스타 II GSL 성주 한솔 입중계 응원 [6:30PM] 포켓몬스터 블루",
-      "time": "6:30PM"
+      "title": "올리비아 출장",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II GSL 성주 한솔 입중계 응원",
+      "time": "6:30PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "포켓몬스터 블루",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "29": [
     {
-      "color": "#FF00FF",
       "title": "인영님한테 이터널 리턴 배우기",
-      "time": ""
+      "time": "",
+      "color": "#FF3DCB",
+      "link": ""
     }
   ],
   "30": [
     {
-      "color": "#FF00FF",
       "title": "007 퍼스트 라이트?",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "31": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 프랑스 대회 1일차 예선 다시 보기 [8PM]",
-      "time": "8PM"
+      "title": "스타 II 프랑스 대회",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "1일차 예선 다시 보기",
+      "time": "8PM",
+      "color": "#FFC857",
+      "link": ""
     }
   ]
 }

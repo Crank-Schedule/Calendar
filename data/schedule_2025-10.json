@@ -1,219 +1,340 @@
 {
   "1": [
     {
-      "color": "#FF00FF",
       "title": "디아 4",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "2": [
     {
-      "color": "#FF00FF",
       "title": "디아 4 대회 8 PM",
-      "time": "8 PM"
+      "time": "",
+      "color": "#C6FF3C",
+      "link": ""
     }
   ],
   "3": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 세랄 대 클렘 결승 다시 보기",
-      "time": ""
+      "title": "스타 II 세랄 대 클렘",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "결승 다시 보기",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "4": [
     {
-      "color": "#FF00FF",
       "title": "레이맨",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "5": [
     {
-      "color": "#FF00FF",
-      "title": "옥 난 기 크 합방 (WASD, 윷놀이) 레이맨",
-      "time": ""
+      "title": "옥 난 기 크 합방 (WASD, 윷놀이)",
+      "time": "",
+      "color": "#C6FF3C",
+      "link": ""
+    },
+    {
+      "title": "레이맨",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "6": [
     {
-      "color": "#FF00FF",
       "title": "레이맨",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "7": [
     {
-      "color": "#FF00FF",
-      "title": "삼성 야구 같이 보기 레이맨, 데바데",
-      "time": ""
+      "title": "삼성 야구 같이 보기",
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
+    },
+    {
+      "title": "레이맨, 데바데",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "8": [
     {
-      "color": "#FF00FF",
-      "title": "데바데 w/ 포키쨩 루시아 채현찌 스나랑",
-      "time": ""
+      "title": "데바데 w/",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "포키쨩 루시아 채현찌 스나랑",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "9": [
     {
-      "color": "#FF00FF",
-      "title": "삼성 야구 같이 보기 스타크래프트 유로트럭",
-      "time": ""
+      "title": "삼성 야구 같이 보기",
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
+    },
+    {
+      "title": "스타크래프트",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "유로트럭",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "10": [
     {
-      "color": "#FF00FF",
       "title": "삼성 야구 같이 보기",
-      "time": ""
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
     }
   ],
   "11": [
     {
-      "color": "#FF00FF",
       "title": "롤 인챈트팀 연습 도와주기",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "12": [
     {
-      "color": "#FF00FF",
-      "title": "삼성 야구 같이 보기 크랭크 이대로 괜찮은가",
-      "time": ""
+      "title": "삼성 야구 같이 보기",
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
+    },
+    {
+      "title": "크랭크 이대로 괜찮은가",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "13": [
     {
-      "color": "#FF00FF",
-      "title": "치핵절제술 이슈로 삼성 야구 같이 보기",
-      "time": ""
+      "title": "치핵절제술 이슈로",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "삼성 야구 같이 보기",
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
     }
   ],
   "14": [
     {
-      "color": "#FF00FF",
-      "title": "치핵절제술 이슈로 삼성 야구 같이 보기",
-      "time": ""
+      "title": "치핵절제술 이슈로",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "삼성 야구 같이 보기",
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
     }
   ],
   "15": [
     {
-      "color": "#FF9900",
-      "title": "[올리비아 귀국] 낮짧방",
-      "time": ""
+      "title": "[올리비아 귀국]",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "낮짧방",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "16": [
     {
-      "color": "#00FFFF",
       "title": "휴방",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "17": [
     {
-      "color": "#FF00FF",
       "title": "스타 1 스타 2 비교 영상",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "18": [
     {
-      "color": "#FF00FF",
-      "title": "삼성 야구 같이 보기 롤드컵 티젠전 같이 보기",
-      "time": ""
+      "title": "삼성 야구 같이 보기",
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
+    },
+    {
+      "title": "롤드컵 티젠전 같이 보기",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "19": [
     {
-      "color": "#FF00FF",
       "title": "삼성 야구 같이 보기",
-      "time": ""
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
     }
   ],
   "20": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 대회 같이 보기 유로트럭",
-      "time": ""
+      "title": "스타 II 대회 같이 보기",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "유로트럭",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "21": [
     {
-      "color": "#FF00FF",
       "title": "삼성 야구 같이 보기",
-      "time": ""
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
     }
   ],
   "22": [
     {
-      "color": "#FF00FF",
       "title": "삼성 야구 같이 보기",
-      "time": ""
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
     }
   ],
   "23": [
     {
-      "color": "#00FFFF",
       "title": "휴방",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "24": [
     {
-      "color": "#FF00FF",
       "title": "삼성 야구 같이 보기",
-      "time": ""
+      "time": "",
+      "color": "#A56BFF",
+      "link": ""
     }
   ],
   "25": [
     {
-      "color": "#FF00FF",
       "title": "스타 II RSL - SOOP",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "26": [
     {
-      "color": "#FF00FF",
       "title": "크총모 시즌 2 1일차",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "27": [
     {
-      "color": "#FF00FF",
       "title": "크총모 시즌 2 2일차",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "28": [
     {
-      "color": "#FF00FF",
       "title": "크총모 시즌 2 3일차",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "29": [
     {
-      "color": "#FF00FF",
-      "title": "[서울 출장] 크총모 시즌 2 4일차",
-      "time": ""
+      "title": "[서울 출장]",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "크총모 시즌 2 4일차",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "30": [
     {
-      "color": "#FF00FF",
-      "title": "[서울 출장] 크총모 시즌 2 5일차",
-      "time": ""
+      "title": "[서울 출장]",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "크총모 시즌 2 5일차",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "31": [
     {
-      "color": "#FF00FF",
-      "title": "[서울 출장] 크총모 시즌 2 6일차",
-      "time": ""
+      "title": "[서울 출장]",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "크총모 시즌 2 6일차",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ]
 }

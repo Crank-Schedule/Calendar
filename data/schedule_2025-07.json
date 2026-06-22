@@ -1,219 +1,406 @@
 {
   "1": [
     {
-      "color": "#FF00FF",
-      "title": "디아블로 1 ~ 4 스토리 같이 보기, 텐가이",
-      "time": ""
+      "title": "디아블로 1 ~ 4 스토리",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "같이 보기, 텐가이",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "2": [
     {
-      "color": "#FF00FF",
       "title": "치락실: 텐가이",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "3": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL - SOOP 마리오 카트",
-      "time": ""
+      "title": "스타 II RSL - SOOP",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "마리오 카트",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "4": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL - SOOP 마리오 카트",
-      "time": ""
+      "title": "스타 II RSL - SOOP",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "마리오 카트",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "5": [
     {
-      "color": "#FF00FF",
       "title": "스타 II RSL - SOOP",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "6": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL - SOOP 유로트럭",
-      "time": ""
+      "title": "스타 II RSL - SOOP",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "유로트럭",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "7": [
     {
-      "color": "#00FFFF",
       "title": "휴방",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "8": [
     {
-      "color": "#FF00FF",
-      "title": "스타 1 수련수련 루코 강소연 소풍왔니 철면수심 단군 얍얍",
-      "time": ""
+      "title": "스타 1",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "수련수련 루코 강소연 소풍왔니",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "철면수심 단군 얍얍",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "9": [
     {
-      "color": "#FF00FF",
-      "title": "스타 1 극 초보 강의 기령, 난바다, 옥쓔, 윤리즈",
-      "time": ""
+      "title": "스타 1 극 초보 강의",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "기령, 난바다, 옥쓔, 윤리즈",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "10": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL - SOOP 디아블로 4",
-      "time": ""
+      "title": "스타 II RSL - SOOP",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "디아블로 4",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "11": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL - SOOP 디아블로 4",
-      "time": ""
+      "title": "스타 II RSL - SOOP",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "디아블로 4",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "12": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL - SOOP 디아블로 4",
-      "time": ""
+      "title": "스타 II RSL - SOOP",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "디아블로 4",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "13": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL - SOOP 디아블로 4",
-      "time": ""
+      "title": "스타 II RSL - SOOP",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "디아블로 4",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "14": [
     {
-      "color": "#FF00FF",
       "title": "디아블로 4",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "15": [
     {
-      "color": "#FF00FF",
-      "title": "디아블로 4, 데이아 빌리언즈 10PM MLBB 바이탈리티 경기",
-      "time": "10PM"
+      "title": "디아블로 4, 데이아 빌리언즈",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "MLBB 바이탈리티 경기",
+      "time": "10PM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "16": [
     {
-      "color": "#FF00FF",
       "title": "데이아 빌리언즈, 마리오 카트",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "17": [
     {
-      "color": "#FF00FF",
-      "title": "돼아빌 예선 (열심히 했다 내 실력의 모든 걸 보여줬다 데아빌 잠깐만 안녕...)",
-      "time": ""
+      "title": "돼아빌 예선 (열심히 했다",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "내 실력의 모든 걸 보여줬다",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "데아빌 잠깐만 안녕...)",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "18": [
     {
-      "color": "#FF00FF",
-      "title": "짧은 낮방 디아블로 4 토크",
-      "time": ""
+      "title": "짧은 낮방",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "디아블로 4 토크",
+      "time": "",
+      "color": "#C6FF3C",
+      "link": ""
     }
   ],
   "19": [
     {
-      "color": "#FF00FF",
-      "title": "MLBB 바이탈리티 결승 응원 스타 1 초보자들 강의 빞케이, 무뉴뉴",
-      "time": ""
+      "title": "MLBB 바이탈리티 결승 응원",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 1 초보자들 강의",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "빞케이, 무뉴뉴",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "20": [
     {
-      "color": "#FF00FF",
-      "title": "블리자드 DAY 스타 1, 하스스톤 오버워치, 스타 2",
-      "time": ""
+      "title": "블리자드 DAY",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 1, 하스스톤",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "오버워치, 스타 2",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "21": [
     {
-      "color": "#FF00FF",
-      "title": "롤 서넹 초승달 서새봄 임나은",
-      "time": ""
+      "title": "롤",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "서넹 초승달 서새봄 임나은",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "22": [
     {
-      "color": "#FF00FF",
       "title": "스타 II EWC",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "23": [
     {
-      "color": "#FF00FF",
       "title": "스타 II EWC",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "24": [
     {
-      "color": "#FF00FF",
       "title": "스타 II EWC",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "25": [
     {
-      "color": "#FF00FF",
       "title": "스타 II EWC",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "26": [
     {
-      "color": "#00FFFF",
       "title": "휴방",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "27": [
     {
-      "color": "#FF00FF",
-      "title": "올리비아 출장 8시 PEAK 합방 난바다 기령 옥쓔",
-      "time": ""
+      "title": "올리비아 출장",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "8시 PEAK 합방",
+      "time": "",
+      "color": "#C6FF3C",
+      "link": ""
+    },
+    {
+      "title": "난바다 기령 옥쓔",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "28": [
     {
-      "color": "#FF00FF",
       "title": "감기기운으로 토크",
-      "time": ""
+      "time": "",
+      "color": "#C6FF3C",
+      "link": ""
     }
   ],
   "29": [
     {
-      "color": "#FF00FF",
-      "title": "마리오 카트 EWC 체스",
-      "time": ""
+      "title": "마리오 카트",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "EWC 체스",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "30": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II EWC 리플 마리오 카트 EWC 체스 (결국 8강 진출 실패 ㅠㅠ)",
-      "time": ""
+      "title": "스타 II EWC 리플",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "마리오 카트",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "EWC 체스 (결국 8강 진출 실패 ㅠㅠ)",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "31": [
     {
-      "color": "#FF00FF",
-      "title": "마리오 카트 와우",
-      "time": ""
+      "title": "마리오 카트",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "와우",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ]
 }

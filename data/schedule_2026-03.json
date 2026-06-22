@@ -1,219 +1,346 @@
 {
   "1": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II PIG 대회 [6PM]",
-      "time": "6PM"
+      "title": "스타 II PIG 대회",
+      "time": "6PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "2": [
     {
-      "color": "#FF00FF",
-      "title": "89모임 김나성 방송 [7PM]",
-      "time": "7PM"
+      "title": "89모임 김나성 방송",
+      "time": "7PM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "3": [
     {
-      "color": "#FF00FF",
       "title": "바이오하자드 9",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "4": [
     {
-      "color": "#FF00FF",
       "title": "바이오하자드 9",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "5": [
     {
-      "color": "#FF00FF",
-      "title": "삼성 vs 한화 연습 경기 [1PM] 포코피아",
-      "time": "1PM"
+      "title": "삼성 vs 한화 연습 경기",
+      "time": "1PM",
+      "color": "#A56BFF",
+      "link": ""
+    },
+    {
+      "title": "포코피아",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "6": [
     {
-      "color": "#FF00FF",
-      "title": "알라바스타 던 허 트리즈 롤",
-      "time": ""
+      "title": "알라바스타 던",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "허 트리즈",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "롤",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "7": [
     {
-      "color": "#FF00FF",
-      "title": "삼성 vs KT 연습 경기 [1PM] 스타 II RSL 박한솔 입중계 응원 [7PM]",
-      "time": "1PM"
+      "title": "삼성 vs KT 연습 경기",
+      "time": "1PM",
+      "color": "#A56BFF",
+      "link": ""
+    },
+    {
+      "title": "스타 II RSL 박한솔 입중계 응원",
+      "time": "7PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "8": [
     {
-      "color": "#FF00FF",
       "title": "허츄님과 스타 1 핸디캡 매치",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "9": [
     {
-      "color": "#FF00FF",
       "title": "롤",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "10": [
     {
-      "color": "#00FFFF",
       "title": "휴방",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "11": [
     {
-      "color": "#FF9900",
-      "title": "올리비아 여행 출국 스타 II Wardi 팀리그 [9PM] 롤",
-      "time": "9PM"
+      "title": "올리비아 여행 출국",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II Wardi 팀리그",
+      "time": "9PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "롤",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "12": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II Wardi 팀리그 [9PM] ONSYDE 경기",
-      "time": "9PM"
+      "title": "스타 II Wardi 팀리그",
+      "time": "9PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "ONSYDE 경기",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "13": [
     {
-      "color": "#FF00FF",
       "title": "매직박형님과 롤 북벌",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "14": [
     {
-      "color": "#FF00FF",
       "title": "낙원, 헤일로",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "15": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II RSL 조성주 입중계 응원 [7PM] 스타 II Wardi 팀리그 [10PM]",
-      "time": "7PM"
+      "title": "스타 II RSL 조성주 입중계 응원",
+      "time": "7PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "스타 II Wardi 팀리그",
+      "time": "10PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "16": [
     {
-      "color": "#FF00FF",
       "title": "롤",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "17": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II Wardi 팀리그 [10PM] ONSYDE 경기",
-      "time": "10PM"
+      "title": "스타 II Wardi 팀리그",
+      "time": "10PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "ONSYDE 경기",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "18": [
     {
-      "color": "#FF00FF",
       "title": "레이튼 이상한 마을",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "19": [
     {
-      "color": "#FF00FF",
       "title": "레이튼 이상한 마을",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "20": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II Wardi 팀리그 [10PM] ONSYDE 경기",
-      "time": "10PM"
+      "title": "스타 II Wardi 팀리그",
+      "time": "10PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "ONSYDE 경기",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "21": [
     {
-      "color": "#00FFFF",
       "title": "휴방",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "22": [
     {
-      "color": "#FF00FF",
-      "title": "역사 얘기, 스타 II, 유로트럭 올리비아 여행 컴백",
-      "time": ""
+      "title": "역사 얘기, 스타 II, 유로트럭",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "올리비아 여행 컴백",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "23": [
     {
-      "color": "#FF00FF",
       "title": "롤",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "24": [
     {
-      "color": "#00FFFF",
-      "title": "서울 출장 휴방 새벽에 잠깐 롤",
-      "time": ""
+      "title": "서울 출장 휴방",
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
+    },
+    {
+      "title": "새벽에 잠깐 롤",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "25": [
     {
-      "color": "#FF00FF",
-      "title": "활협전, 레데리 2, 피의 거짓, 포켓몬스터 블루",
-      "time": ""
+      "title": "활협전, 레데리 2,",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "피의 거짓, 포켓몬스터 블루",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "26": [
     {
-      "color": "#FF00FF",
-      "title": "활협전 스타 II Wardi 팀리그 [10PM]",
-      "time": "10PM"
+      "title": "활협전",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II Wardi 팀리그",
+      "time": "10PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "27": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II Wardi 팀리그 [12AM]",
-      "time": "12AM"
+      "title": "스타 II Wardi 팀리그",
+      "time": "12AM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "28": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II Wardi 팀리그 [11PM] ONSYDE 경기",
-      "time": "11PM"
+      "title": "스타 II Wardi 팀리그",
+      "time": "11PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "ONSYDE 경기",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "29": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II Wardi 팀리그 [11PM]",
-      "time": "11PM"
+      "title": "스타 II Wardi 팀리그",
+      "time": "11PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "30": [
     {
-      "color": "#FF00FF",
       "title": "롤",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "31": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II Wardi 팀리그 [10PM] ONSYDE 경기",
-      "time": "10PM"
+      "title": "스타 II Wardi 팀리그",
+      "time": "10PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "ONSYDE 경기",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ]
 }

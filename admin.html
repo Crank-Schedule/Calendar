@@ -85,6 +85,7 @@
 }
   *{box-sizing:border-box;}
   button{-webkit-appearance:none; appearance:none; border-radius:0; font:inherit; margin:0; display:inline-flex; align-items:center; justify-content:center; line-height:1;}
+  html{ overflow-y: scroll; overflow-x: hidden; scrollbar-gutter: stable; }
   body {
   margin: 0;
   background: var(--bg-main);
@@ -92,21 +93,27 @@
   font-family: 'Galmuri11', 'Paperozi', monospace;
   min-height: 100vh;
   padding: 10px 18px 90px;
-  overflow-x: hidden;
-  overflow-y: visible !important;
 }
   .wrap{max-width:1000px;margin:0 auto;}
 
   .header{
     display:flex;align-items:flex-end;justify-content:space-between;
     flex-wrap:wrap;gap:12px;margin-bottom:0;
-    padding-bottom:12px;
+    padding:10px 0 12px;
     position:relative;
   }
-  .header::after{
+  .top-sticky{
+    position:sticky; top:0; z-index:50;
+    background:var(--bg-main);
+    padding-bottom:10px;
+  }
+  .top-sticky::after{
     content:'';position:absolute;left:0;right:0;bottom:0;height:1px;
     background: var(--neon-cyan);
     opacity:0.5;
+  }
+  .header::after{
+    display:none;
   }
   .wrap > .header{margin-bottom:12px;}
   .brand{display:flex;align-items:center;gap:6px;}
@@ -120,7 +127,7 @@
     font-family:'Paperozi',sans-serif;
     font-weight:700;
     letter-spacing:0.08em;
-    font-size:11px;
+    font-size:13px;
     color:var(--neon-red);
     text-transform:uppercase;
     display:flex; align-items:center; gap:6px;
@@ -134,7 +141,7 @@
   h1{
     font-family:'Paperozi',sans-serif;
     font-weight:800;
-    font-size:clamp(18px,3vw,24px);
+    font-size:clamp(20px,3.5vw,28px);
     margin:2px 0 0;
     letter-spacing:0.01em;
   }
@@ -155,39 +162,47 @@
   .nav{display:flex;align-items:center;gap:6px; flex-wrap:wrap; justify-content:flex-end;}
   .nav > *{flex-shrink:0;}
   .nav button{
-    width:28px;height:28px;border-radius:6px;
+    width:32px;height:32px;border-radius:6px;
     border:1px solid var(--border-strong);
     background:var(--bg-panel);
     color:var(--text-primary);
-    font-size:12px;cursor:pointer;
+    font-size:14px;cursor:pointer;
     transition:.15s;
   }
   .nav button:hover{border-color:var(--neon-cyan); color:var(--neon-cyan); box-shadow: none;}
   .month-label{
     font-family:'Paperozi',sans-serif;
-    font-size:14px; font-weight:700; min-width:110px; text-align:center;
+    font-size:16px; font-weight:700; min-width:120px; text-align:center;
     font-variant-numeric: tabular-nums;
     white-space:nowrap;
   }
   .nav .today-btn{
-    height:28px;
+    height:32px;
     font-family:'Paperozi',sans-serif;
-    font-weight:600; font-size:10px;
+    font-weight:600; font-size:13px;
     background:transparent;
     border:1px solid var(--border-strong);
     color:var(--text-primary);
-    padding:0 10px; border-radius:6px; cursor:pointer;
+    padding:0 14px; border-radius:6px; cursor:pointer;
     white-space:nowrap; width:auto;
   }
   .nav .today-btn:hover{border-color:var(--neon-cyan); color:var(--neon-cyan);}
 
-  .view-toggle{display:flex;border:1px solid var(--border-strong);border-radius:6px;overflow:hidden;height:28px; flex-shrink:0;}
+  .view-toggle{display:flex;border:1px solid var(--border-strong);border-radius:6px;overflow:hidden;height:32px; flex-shrink:0;}
   .view-toggle button{
-    padding:0 10px;font-size:10px;font-family:'Paperozi',sans-serif;font-weight:600;
+    padding:0 20px;font-size:13px;font-family:'Paperozi',sans-serif;font-weight:600;
     background:transparent;color:var(--text-dim);border:none;cursor:pointer;height:100%;
     white-space:nowrap;
   }
-  .view-toggle button.active{background:rgba(52,245,216,0.12);color:var(--neon-cyan);}
+  .view-toggle button.active{background:var(--neon-cyan);color:var(--bg-main);font-weight:800;}
+
+  .theme-toggle-inline{
+    width:32px;height:32px;border-radius:6px;
+    border:1px solid var(--border-strong); background:var(--bg-panel);
+    color:var(--text-primary); cursor:pointer; font-size:14px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .theme-toggle-inline:hover{border-color:var(--neon-cyan); color:var(--neon-cyan);}
 
   .weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;}
   .weekdays div{
@@ -228,10 +243,6 @@
   .agenda-tag a:hover{opacity:1;}
   .agenda-empty{font-size:12px; color:var(--text-dim); align-self:center;}
 
-  @media (max-width:680px){
-    .weekdays, .grid{display:none;}
-    .agenda{display:flex;}
-  }
   .cell{
     background:var(--bg-cell);
     border:1px solid var(--border);
@@ -270,6 +281,21 @@
   .tag a{color:inherit; text-decoration:none; margin-left:auto; flex-shrink:0; opacity:0.75;}
   .tag a:hover{opacity:1;}
   .more{font-size:10px; color:var(--text-dim); padding-left:2px;}
+  .special-badge{display:flex; align-items:center; gap:3px; font-size:10px; font-weight:700; padding:1px 4px; border-radius:3px; white-space:nowrap;}
+
+  @media (max-width:680px){
+    .cell{min-height:46px; padding:3px; gap:2px;}
+    .date-num{font-size:11px;}
+    .tags{flex-direction:row; flex-wrap:wrap; gap:2px;}
+    .tag{
+      font-size:15px; line-height:1; padding:0 1px;
+      border:none; border-bottom:2px solid currentColor;
+      border-radius:1px; background:transparent !important;
+    }
+    .tag .tag-title, .tag .t-time, .tag a{display:none;}
+    .special-badge .sp-label{display:none;}
+    .special-badge{font-size:13px; padding:0; background:transparent !important;}
+  }
 
   .overlay{
     position:fixed; inset:0; background:rgba(5,6,10,0.72);
@@ -429,11 +455,12 @@
     width:100%; aspect-ratio:16/9; background:var(--bg-cell-hover); object-fit:cover; display:block;
   }
   .video-card .vc-label{
-    font-size:10px; font-weight:700; color:var(--neon-cyan); padding:8px 10px 0; display:block; letter-spacing:0.03em;
+    font-size:10px; font-weight:700; color:var(--neon-cyan); padding:8px 8px 0; display:block; letter-spacing:0.02em;
+    text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .video-card .vc-title{
-    font-size:11.5px; font-weight:600; color:var(--text-primary); padding:4px 10px 10px; display:block;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    font-size:11.5px; font-weight:600; color:var(--text-primary); padding:4px 8px 10px; display:block;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center;
   }
   @media (max-width:680px){
     .video-cards{gap:6px;}
@@ -497,6 +524,9 @@
     border-top:1px solid var(--border-strong);
     padding:6px 4px env(safe-area-inset-bottom,6px);
   }
+  :root[data-theme="light"] .bottom-nav{
+    background:rgba(228,228,217,0.97);
+  }
   .bn-item{
     flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
     background:none; border:none; color:var(--text-dim); cursor:pointer;
@@ -515,12 +545,6 @@
   .popover .pop-title{font-family:'Paperozi',sans-serif; font-weight:700; font-size:13px; margin-bottom:10px; color:var(--text-dim);}
   .popover .replay-links{margin-top:0;}
   .popover .social-row{margin-top:0;}
-  .theme-toggle-btn{
-    position:fixed; top:12px; right:12px; z-index:100;
-    background:var(--bg-cell); border:1px solid var(--border-strong);
-    padding:8px; border-radius:50%; cursor:pointer;
-  }
-body { overflow-y: visible !important; overflow-x: hidden; }
 
 .top-sticky {
     position: sticky;
@@ -565,7 +589,6 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     <script src="data/replays.js"></script>
 </head>
 <body>
-<button id="themeToggleBtn" class="theme-toggle-btn">☀️</button>
 <div style="background:var(--neon-red);color:#fff;text-align:center;padding:6px;font-size:14px;font-weight:bold;margin:-10px -18px 10px;border-bottom:1px solid rgba(255,255,255,0.2);">🚨 관리자 모드 접속 중 🚨</div>
 <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
   <img id="lbThumb" src="" alt="">
@@ -586,13 +609,14 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         <span class="mode-badge" id="modeBadge">관리자 모드</span>
       </div>
       <h1>크랭크 <span>방송</span> 스케줄</h1>
-      <button id="ghSettingsBtn" style="margin-left:12px; padding:4px 8px; font-size:11px; background:var(--brand); color:#fff; border:none; border-radius:4px; cursor:pointer;">GitHub 연동 설정</button>
+      <button id="ghSettingsBtn" style="margin-left:12px; padding:4px 8px; font-size:11px; background:var(--brand); color:#fff; border:none; border-radius:4px; cursor:pointer;">관리자 로그인</button>
     </div>
     <div class="nav">
       <div class="view-toggle">
         <button id="monthViewBtn" class="active">달력</button>
         <button id="weekViewBtn">리스트</button>
       </div>
+      <button id="themeToggleBtn" class="theme-toggle-inline">☀️</button>
       <button id="prevBtn">‹</button>
       <div class="month-label" id="monthLabel">2026년 6월</div>
       <button id="nextBtn">›</button>
@@ -725,6 +749,76 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script>
 const ADMIN_PIN = '2026'; // 이 값을 원하는 PIN으로 바꿔서 쓰세요
 
+// ===== 라이트모드에서도 잘 보이도록 색상의 명도를 자동 조절 =====
+function hexToHsl(hex){
+  let r=0,g=0,b=0;
+  hex = String(hex||'').replace('#','');
+  if(hex.length===3){ r=parseInt(hex[0]+hex[0],16); g=parseInt(hex[1]+hex[1],16); b=parseInt(hex[2]+hex[2],16); }
+  else { r=parseInt(hex.substring(0,2),16); g=parseInt(hex.substring(2,4),16); b=parseInt(hex.substring(4,6),16); }
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h=0,s=0,l=(max+min)/2;
+  if(max!==min){
+    const d = max-min;
+    s = l>0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max){
+      case r: h=(g-b)/d+(g<b?6:0); break;
+      case g: h=(b-r)/d+2; break;
+      case b: h=(r-g)/d+4; break;
+    }
+    h/=6;
+  }
+  return [h*360, s*100, l*100];
+}
+function hslToHex(h,s,l){
+  h/=360; s/=100; l/=100;
+  let r,g,b;
+  if(s===0){ r=g=b=l; }
+  else{
+    const hue2rgb=(p,q,t)=>{
+      if(t<0) t+=1; if(t>1) t-=1;
+      if(t<1/6) return p+(q-p)*6*t;
+      if(t<1/2) return q;
+      if(t<2/3) return p+(q-p)*(2/3-t)*6;
+      return p;
+    };
+    const q = l<0.5 ? l*(1+s) : l+s-l*s;
+    const p = 2*l-q;
+    r=hue2rgb(p,q,h+1/3); g=hue2rgb(p,q,h); b=hue2rgb(p,q,h-1/3);
+  }
+  const toHex = v => Math.round(v*255).toString(16).padStart(2,'0');
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+function getDisplayColor(hex){
+  if(!hex) return hex;
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if(!isLight) return hex;
+  try{
+    const [h,s,l] = hexToHsl(hex);
+    const isYellowish = h>=40 && h<=110;
+    const cap = isYellowish ? 22 : 28;
+    const newL = Math.min(l, cap);
+    const newS = Math.min(100, s+10);
+    return hslToHex(h, newS, newL);
+  }catch(e){ return hex; }
+}
+
+// ===== 보안: 일정 제목/링크는 외부(저장소 JSON) 데이터이므로 항상 이스케이프해서 출력 =====
+function escapeHtml(str){
+  if(str==null) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+function safeUrl(url){
+  if(!url) return '';
+  const trimmed = String(url).trim();
+  return /^https?:\/\//i.test(trimmed) ? escapeHtml(trimmed) : '';
+}
+
 const COLORS = [
   {name:'cyan', hex:'#00FFFF'},
   {name:'magenta', hex:'#FF00FF'},
@@ -757,11 +851,12 @@ function getIcon(title){
   if(t.includes('야구')) return '⚾';
   const generalGames = ['유로트럭','앨리엇','포켓몬','제로 스페이스','스팀 데모','데모 RTS'];
   if(generalGames.some(k=>t.includes(k))) return '🎮';
-  return '';
+  return '📌';
 }
 function withIcon(title){
   const icon = getIcon(title);
-  return icon ? icon+' '+title : title;
+  const safe = escapeHtml(title);
+  return icon ? icon+' '+safe : safe;
 }
 
 let isAdmin = true;
@@ -857,22 +952,11 @@ async function loadMonth(d){
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
   
   let dataFromNetwork = null;
-  const gh = typeof getGithubSettings === 'function' ? getGithubSettings() : null;
   try {
-    if (gh && gh.token && gh.owner && gh.repo) {
-        // Use GitHub API to bypass CDN cache
-        const apiUrl = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/data/schedule_${y}-${m}.json`;
-        const res = await fetch(apiUrl, { headers: { 'Authorization': `token ${gh.token}` } });
-        if (res.ok) {
-            const json = await res.json();
-            dataFromNetwork = JSON.parse(decodeURIComponent(escape(window.atob(json.content))));
-        }
-    } else {
-        const baseUrl = location.protocol === 'file:' ? 'https://crank-schedule.github.io/Calendar/' : '';
-        const res = await fetch(`${baseUrl}data/schedule_${y}-${m}.json?t=${Date.now()}`);
-        if (res.ok) {
-           dataFromNetwork = await res.json();
-        }
+    const baseUrl = location.protocol === 'file:' ? 'https://crank-schedule.github.io/Calendar/' : '';
+    const res = await fetch(`${baseUrl}data/schedule_${y}-${m}.json?t=${Date.now()}`);
+    if (res.ok) {
+       dataFromNetwork = await res.json();
     }
   } catch(e) {}
   
@@ -886,95 +970,106 @@ async function loadMonth(d){
     }
   } catch(e) {}
   
-  cache[key] = dataFromNetwork || dataFromLocal || {};
+  cache[key] = dataFromNetwork || dataFromLocal || ((y===2026 && m==='06' && typeof seedJune2026 === 'function') ? seedJune2026() : {});
   return cache[key];
 }
 
-function getGithubSettings() {
-    let token = localStorage.getItem('gh_token');
-    let owner = localStorage.getItem('gh_owner');
-    let repo = localStorage.getItem('gh_repo');
-    
-    if (!token || !owner || !repo) {
-        alert("GitHub 연동 설정이 필요합니다. 화면 상단의 [GitHub 연동 설정] 버튼을 눌러주세요.");
-        return null;
-    }
-    return { token, owner, repo };
+// ===== Cloudflare Worker 기반 관리자 로그인 / 저장 =====
+// 배포한 Worker 주소로 바꿔주세요 (예: https://crank-admin.내서브도메인.workers.dev)
+const WORKER_URL = 'https://crank-admin.YOUR_SUBDOMAIN.workers.dev';
+
+function getSession() {
+  try {
+    const raw = localStorage.getItem('crank_admin_session');
+    if (!raw) return null;
+    const session = JSON.parse(raw);
+    if (!session.token || !session.exp || session.exp < Date.now()) return null;
+    return session;
+  } catch (e) { return null; }
 }
 
-async function getFileSha(path, owner, repo, token) {
-    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-    const res = await fetch(url, {
-        headers: { 'Authorization': `token ${token}` }
+async function adminLogin() {
+  const password = prompt('관리자 비밀번호를 입력하세요:');
+  if (password === null) return false;
+  try {
+    const res = await fetch(`${WORKER_URL}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
     });
-    if (res.status === 200) {
-        const data = await res.json();
-        return data.sha;
+    const json = await res.json();
+    if (!res.ok) {
+      alert(json.error || '로그인에 실패했어요.');
+      return false;
     }
-    return null;
-}
-
-function utf8_to_b64(str) {
-  return window.btoa(unescape(encodeURIComponent(str)));
+    localStorage.setItem('crank_admin_session', JSON.stringify({
+      token: json.token,
+      exp: Date.now() + json.expiresIn * 1000,
+    }));
+    alert('로그인 성공! 이제부터 저장할 수 있어요.');
+    return true;
+  } catch (e) {
+    alert('로그인 중 오류: ' + e.message);
+    return false;
+  }
 }
 
 async function saveMonth(d){
   const key = storageKey(d);
-  const gh = getGithubSettings();
-  if (!gh) return;
-  
+  let session = getSession();
+  if (!session) {
+    const ok = await adminLogin();
+    if (!ok) return;
+    session = getSession();
+    if (!session) return;
+  }
+
   const y = d.getFullYear();
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
-  const path = `data/schedule_${y}-${m}.json`;
-  
+
+  const doneBtn = document.getElementById('doneBtn2');
+  if(doneBtn) { doneBtn.textContent = "저장 중..."; doneBtn.disabled = true; }
+
   try {
-      const sha = await getFileSha(path, gh.owner, gh.repo, gh.token);
-      const contentBase64 = utf8_to_b64(JSON.stringify(cache[key] || {}, null, 2));
-      
-      const body = {
-          message: `Update schedule for ${y}-${m} via Admin UI`,
-          content: contentBase64
-      };
-      if (sha) body.sha = sha;
-      
-      // Update UI to show saving
-      const doneBtn = document.getElementById('doneBtn2');
-      if(doneBtn) { doneBtn.textContent = "저장 중..."; doneBtn.disabled = true; }
-      
-      const url = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${path}`;
-      const res = await fetch(url, {
-          method: 'PUT',
-          headers: {
-              'Authorization': `token ${gh.token}`,
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(body)
-      });
-      
-      if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
-      
-      if (res.ok) {
-          alert(`저장 성공! (${y}년 ${m}월)\n약 1~2분 뒤 실제 사이트에 반영됩니다.`);
-      } else {
-          const err = await res.json();
-          alert('저장 실패: ' + err.message);
-      }
+    const res = await fetch(`${WORKER_URL}/api/schedule/${y}-${m}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.token}`,
+      },
+      body: JSON.stringify(cache[key] || {}),
+    });
+    const json = await res.json();
+
+    if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
+
+    if (res.ok) {
+      alert(`저장 성공! (${y}년 ${m}월)\n약 1~2분 뒤 실제 사이트에 반영됩니다.`);
+    } else if (res.status === 401) {
+      localStorage.removeItem('crank_admin_session');
+      alert(json.error || '로그인이 만료됐어요. 다시 시도해주세요.');
+    } else {
+      alert('저장 실패: ' + (json.error || '알 수 없는 오류'));
+    }
   } catch(e) {
-      alert('오류 발생: ' + e.message);
+    if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
+    alert('오류 발생: ' + e.message);
   }
 }
 
-function buildTagEl(en, big){
+function buildTagEl(en){
   const t = document.createElement('div');
   t.className='tag';
-  t.style.borderColor = en.color;
-  t.style.color = en.color;
-  t.style.background = en.color+'1A';
-  let html = `<span class="title">${withIcon(en.title)}</span>`;
+  t.style.borderColor = getDisplayColor(en.color);
+  t.style.color = getDisplayColor(en.color);
+  t.style.background = getDisplayColor(en.color)+'1A';
+  const icon = getIcon(en.title);
+  let html = `<span class="tag-icon">${icon}</span><span class="tag-title">${escapeHtml(en.title)}</span>`;
   if(en.time) {
-      html += `<span class="t-time">${en.time}</span>`;
+      html += `<span class="t-time">${escapeHtml(en.time)}</span>`;
   }
   t.innerHTML = html;
+  t.title = (en.title||'') + (en.time ? ' · '+en.time : '');
   return t;
 }
 
@@ -1027,18 +1122,17 @@ async function renderCalendarMonth(){
       let hasTrip = false;
       specials.forEach(sp => {
         const isRest = sp.title.includes('휴방');
-        const isTrip = sp.title.includes('귀국') || sp.title.includes('출국');
+        const isTrip = sp.title.includes('귀국') || sp.title.includes('출국') || sp.title.includes('입국');
         if (isRest) hasRest = true;
         if (isTrip) hasTrip = true;
+        const color = getDisplayColor(isRest ? '#00FFFF' : (isTrip ? '#FF9900' : '#FF0000'));
+        const icon = isRest ? '😴' : (isTrip ? '✈️' : '🚫');
         const s = document.createElement('span');
-        s.style.fontSize = '10px';
-        s.style.fontWeight = '700';
-        s.style.color = isRest ? '#00FFFF' : (isTrip ? '#FF9900' : '#FF0000');
+        s.className = 'special-badge';
+        s.style.color = color;
         s.style.background = isRest ? 'rgba(0,255,255,0.1)' : (isTrip ? 'rgba(255,153,0,0.1)' : 'rgba(255,0,0,0.1)');
-        s.style.padding = '1px 4px';
-        s.style.borderRadius = '3px';
-        s.style.whiteSpace = 'nowrap';
-        s.textContent = sp.title;
+        s.title = sp.title;
+        s.innerHTML = `<span class="sp-icon">${icon}</span><span class="sp-label">${escapeHtml(sp.title)}</span>`;
         spWrap.appendChild(s);
       });
       headerWrap.appendChild(spWrap);
@@ -1075,7 +1169,7 @@ async function renderCalendarMonth(){
       entries.forEach(en=>{
         const t = document.createElement('span');
         t.className='agenda-tag';
-        t.style.color = en.color;
+        t.style.color = getDisplayColor(en.color);
         const label = document.createElement('span');
         label.textContent = withIcon(en.title) + (en.time ? ' · '+en.time : '');
         t.appendChild(label);
@@ -1096,7 +1190,7 @@ async function renderCalendarMonth(){
 
 
 // --- OVERRIDE RENDER FUNCTION FOR LIST LAYOUT ---
-let currentView = 'list'; // 'list' or 'calendar'
+let currentView = 'calendar'; // 'list' or 'calendar'
 
 async function render(){
   const y = current.getFullYear();
@@ -1197,10 +1291,10 @@ async function renderListMonth(){
         entries.forEach(en => {
             const t = document.createElement('span');
             t.className = 'schedule-tag';
-            t.style.borderColor = en.color;
-            t.innerHTML = `<span style="color:${en.color}">■</span> ${en.title} ${en.time ? '· '+en.time : ''}`;
-            if(en.link) {
-                t.innerHTML += ` <a href="${en.link}" target="_blank" style="margin-left:4px;" onclick="event.stopPropagation()">🔗</a>`;
+            t.style.borderColor = getDisplayColor(en.color);
+            t.innerHTML = `<span style="color:${getDisplayColor(en.color)}">■</span> ${withIcon(en.title)} ${en.time ? '· '+escapeHtml(en.time) : ''}`;
+            if(en.link && safeUrl(en.link)) {
+                t.innerHTML += ` <a href="${safeUrl(en.link)}" target="_blank" style="margin-left:4px;" onclick="event.stopPropagation()">🔗</a>`;
             }
             contentCol.appendChild(t);
         });
@@ -1268,7 +1362,7 @@ function buildPresets(){
   PRESETS.forEach(p=>{
     const chip = document.createElement('button');
     chip.className='preset-chip';
-    chip.style.color = p.color;
+    chip.style.color = getDisplayColor(p.color);
     chip.textContent = withIcon(p.title);
     chip.addEventListener('click', ()=>{
       titleInput.value = p.title;
@@ -1292,11 +1386,11 @@ function renderEntries(dateObj){
   entries.forEach((en,idx)=>{
     const row = document.createElement('div');
     row.className='entry';
-    let html = `<span class="swatch" style="background:${en.color}"></span>
+    let html = `<span class="swatch" style="background:${getDisplayColor(en.color)}"></span>
       <span class="e-title">${withIcon(en.title)}</span>
-      <span class="e-time">${en.time||''}</span>`;
-    if(en.link){
-      html += `<a class="e-link" href="${en.link}" target="_blank" rel="noopener">🔗</a>`;
+      <span class="e-time">${escapeHtml(en.time||'')}</span>`;
+    if(en.link && safeUrl(en.link)){
+      html += `<a class="e-link" href="${safeUrl(en.link)}" target="_blank" rel="noopener">🔗</a>`;
     }
     if(isAdmin){
       html += `<div class="ord">
@@ -1409,7 +1503,7 @@ function renderTournaments(){
     a.href = t.url; a.target = '_blank'; a.rel = 'noopener';
     const noLiveEl = t.noLive ? `<span style="font-size:11px; color:var(--neon-red); margin-top:4px; font-weight:bold;">🚫 생중계 불가</span>` : '';
     const displayBadge = t.badge === 'StarCraft II' ? '<span class="b-full">StarCraft II</span><span class="b-short" style="display:none;">SC II</span>' : t.badge;
-    a.innerHTML = `<span class="t-badge">${displayBadge}</span><span class="t-name">${t.name}</span>${noLiveEl}<span class="t-go">자세히 보기 ›</span>`;
+    a.innerHTML = `<span class="t-badge">${displayBadge}</span><span class="t-name">${escapeHtml(t.name)}</span>${noLiveEl}<span class="t-go">자세히 보기 ›</span>`;
     tournamentGrid.appendChild(a);
   });
 }
@@ -1717,7 +1811,7 @@ async function loadVideoCards(){
       card.innerHTML = `
         <img class="vc-thumb" src="${v.thumb}" alt="">
         <span class="vc-label">${c.label}</span>
-        <span class="vc-title">${v.title}</span>
+        <span class="vc-title">${escapeHtml(v.title)}</span>
       `;
       card.href = v.url;
       card.style.pointerEvents = 'auto';
@@ -1745,20 +1839,20 @@ render();
         localStorage.setItem('crank_theme', 'light');
         themeToggleBtn.textContent = '🌙';
       }
+      render();
     });
   }
 
-document.getElementById('ghSettingsBtn').addEventListener('click', ()=>{
-    let token = prompt("GitHub Personal Access Token (PAT)을 입력하세요:", localStorage.getItem('gh_token') || '');
-    if (token !== null) localStorage.setItem('gh_token', token.trim());
-    
-    let owner = prompt("GitHub 아이디(Username)를 입력하세요:", localStorage.getItem('gh_owner') || '');
-    if (owner !== null) localStorage.setItem('gh_owner', owner.trim());
-    
-    let repo = prompt("저장소(Repository) 이름을 입력하세요:", localStorage.getItem('gh_repo') || '');
-    if (repo !== null) localStorage.setItem('gh_repo', repo.trim());
-    
-    if(token && owner && repo) alert("GitHub 연동 정보가 저장되었습니다!");
+document.getElementById('ghSettingsBtn').addEventListener('click', async ()=>{
+    const session = getSession();
+    if (session) {
+      if (confirm('이미 로그인되어 있어요. 로그아웃할까요?')) {
+        localStorage.removeItem('crank_admin_session');
+        alert('로그아웃했어요.');
+      }
+      return;
+    }
+    await adminLogin();
 });
 
 </script>

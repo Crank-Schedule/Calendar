@@ -1,198 +1,358 @@
 {
   "1": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 홈스토리컵 [한솔 동원 탈락까지] 롤 LEC VIT 경기 [2일 오전 3시] - 마크서버 봉봉팜 -",
-      "time": ""
+      "title": "스타 II 홈스토리컵 [한솔 동원 탈락까지]",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "롤 LEC VIT 경기 [2일 오전 3시] - 마크서버 봉봉팜 -",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "2": [
     {
-      "color": "#FF00FF",
-      "title": "- 마크서버 봉봉팜 - 무한도전 육남매 같이 보기 [8PM]",
-      "time": "8PM"
+      "title": "- 마크서버 봉봉팜 -",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "무한도전 육남매 같이 보기",
+      "time": "8PM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "3": [
     {
-      "color": "#FF00FF",
       "title": "- 마크서버 봉봉팜 -",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "4": [
     {
-      "color": "#FF00FF",
       "title": "롤 - 마크서버 봉봉팜 -",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "5": [
     {
-      "color": "#FF00FF",
       "title": "스타 II WardiTV",
-      "time": ""
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "6": [
     {
-      "color": "#FF00FF",
       "title": "롤",
-      "time": ""
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "7": [
     {
-      "color": "#FF00FF",
-      "title": "마리오 카트 스타 II 중국 대회 D1ALOGUE",
-      "time": ""
+      "title": "마리오 카트",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II 중국 대회",
+      "time": "",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "D1ALOGUE",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "8": [
     {
-      "color": "#FF00FF",
-      "title": "롤, 유로트럭 롤 LEC VIT 경기",
-      "time": ""
+      "title": "롤, 유로트럭",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "롤 LEC VIT 경기",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "9": [
     {
-      "color": "#FF00FF",
-      "title": "롤 부캐 배치 동계올림픽 스피드 스케이팅 응원 방송 [1:30AM]",
-      "time": "1:30AM"
+      "title": "롤 부캐 배치",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "동계올림픽 스피드 스케이팅",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "응원 방송",
+      "time": "1:30AM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "10": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 중국 LiuLi Cup [8PM]",
-      "time": "8PM"
+      "title": "스타 II 중국 LiuLi Cup",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "11": [
     {
-      "color": "#FF00FF",
-      "title": "방탈출 합방 옥난기 [8PM] 동계올림픽 스피드 스케이팅 응원 방송 [2:30AM]",
-      "time": "8PM"
+      "title": "방탈출 합방 옥난기",
+      "time": "8PM",
+      "color": "#C6FF3C",
+      "link": ""
+    },
+    {
+      "title": "동계올림픽 스피드 스케이팅",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "응원 방송",
+      "time": "2:30AM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "12": [
     {
-      "color": "#FF00FF",
-      "title": "포키쨩이 듀오하재요 [7PM]",
-      "time": "7PM"
+      "title": "포키쨩이 듀오하재요",
+      "time": "7PM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "13": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 중국 LiuLi Cup [8PM]",
-      "time": "8PM"
+      "title": "스타 II 중국 LiuLi Cup",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "14": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II 중국 LiuLi Cup [8PM] 동계올림픽 스피드 스케이팅 응원 방송 [1AM]",
-      "time": "8PM"
+      "title": "스타 II 중국 LiuLi Cup",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "동계올림픽 스피드 스케이팅",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "응원 방송",
+      "time": "1AM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "15": [
     {
-      "color": "#FF00FF",
-      "title": "허츄님 스타 가르쳐주기 [2PM] 스타 II 중국 LiuLi Cup [8PM] 동계올림픽 스피드 스케이팅 응원 방송 [1AM]",
-      "time": "2PM"
+      "title": "허츄님 스타 가르쳐주기",
+      "time": "2PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "스타 II 중국 LiuLi Cup",
+      "time": "8PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "동계올림픽 스피드 스케이팅",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "응원 방송",
+      "time": "1AM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "16": [
     {
-      "color": "#FF00FF",
-      "title": "롤 LEC 1경기만 [0:45AM]",
-      "time": "0:45AM"
+      "title": "롤 LEC 1경기만",
+      "time": "0:45AM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "17": [
     {
-      "color": "#FF00FF",
-      "title": "롤 LEC 1경기만 [0:45AM]",
-      "time": "0:45AM"
+      "title": "롤 LEC 1경기만",
+      "time": "0:45AM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "18": [
     {
-      "color": "#FF00FF",
-      "title": "프래그마타 데모 이스 10 데모 인왕 3 데모",
-      "time": ""
+      "title": "프래그마타 데모",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "이스 10 데모",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "인왕 3 데모",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "19": [
     {
-      "color": "#FF00FF",
-      "title": "롤 스타 II PIG 대회[6PM]",
-      "time": "6PM"
+      "title": "롤",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "스타 II PIG 대회",
+      "time": "6PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "20": [
     {
-      "color": "#FF00FF",
-      "title": "야구 국대 평가전 [1PM] 스타 II PIG 대회 [6PM] 동계올림픽 스피드 스케이팅 응원 방송 [00:30AM]",
-      "time": "1PM"
+      "title": "야구 국대 평가전",
+      "time": "1PM",
+      "color": "#A56BFF",
+      "link": ""
+    },
+    {
+      "title": "스타 II PIG 대회",
+      "time": "6PM",
+      "color": "#34F5D8",
+      "link": ""
+    },
+    {
+      "title": "동계올림픽 스피드 스케이팅",
+      "time": "",
+      "color": "#FFC857",
+      "link": ""
+    },
+    {
+      "title": "응원 방송",
+      "time": "00:30AM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "21": [
     {
-      "color": "#FF00FF",
-      "title": "야구 국대 평가전 [1PM] 스타 II PIG 대회 [6PM]",
-      "time": "1PM"
+      "title": "야구 국대 평가전",
+      "time": "1PM",
+      "color": "#A56BFF",
+      "link": ""
+    },
+    {
+      "title": "스타 II PIG 대회",
+      "time": "6PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "22": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II PIG 대회 [6PM]",
-      "time": "6PM"
+      "title": "스타 II PIG 대회",
+      "time": "6PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "23": [
     {
-      "color": "#FF00FF",
-      "title": "야구 국대 평가전 [1PM]",
-      "time": "1PM"
+      "title": "야구 국대 평가전",
+      "time": "1PM",
+      "color": "#A56BFF",
+      "link": ""
     }
   ],
   "24": [
     {
-      "color": "#00FFFF",
       "title": "휴방",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "25": [
     {
-      "color": "#FF00FF",
-      "title": "포키쨩과의 듀오 [2PM]",
-      "time": "2PM"
+      "title": "포키쨩과의 듀오",
+      "time": "2PM",
+      "color": "#FFC857",
+      "link": ""
     }
   ],
   "26": [
     {
-      "color": "#00FFFF",
       "title": "서울 출장 휴방",
-      "time": ""
+      "time": "",
+      "color": "#FF4D6D",
+      "link": ""
     }
   ],
   "27": [
     {
-      "color": "#FF00FF",
-      "title": "야구 국대 평가전 [1PM] 스타 II PIG 대회 [6PM]",
-      "time": "1PM"
+      "title": "야구 국대 평가전",
+      "time": "1PM",
+      "color": "#A56BFF",
+      "link": ""
+    },
+    {
+      "title": "스타 II PIG 대회",
+      "time": "6PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ],
   "28": [
     {
-      "color": "#FF00FF",
-      "title": "스타 II PIG 대회 [6PM]",
-      "time": "6PM"
+      "title": "스타 II PIG 대회",
+      "time": "6PM",
+      "color": "#34F5D8",
+      "link": ""
     }
   ]
 }
