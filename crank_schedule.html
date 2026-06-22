@@ -815,7 +815,8 @@ async function loadMonth(d){
   
   let dataFromNetwork = null;
   try {
-    const res = await fetch(`data/schedule_${y}-${m}.json?t=${Date.now()}`);
+    const baseUrl = location.protocol === 'file:' ? 'https://crank-schedule.github.io/Calendar/' : '';
+    const res = await fetch(`${baseUrl}data/schedule_${y}-${m}.json?t=${Date.now()}`);
     if (res.ok) {
        dataFromNetwork = await res.json();
     }

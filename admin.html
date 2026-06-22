@@ -857,10 +857,22 @@ async function loadMonth(d){
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
   
   let dataFromNetwork = null;
+  const gh = typeof getGithubSettings === 'function' ? getGithubSettings() : null;
   try {
-    const res = await fetch(`data/schedule_${y}-${m}.json?t=${Date.now()}`);
-    if (res.ok) {
-       dataFromNetwork = await res.json();
+    if (gh && gh.token && gh.owner && gh.repo) {
+        // Use GitHub API to bypass CDN cache
+        const apiUrl = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/data/schedule_${y}-${m}.json`;
+        const res = await fetch(apiUrl, { headers: { 'Authorization': `token ${gh.token}` } });
+        if (res.ok) {
+            const json = await res.json();
+            dataFromNetwork = JSON.parse(decodeURIComponent(escape(window.atob(json.content))));
+        }
+    } else {
+        const baseUrl = location.protocol === 'file:' ? 'https://crank-schedule.github.io/Calendar/' : '';
+        const res = await fetch(`${baseUrl}data/schedule_${y}-${m}.json?t=${Date.now()}`);
+        if (res.ok) {
+           dataFromNetwork = await res.json();
+        }
     }
   } catch(e) {}
   
@@ -950,6 +962,7 @@ async function saveMonth(d){
   } catch(e) {
       alert('오류 발생: ' + e.message);
   }
+}
 
 function buildTagEl(en, big){
   const t = document.createElement('div');
