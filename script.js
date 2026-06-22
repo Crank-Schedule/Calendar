@@ -388,10 +388,29 @@ async function renderListMonth(){
             const t = document.createElement('span');
             t.className = 'schedule-tag';
             t.style.borderColor = en.color;
-            t.innerHTML = `<span style="color:${en.color}">■</span> ${en.title} ${en.time ? '· '+en.time : ''}`;
+            t.innerHTML = `<span class="marquee-text" style="display:inline-block; white-space:nowrap; flex-shrink:0;">${en.title} ${en.time ? '· '+en.time : ''}</span>`;
             if(en.link) {
-                t.innerHTML += ` <a href="${en.link}" target="_blank" style="margin-left:4px;" onclick="event.stopPropagation()">🔗</a>`;
+                t.innerHTML += ` <a href="${en.link}" target="_blank" style="margin-left:4px; flex-shrink:0;" onclick="event.stopPropagation()">🔗</a>`;
             }
+            const startMarquee = () => {
+                const textSpan = t.querySelector('.marquee-text');
+                if (textSpan && textSpan.scrollWidth > t.clientWidth) {
+                    const diff = textSpan.scrollWidth - t.clientWidth + 20;
+                    textSpan.style.transition = `transform ${diff * 0.015}s linear`;
+                    textSpan.style.transform = `translateX(-${diff}px)`;
+                }
+            };
+            const stopMarquee = () => {
+                const textSpan = t.querySelector('.marquee-text');
+                if (textSpan) {
+                    textSpan.style.transition = 'none';
+                    textSpan.style.transform = 'translateX(0)';
+                }
+            };
+            t.onmouseenter = startMarquee;
+            t.ontouchstart = startMarquee;
+            t.onmouseleave = stopMarquee;
+            t.ontouchend = stopMarquee;
             contentCol.appendChild(t);
         });
     }
@@ -412,8 +431,12 @@ async function renderListMonth(){
         } else if (entries.length > 0 && !entries[0].title.includes("휴방")) {
             const emptyCol = document.createElement('div');
             emptyCol.className = 'timeline-yt-empty';
-            
-            if (daysDiff >= 3) {
+
+            const hasEuroTruck = entries.some(en => en.title.includes('유로트럭') || en.title.includes('유로 트럭'));
+
+            if (hasEuroTruck) {
+                emptyCol.innerHTML = `<span style="font-size:20px; line-height:1.2;">📺</span><br>유로트럭 다시보기는<br>유튜브에 제공되지 않습니다`;
+            } else if (daysDiff >= 3) {
                 emptyCol.innerHTML = `<span style="font-size:20px; line-height:1.2;">📺</span><br>치지직 다시보기를<br>통해 봐주세요`;
             } else if (daysDiff === 0) {
                 emptyCol.innerHTML = `<span>⏳</span>방송 이후<br>업데이트 예정`;

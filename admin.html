@@ -300,7 +300,7 @@
   .overlay{
     position:fixed; inset:0; background:rgba(5,6,10,0.72);
     display:none; align-items:center; justify-content:center;
-    z-index:70; padding:16px; 
+    z-index:110; padding:16px; 
   }
   .overlay.show{display:flex;}
   .modal{
@@ -561,22 +561,22 @@ body { font-family: 'Galmuri11', 'Paperozi', monospace !important; background: v
 body::after { content:''; position:fixed; inset:0; pointer-events:none; background:repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.04) 4px); z-index:9999; }
 * { border-radius: 2px !important; box-shadow: none !important; }
 
-.timeline-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); transition: 0.2s; cursor: pointer; align-items:flex-start;  height: 120px; box-sizing: border-box; overflow: hidden; }
+.timeline-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); transition: 0.2s; cursor: pointer; align-items:flex-start; min-height: 130px; box-sizing: border-box; }
 .timeline-item:hover { background: var(--bg-cell-hover); }
 .timeline-date { width: 60px; flex-shrink: 0; text-align: center; }
 .timeline-date .m-d { font-size: 14px; font-weight: bold; color: var(--text-main); }
 .timeline-date .dow { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 .timeline-date .today-mark { font-size: 10px; color: var(--bg-main); background: var(--neon-magenta); border-radius:4px; padding:2px; margin-top:4px; font-weight:bold; }
-.timeline-content { flex: 1; display: flex; flex-direction: column; gap: 6px; padding-top: 2px;  overflow-y: auto; max-height: 100%; }
-.timeline-yt {  flex-shrink: 0; border: 2px solid var(--border-strong); border-radius: 4px; overflow: hidden; display: block; position: relative;  width: 160px; height: 90px; }
+.timeline-content { flex: 1; display: grid; grid-template-rows: repeat(3, auto); grid-auto-flow: column; gap: 6px; padding-top: 2px; overflow-x: auto; overflow-y: hidden; align-content: start; justify-content: start; max-height: 100%; }
+.timeline-yt {  flex-shrink: 0; border: 2px solid var(--border-strong); border-radius: 4px; overflow: hidden; display: block; position: relative;  width: 240px; height: 135px; }
 .timeline-yt:hover { border-color: var(--neon-cyan); }
 .timeline-yt::after {
   content: '▶️ 재생'; position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.7); color:#fff; font-size:10px; padding:2px 4px; border:1px solid #fff;
 }
 .timeline-yt img { width: 100%;  display: block; object-fit: cover;  height: 100%; }
-.timeline-yt-empty {  flex-shrink: 0; display: flex; flex-direction:column; align-items: center; justify-content: center; border: 2px dashed var(--border); color: var(--text-dim); font-size: 12px; text-align: center; padding: 10px; gap:8px; width: 160px; height: 90px; box-sizing: border-box; }
+.timeline-yt-empty {  flex-shrink: 0; display: flex; flex-direction:column; align-items: center; justify-content: center; border: 2px dashed var(--border); color: var(--text-dim); font-size: 12px; text-align: center; padding: 10px; gap:8px; width: 240px; height: 135px; box-sizing: border-box; }
 .timeline-yt-empty span { font-size:24px; }
-.schedule-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: var(--text-main); padding: 4px 8px; border: 1px solid; background: var(--bg-main); font-weight:bold; }
+.schedule-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: var(--text-main); padding: 4px 8px; border: 1px solid; background: var(--bg-main); font-weight:bold; max-width: 100%; box-sizing: border-box; overflow: hidden; white-space: nowrap; }
 .section-title { font-size: 20px; color: var(--text-main); border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; margin-top: 24px; text-shadow: 2px 2px 0 rgba(0,0,0,0.3); }
 
 .timeline-content::-webkit-scrollbar { width: 4px; }
@@ -635,7 +635,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     <div class="grid" id="grid"></div>
     <div class="agenda" id="agenda"></div>
   </div>
-  <div id="scheduleListSection" style="max-width: 800px; margin: 0 auto; padding-bottom:100px;">
+  <div id="scheduleListSection" style="max-width: 1000px; margin: 0 auto; padding-bottom:100px;">
     <div class="list-timeline" id="listTimeline"></div>
   </div>
 
@@ -648,7 +648,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
       <span style="font-size:18px;">⚠️</span>
       <span style="font-size: 13px; color: var(--text-main); font-weight: 600; line-height: 1.4; word-break: keep-all;">여기에 없는 대회는 기본적으로 중계하지 않습니다</span>
     </div>
-    <button id="editTournamentsBtn" class="edit-btn" style="padding:4px 8px; font-size:11px; white-space:nowrap;">수정</button>
+    <button id="editTournamentsBtn" class="edit-btn" style="padding:4px 8px; font-size:11px; white-space:nowrap; flex-shrink:0;">수정</button>
   </div>
   <div class="tournament-grid" id="tournamentGrid"></div>
 </div>
@@ -1292,10 +1292,29 @@ async function renderListMonth(){
             const t = document.createElement('span');
             t.className = 'schedule-tag';
             t.style.borderColor = getDisplayColor(en.color);
-            t.innerHTML = `<span style="color:${getDisplayColor(en.color)}">■</span> ${withIcon(en.title)} ${en.time ? '· '+escapeHtml(en.time) : ''}`;
+            t.innerHTML = `<span class="marquee-text" style="display:inline-block; white-space:nowrap; flex-shrink:0;">${withIcon(en.title)} ${en.time ? '· '+escapeHtml(en.time) : ''}</span>`;
             if(en.link && safeUrl(en.link)) {
-                t.innerHTML += ` <a href="${safeUrl(en.link)}" target="_blank" style="margin-left:4px;" onclick="event.stopPropagation()">🔗</a>`;
+                t.innerHTML += ` <a href="${safeUrl(en.link)}" target="_blank" style="margin-left:4px; flex-shrink:0;" onclick="event.stopPropagation()">🔗</a>`;
             }
+            const startMarquee = () => {
+                const textSpan = t.querySelector('.marquee-text');
+                if (textSpan && textSpan.scrollWidth > t.clientWidth) {
+                    const diff = textSpan.scrollWidth - t.clientWidth + 20;
+                    textSpan.style.transition = `transform ${diff * 0.015}s linear`;
+                    textSpan.style.transform = `translateX(-${diff}px)`;
+                }
+            };
+            const stopMarquee = () => {
+                const textSpan = t.querySelector('.marquee-text');
+                if (textSpan) {
+                    textSpan.style.transition = 'none';
+                    textSpan.style.transform = 'translateX(0)';
+                }
+            };
+            t.onmouseenter = startMarquee;
+            t.ontouchstart = startMarquee;
+            t.onmouseleave = stopMarquee;
+            t.ontouchend = stopMarquee;
             contentCol.appendChild(t);
         });
     }
@@ -1317,7 +1336,11 @@ async function renderListMonth(){
             const emptyCol = document.createElement('div');
             emptyCol.className = 'timeline-yt-empty';
             
-            if (daysDiff >= 3) {
+            const hasEuroTruck = entries.some(en => en.title.includes('유로트럭') || en.title.includes('유로 트럭'));
+
+            if (hasEuroTruck) {
+                emptyCol.innerHTML = `<span style="font-size:20px; line-height:1.2;">📺</span><br>유로트럭 다시보기는<br>유튜브에 제공되지 않습니다`;
+            } else if (daysDiff >= 3) {
                 emptyCol.innerHTML = `<span style="font-size:20px; line-height:1.2;">📺</span><br>치지직 다시보기를<br>통해 봐주세요`;
             } else if (daysDiff === 0) {
                 emptyCol.innerHTML = `<span>⏳</span>방송 이후<br>업데이트 예정`;
