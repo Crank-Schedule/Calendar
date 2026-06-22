@@ -562,8 +562,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css'>
-  <script src="data/schedules.js"></script>
-  <script src="data/replays.js"></script>
+    <script src="data/replays.js"></script>
 </head>
 <body>
 <button id="themeToggleBtn" class="theme-toggle-btn">☀️</button>
@@ -587,6 +586,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         <span class="mode-badge" id="modeBadge">관리자 모드</span>
       </div>
       <h1>크랭크 <span>방송</span> 스케줄</h1>
+      <button id="ghSettingsBtn" style="margin-left:12px; padding:4px 8px; font-size:11px; background:var(--brand); color:#fff; border:none; border-radius:4px; cursor:pointer;">GitHub 연동 설정</button>
     </div>
     <div class="nav">
       <div class="view-toggle">
@@ -855,31 +855,93 @@ async function loadMonth(d){
   
   const y = d.getFullYear();
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
-  const monthKey = y + "-" + m;
   
-  if (window.ALL_SCHEDULES && window.ALL_SCHEDULES[monthKey]) {
-    cache[key] = window.ALL_SCHEDULES[monthKey];
-    return cache[key];
-  }
-  
-  try{
-    if(window.storage) {
-      const res = await window.storage.get(key, true);
-      const data = res ? JSON.parse(res.value) : null;
-      if(data){ cache[key]=data; return data; }
+  try {
+    const res = await fetch(`data/schedule_${y}-${m}.json?t=${Date.now()}`);
+    if (res.ok) {
+       const data = await res.json();
+       cache[key] = data;
+       return data;
     }
-  }catch(e){}
+  } catch(e) {}
   
-  const seeded = (y===2026 && d.getMonth()===5) ? (typeof seedJune2026 === 'function' ? seedJune2026() : {}) : {};
-  cache[key] = seeded;
-  return seeded;
+  cache[key] = {};
+  return {};
+}
+
+function getGithubSettings() {
+    let token = localStorage.getItem('gh_token');
+    let owner = localStorage.getItem('gh_owner');
+    let repo = localStorage.getItem('gh_repo');
+    
+    if (!token || !owner || !repo) {
+        alert("GitHub 연동 설정이 필요합니다. 화면 상단의 [GitHub 연동 설정] 버튼을 눌러주세요.");
+        return null;
+    }
+    return { token, owner, repo };
+}
+
+async function getFileSha(path, owner, repo, token) {
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    const res = await fetch(url, {
+        headers: { 'Authorization': `token ${token}` }
+    });
+    if (res.status === 200) {
+        const data = await res.json();
+        return data.sha;
+    }
+    return null;
+}
+
+function utf8_to_b64(str) {
+  return window.btoa(unescape(encodeURIComponent(str)));
 }
 
 async function saveMonth(d){
   const key = storageKey(d);
-  try{
-    await window.storage.set(key, JSON.stringify(cache[key]), true); // 공용 데이터
-  }catch(e){ console.error('저장 실패', e); }
+  const gh = getGithubSettings();
+  if (!gh) return;
+  
+  const y = d.getFullYear();
+  const m = (d.getMonth() + 1).toString().padStart(2, '0');
+  const path = `data/schedule_${y}-${m}.json`;
+  
+  try {
+      const sha = await getFileSha(path, gh.owner, gh.repo, gh.token);
+      const contentBase64 = utf8_to_b64(JSON.stringify(cache[key] || {}, null, 2));
+      
+      const body = {
+          message: `Update schedule for ${y}-${m} via Admin UI`,
+          content: contentBase64
+      };
+      if (sha) body.sha = sha;
+      
+      // Update UI to show saving
+      const doneBtn = document.getElementById('doneBtn2');
+      if(doneBtn) { doneBtn.textContent = "저장 중..."; doneBtn.disabled = true; }
+      
+      const url = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${path}`;
+      const res = await fetch(url, {
+          method: 'PUT',
+          headers: {
+              'Authorization': `token ${gh.token}`,
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+      });
+      
+      if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
+      
+      if (res.ok) {
+          alert(`저장 성공! (${y}년 ${m}월)\n약 1~2분 뒤 실제 사이트에 반영됩니다.`);
+      } else {
+          const err = await res.json();
+          alert('저장 실패: ' + err.message);
+      }
+  } catch(e) {
+      alert('오류 발생: ' + e.message);
+  }
+}
 }
 
 function buildTagEl(en, big){
@@ -1665,6 +1727,20 @@ render();
       }
     });
   }
+
+document.getElementById('ghSettingsBtn').addEventListener('click', ()=>{
+    let token = prompt("GitHub Personal Access Token (PAT)을 입력하세요:", localStorage.getItem('gh_token') || '');
+    if (token !== null) localStorage.setItem('gh_token', token.trim());
+    
+    let owner = prompt("GitHub 아이디(Username)를 입력하세요:", localStorage.getItem('gh_owner') || '');
+    if (owner !== null) localStorage.setItem('gh_owner', owner.trim());
+    
+    let repo = prompt("저장소(Repository) 이름을 입력하세요:", localStorage.getItem('gh_repo') || '');
+    if (repo !== null) localStorage.setItem('gh_repo', repo.trim());
+    
+    if(token && owner && repo) alert("GitHub 연동 정보가 저장되었습니다!");
+});
+
 </script>
 </body>
 </html>

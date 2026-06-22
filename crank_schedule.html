@@ -577,8 +577,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css'>
-  <script src="data/schedules.js"></script>
-  <script src="data/replays.js"></script>
+    <script src="data/replays.js"></script>
 </head>
 <body>
 <button id="themeToggleBtn" class="theme-toggle-btn">☀️</button>
@@ -813,24 +812,18 @@ async function loadMonth(d){
   
   const y = d.getFullYear();
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
-  const monthKey = y + "-" + m;
   
-  if (window.ALL_SCHEDULES && window.ALL_SCHEDULES[monthKey]) {
-    cache[key] = window.ALL_SCHEDULES[monthKey];
-    return cache[key];
-  }
-  
-  try{
-    if(window.storage) {
-      const res = await window.storage.get(key, true);
-      const data = res ? JSON.parse(res.value) : null;
-      if(data){ cache[key]=data; return data; }
+  try {
+    const res = await fetch(`data/schedule_${y}-${m}.json?t=${Date.now()}`);
+    if (res.ok) {
+       const data = await res.json();
+       cache[key] = data;
+       return data;
     }
-  }catch(e){}
+  } catch(e) {}
   
-  const seeded = (y===2026 && d.getMonth()===5) ? (typeof seedJune2026 === 'function' ? seedJune2026() : {}) : {};
-  cache[key] = seeded;
-  return seeded;
+  cache[key] = {};
+  return {};
 }
 // saveMonth removed
 
