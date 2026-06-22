@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css">
+<title>다시보기 · 크랭크 방송 스케줄</title>
+<style>
+  @import url("paperozi.css");
+  :root[data-theme='light'] {
+  --bg-main: #F0F0E8;
+  --bg-panel: #E4E4D9;
+  --bg-panel-solid: #E4E4D9;
+  --bg-cell: #D8D8CC;
+  --bg-cell-hover: #CCCCCC;
+  --text-primary: #222222;
+  --text-main: #222222;
+  --text-dim: #555555;
+  --border: #AAAAAA;
+  --border-strong: #888888;
+  --neon-cyan: #0077AA;
+  --neon-magenta: #AA0088;
+  --neon-amber: #AA5500;
+  --neon-lime: #228800;
+  --neon-violet: #5500AA;
+  --neon-red: #AA0000;
+  --glow-cyan: none;
+  --glow-magenta: none;
+  --glow-amber: none;
+  --bg-body: #F0F0E8;
+}
+  :root[data-theme="light"] .video-card {
+    background: #FFFFFF;
+    border: 1.5px solid rgba(0,0,0,0.2);
+    color: #000000;
+  }
+  :root[data-theme="light"] .video-card .vc-title {
+    color: #000000;
+    font-weight: 700;
+  }
+  .theme-toggle-btn {
+    position: fixed;
+    top: 12px; right: 12px;
+    z-index: 100;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  :root {
+  --bg-main: #1A1A1A;
+  --bg-panel: #222222;
+  --bg-panel-solid: #222222;
+  --bg-cell: #2D2D2D;
+  --bg-cell-hover: #3A3A3A;
+  --text-primary: #E0E0E0;
+  --text-main: #E0E0E0;
+  --text-dim: #888888;
+  --border: #444444;
+  --border-strong: #666666;
+  --neon-cyan: #00FFFF;
+  --neon-magenta: #FF00FF;
+  --neon-amber: #FF9900;
+  --neon-lime: #33FF00;
+  --neon-violet: #9900FF;
+  --neon-red: #FF0000;
+  --glow-cyan: none;
+  --glow-magenta: none;
+  --glow-amber: none;
+  --bg-body: #1A1A1A;
+}
+  *{box-sizing:border-box;}
+  button{-webkit-appearance:none; appearance:none; border-radius:0; font:inherit; margin:0; display:inline-flex; align-items:center; justify-content:center; line-height:1;}
+  body{
+    margin:0; background:var(--bg-base); color:var(--text-primary);
+    font-family:'Paperozi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height:100vh; padding:24px 18px 80px; overflow-y:scroll;
+  }
+  .wrap{max-width:1000px; margin:0 auto;}
+  h1{font-size:24px; font-weight:800; margin:0 0 18px;}
+  .quicklinks{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:30px;}
+  .qlink{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px; border-radius: 2px; border:1px solid var(--border-strong);
+    color:var(--text-primary); text-decoration:none; font-size:13px; font-weight:700;
+    background:var(--bg-panel);
+  }
+  .qlink:hover{border-color:var(--neon-cyan); color:var(--neon-cyan);}
+  @media (max-width:560px){ .quicklinks{grid-template-columns:1fr;} }
+
+  .columns-wrap{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+  }
+  @media (max-width:680px){
+    .columns-wrap{gap:6px;}
+    .col-section{gap:6px;}
+    .section-title{font-size:11px; gap:4px; letter-spacing:-0.03em;}
+    .video-card{border-radius: 2px;}
+    .video-card .vc-title{height:37px; font-size:9.5px; padding:6px; line-height:1.3;}
+  }
+  .col-section{
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .section-title{font-size:14px; font-weight:800; margin:0; color:var(--neon-cyan); display:flex; align-items:center; gap:6px;}
+  
+  .video-list{display:flex; flex-direction:column; gap:12px;}
+  .video-card{
+    background:var(--bg-cell); border:1px solid var(--border); border-radius:12px;
+    overflow:hidden; text-decoration:none; display:block; transition:.15s;
+  }
+  .video-card:hover{border-color:var(--neon-cyan); background:var(--bg-cell-hover);}
+  .video-card img{
+    width:100%; aspect-ratio:16/9; background:var(--bg-cell-hover); object-fit:cover; display:block;
+  }
+  .video-card .vc-title{
+    height:56px; font-size:12px; font-weight:600; color:var(--text-primary); padding:10px 12px 12px;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.4;
+  }
+  .empty-section{font-size:12px; color:var(--text-dim); padding:14px 0;}
+
+  /* 하단 네비게이션 바 및 팝오버 (메인 페이지와 동일) */
+  .bottom-nav{
+    position:fixed; bottom:0; left:0; right:0; z-index:55;
+    display:flex; background:rgba(17,20,28,0.96); 
+    border-top:1px solid var(--border-strong);
+    padding:6px 4px env(safe-area-inset-bottom,6px);
+  }
+  .bn-item{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    background:none; border:none; color:var(--text-dim); cursor:pointer;
+    padding:6px 2px; font-family:'Paperozi',sans-serif; font-size:10.5px; font-weight:600;
+  }
+  .bn-item .bn-icon{font-size:18px; line-height:1;}
+  .bn-item.active{color:var(--neon-cyan);}
+  .bn-item.admin-on{color:var(--neon-red);}
+
+  .popover{
+    position:fixed; bottom:62px; left:12px; right:12px; z-index:54;
+    background:var(--bg-panel); border:1px solid var(--border-strong); border-radius: 4px;
+    padding:14px; display:none; box-shadow: 4px 4px 0 rgba(0,0,0,1); border: 2px solid var(--border-strong);
+  }
+  .popover.show{display:block;}
+  .popover .pop-title{font-family:'Paperozi',sans-serif; font-weight:700; font-size:13px; margin-bottom:10px; color:var(--text-dim);}
+  
+  .tournament-grid{
+    display:flex; flex-wrap:wrap; gap:8px;
+    padding-bottom:4px;
+  }
+  @media (max-width:768px){
+    .b-full{display:none;}
+    .b-short{display:inline !important;}
+  }
+  .tournament-card{
+    flex:1 1 180px; max-width:100%;
+    background:var(--bg-cell); border:1px solid var(--border); border-radius: 3px;
+    padding:10px; text-decoration:none; display:flex; flex-direction:column; align-items:center; text-align:center; transition:.15s;
+  }
+  .tournament-card:hover{border-color:var(--neon-cyan); background:var(--bg-cell-hover);}
+  .tournament-card .t-badge{
+    font-size:10px; font-weight:700; color:var(--neon-amber); letter-spacing:0.06em;
+    text-transform:uppercase; margin-bottom:6px; display:block;
+  }
+  .tournament-card .t-name{font-family:'Paperozi',sans-serif; font-weight:700; font-size:15px; color:var(--text-primary);}
+  .tournament-card .t-go{font-size:11px; color:var(--neon-cyan); margin-top:8px; display:block;}
+
+  .social-row{display:flex; gap:8px; margin-top:0; flex-wrap:wrap;}
+  .social-icon{
+    flex:1 1 0; min-width:90px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
+    padding:12px 6px; border-radius: 3px;
+    border:1px solid var(--border-strong); color:var(--text-primary);
+    transition:.15s; text-decoration:none;
+  }
+  .social-icon svg{width:18px;height:18px;}
+  .social-icon span{font-size:10.5px; font-weight:600; font-family:'Paperozi',sans-serif; white-space:nowrap;}
+  .social-icon:hover{border-color:var(--neon-cyan); color:var(--neon-cyan); box-shadow: none;}
+  
+/* Retro & List CSS Additions */
+body { font-family: 'Galmuri11', 'Paperozi', monospace !important; background: var(--bg-main) !important; background-image: none !important; }
+body::after { content:''; position:fixed; inset:0; pointer-events:none; background:repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.04) 4px); z-index:9999; }
+* { border-radius: 2px !important; box-shadow: none !important; }
+.video-card { border-radius: 2px !important; box-shadow: 4px 4px 0 rgba(0,0,0,0.4) !important; transition: all 0.1s steps(2); }
+
+</style>
+  <script>
+    if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  </script>
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css'>
+  <script src="data/replays.js"></script>
+</head>
+<body>
+<button id="themeToggleBtn" class="theme-toggle-btn">☀️</button>
+<div class="wrap">
+  <h1>다시보기 모아보기</h1>
+
+  <div class="quicklinks">
+    <a class="qlink" href="https://chzzk.naver.com/de27c33ee2364c4e5007867bb3b96001/videos?videoType=&sortType=LATEST&page=1" target="_blank" rel="noopener">치지직 다시보기</a>
+    <a class="qlink" href="https://www.youtube.com/@crankdasibogi/videos" target="_blank" rel="noopener">유튜브 다시보기</a>
+    <a class="qlink" href="https://www.youtube.com/channel/UCS2OAdHoLt-9T6cG9A2H49Q" target="_blank" rel="noopener">스타 II 중계 유튜브</a>
+    <a class="qlink" href="https://www.youtube.com/@crankplus" target="_blank" rel="noopener">게임 유튜브 (크랭크 플러스)</a>
+  </div>
+
+  <div class="columns-wrap">
+    <div class="col-section">
+      <div class="section-title">🕹️ 크랭크 플러스</div>
+      <div class="video-list" id="list-game"></div>
+    </div>
+    
+    <div class="col-section">
+      <div class="section-title">🎙️ 스타 II 중계</div>
+      <div class="video-list" id="list-cast"></div>
+    </div>
+    
+    <div class="col-section">
+      <div class="section-title">📺 다시보기 유튜브</div>
+      <div class="video-list" id="list-replay"></div>
+    </div>
+  </div>
+</div>
+
+<div class="popover" id="tournamentPopover">
+  <div class="pop-title" style="display:flex; align-items:center; gap:8px;">
+    <span style="font-size:18px;">⚠️</span>
+    <span style="font-size: 13px; color: var(--text-main); font-weight: 600; line-height: 1.4; word-break: keep-all;">여기에 없는 대회는 기본적으로 중계하지 않습니다</span>
+  </div>
+  <div class="tournament-grid" id="tournamentGrid"></div>
+</div>
+
+<div class="popover" id="socialPopover">
+  <div class="pop-title">소셜미디어</div>
+  <div class="social-row">
+    <a class="social-icon" href="https://x.com/ONSYDE_Crank" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.2 8.2L23 22h-6.6l-5.2-6.8L5 22H2l7.7-8.8L1.4 2H8l4.7 6.2L18.9 2z"/></svg>
+      <span>크랭크 X</span>
+    </a>
+    <a class="social-icon" href="https://www.instagram.com/onsyde_crank/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+      <span>크랭크 IG</span>
+    </a>
+    <a class="social-icon" href="https://x.com/official_onsyde" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.2 8.2L23 22h-6.6l-5.2-6.8L5 22H2l7.7-8.8L1.4 2H8l4.7 6.2L18.9 2z"/></svg>
+      <span>온사이드 X</span>
+    </a>
+    <a class="social-icon" href="https://www.instagram.com/official_onsyde_gaming" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+      <span>온사이드 IG</span>
+    </a>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="bn-item" id="navSchedule"><span class="bn-icon">📅</span>일정</button>
+  <button class="bn-item active" id="navReplay"><span class="bn-icon">▶️</span>다시보기</button>
+  <button class="bn-item" id="navTournament"><span class="bn-icon">🏆</span>대회 대진표</button>
+  <button class="bn-item" id="navSocial"><span class="bn-icon">🔗</span>소셜</button>
+  <button class="bn-item" id="navCafe"><span class="bn-icon">📋</span>카페</button>
+</nav>
+
+<script>
+// 하단 네비게이션 및 팝오버 로직
+const navSchedule = document.getElementById('navSchedule');
+const navReplay = document.getElementById('navReplay');
+const navTournament = document.getElementById('navTournament');
+const navSocial = document.getElementById('navSocial');
+const navCafe = document.getElementById('navCafe');
+const tournamentPopover = document.getElementById('tournamentPopover');
+const socialPopover = document.getElementById('socialPopover');
+const navButtons = [navSchedule, navReplay, navTournament, navSocial];
+
+function setActiveNav(btn){
+  navButtons.forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+function closePopovers(){
+  tournamentPopover.classList.remove('show');
+  socialPopover.classList.remove('show');
+}
+navSchedule.addEventListener('click', ()=>{ window.location.href = 'crank_schedule.html'; });
+navReplay.addEventListener('click', ()=>{
+  closePopovers();
+  setActiveNav(navReplay);
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+navTournament.addEventListener('click', ()=>{
+  const willShow = !tournamentPopover.classList.contains('show');
+  closePopovers();
+  if(willShow){ tournamentPopover.classList.add('show'); setActiveNav(navTournament); }
+  else { setActiveNav(navReplay); }
+});
+navSocial.addEventListener('click', ()=>{
+  const willShow = !socialPopover.classList.contains('show');
+  closePopovers();
+  if(willShow){ socialPopover.classList.add('show'); setActiveNav(navSocial); }
+  else { setActiveNav(navReplay); }
+});
+navCafe.addEventListener('click', ()=>{
+  window.open('https://cafe.naver.com/f-e/cafes/31105085/menus/0?viewType=L', '_blank', 'noopener');
+});
+
+const defaultTournaments = [
+  { badge:'StarCraft II', name:'CranK Gathers Season 4', url:'https://liquipedia.net/starcraft2/CranK_Gathers/Season_4' },
+  { badge:'StarCraft II', name:'Douyu Cup 2026', url:'https://liquipedia.net/starcraft2/Douyu_Cup/2026' },
+];
+let TOURNAMENTS = [];
+try {
+  TOURNAMENTS = JSON.parse(localStorage.getItem('crank_tournaments_v1')) || defaultTournaments;
+} catch(e) {
+  TOURNAMENTS = defaultTournaments;
+}
+const tournamentGrid = document.getElementById('tournamentGrid');
+tournamentGrid.innerHTML = '';
+TOURNAMENTS.forEach(t=>{
+  const a = document.createElement('a');
+  a.className = 'tournament-card';
+  a.href = t.url; a.target = '_blank'; a.rel = 'noopener';
+  const noLiveEl = t.noLive ? `<span style="font-size:11px; color:var(--neon-red); margin-top:4px; font-weight:bold;">🚫 생중계 불가</span>` : '';
+  const displayBadge = t.badge === 'StarCraft II' ? '<span class="b-full">StarCraft II</span><span class="b-short" style="display:none;">SC II</span>' : t.badge;
+  a.innerHTML = `<span class="t-badge">${displayBadge}</span><span class="t-name">${t.name}</span>${noLiveEl}<span class="t-go">자세히 보기 ›</span>`;
+  tournamentGrid.appendChild(a);
+});
+
+// 유튜브 공식 Data API v3 사용 - 구글 클라우드에서 발급받은 키로 교체하세요
+const YT_API_KEY = 'AIzaSyCipMzgxeA7Ty6AUct6y2UszlwOWHEJqgU';
+
+const YT_CHANNELS = [
+  { key:'game',   handle:'@crankplus', channelUrl:'https://www.youtube.com/@crankplus',          listId:'list-game' },
+  { key:'cast',   id:'UCS2OAdHoLt-9T6cG9A2H49Q', channelUrl:'https://www.youtube.com/channel/UCS2OAdHoLt-9T6cG9A2H49Q', listId:'list-cast' },
+  { key:'replay', handle:'@crankdasibogi', channelUrl:'https://www.youtube.com/@crankdasibogi',       listId:'list-replay' },
+];
+
+async function fetchLatestVideos(channel, maxResults){
+  const CACHE_KEY = 'yt_cache_schedule_v5_' + channel.key + '_' + maxResults;
+  const CACHE_TTL = 10 * 60 * 1000;
+  try {
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+    if (cached && Date.now() - cached.time < CACHE_TTL) return cached.data;
+  } catch(e){}
+
+  let playlistId = '';
+  if (channel.key === 'game') playlistId = 'UURWDHteRKunVC1Kt-GVQcGw';
+  else if (channel.key === 'cast') playlistId = 'UUS2OAdHoLt-9T6cG9A2H49Q';
+  else if (channel.key === 'replay') playlistId = 'UUuub1wmXjxMde_SqZwIgICQ';
+
+  if (!playlistId) return [];
+
+  let items = [];
+  let nextPageToken = '';
+  let fetchedCount = 0;
+  const maxToFetch = maxResults + 10; // little buffer
+
+  while (fetchedCount < maxToFetch) {
+    const fetchLimit = Math.min(50, maxToFetch - fetchedCount);
+    let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=${fetchLimit}&key=${YT_API_KEY}`;
+    if (nextPageToken) url += `&pageToken=${nextPageToken}`;
+    
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data.items || data.items.length === 0) break;
+      items = items.concat(data.items);
+      fetchedCount += data.items.length;
+      nextPageToken = data.nextPageToken;
+      if (!nextPageToken) break;
+    } catch(e) {
+      break;
+    }
+  }
+
+  if(items.length === 0) return [];
+
+  const durationMap = {};
+  
+  // Fetch durations in batches of 50
+  for (let i = 0; i < items.length; i += 50) {
+    const batch = items.slice(i, i + 50);
+    const videoIds = batch.map(it => it.snippet.resourceId.videoId).join(',');
+    const durationUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${YT_API_KEY}`;
+    try {
+      const dRes = await fetch(durationUrl);
+      const dData = await dRes.json();
+      if (dData.items) {
+        dData.items.forEach(v => {
+          durationMap[v.id] = v.contentDetails.duration;
+        });
+      }
+    } catch(e) {}
+  }
+
+  const result = [];
+  for (const it of items) {
+    const vid = it.snippet.resourceId.videoId;
+    const dur = durationMap[vid] || '';
+    const isShort = !dur.includes('H') && (!dur.includes('M') || dur === 'PT1M');
+    if (!isShort) {
+      let title = it.snippet.title;
+      if (channel.key === 'replay') {
+        const m = title.match(/^(?:20)?(\d{2})[년\s.\-]+0?(\d{1,2})[월\s.\-]+0?(\d{1,2})[일\s.\-]*[|lI\/]*\s*(.*)/);
+        if (m) title = `${m[1]}${m[2].padStart(2,'0')}${m[3].padStart(2,'0')}: ${m[4]}`;
+      }
+      result.push({
+        title: title,
+        videoId: vid,
+        thumb: (it.snippet.thumbnails && it.snippet.thumbnails.medium) ? it.snippet.thumbnails.medium.url : `https://i.ytimg.com/vi/${vid}/mqdefault.jpg`,
+        url: `https://www.youtube.com/watch?v=${vid}`
+      });
+    }
+    if (result.length >= maxResults) break;
+  }
+  
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), data: result }));
+  } catch(e){}
+
+  return result;
+}
+
+function renderListSync(channel) {
+  const list = document.getElementById(channel.listId);
+  if(!list) return false;
+  
+  const CACHE_KEY = 'yt_cache_replay_v4_' + channel.key;
+  let cachedData = null;
+  try{
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+    if (cached && Date.now() - cached.time < 10 * 60 * 1000 && cached.data.length > 0) {
+      cachedData = cached.data;
+    }
+  } catch(e){}
+
+  if(cachedData){
+    list.innerHTML = '';
+    cachedData.forEach(v=>{
+      const a = document.createElement('a');
+      a.className = 'video-card';
+      a.href = v.url;
+      a.target = '_blank'; a.rel = 'noopener';
+      a.innerHTML = `<img src="${v.thumb}" alt=""><div class="vc-title">${v.title}</div>`;
+      list.appendChild(a);
+    });
+    return true;
+  } else {
+    list.innerHTML = '';
+    for(let i=0;i<3;i++){
+      list.innerHTML += `
+      <div class="video-card" style="pointer-events:none; border-color:transparent;">
+        <div style="width:100%;aspect-ratio:16/9;background:var(--bg-cell-hover);"></div>
+        <div style="padding:10px 12px 12px;">
+          <div style="height:12px;background:var(--border-strong);width:80%;border-radius:4px;margin-bottom:6px;"></div>
+          <div style="height:12px;background:var(--border-strong);width:50%;border-radius:4px;"></div>
+        </div>
+      </div>`;
+    }
+    return false;
+  }
+}
+
+async function loadList(channel){
+  const hasCache = renderListSync(channel);
+
+  try{
+    const videos = await fetchLatestVideos(channel, 10);
+    if (!hasCache) {
+      const list = document.getElementById(channel.listId);
+      if(videos.length === 0){
+        list.innerHTML = '<div class="empty-section">영상을 불러오지 못했어요</div>';
+        return;
+      }
+      list.innerHTML = '';
+      videos.forEach(v=>{
+        const a = document.createElement('a');
+        a.className = 'video-card';
+        a.href = v.url;
+        a.target = '_blank'; a.rel = 'noopener';
+        a.innerHTML = `<img src="${v.thumb}" alt=""><div class="vc-title">${v.title}</div>`;
+        list.appendChild(a);
+      });
+    }
+  }catch(e){
+    console.error(e);
+  }
+}
+
+YT_CHANNELS.forEach(loadList);
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+if (themeToggleBtn) {
+  themeToggleBtn.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '🌙' : '☀️';
+  themeToggleBtn.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('crank_theme', 'dark');
+      themeToggleBtn.textContent = '☀️';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('crank_theme', 'light');
+      themeToggleBtn.textContent = '🌙';
+    }
+  });
+}
+</script>
+</body>
+</html>
