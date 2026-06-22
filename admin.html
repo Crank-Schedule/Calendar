@@ -856,17 +856,26 @@ async function loadMonth(d){
   const y = d.getFullYear();
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
   
+  let dataFromNetwork = null;
   try {
     const res = await fetch(`data/schedule_${y}-${m}.json?t=${Date.now()}`);
     if (res.ok) {
-       const data = await res.json();
-       cache[key] = data;
-       return data;
+       dataFromNetwork = await res.json();
     }
   } catch(e) {}
   
-  cache[key] = {};
-  return {};
+  let dataFromLocal = null;
+  try {
+    const raw = localStorage.getItem('crank_storage');
+    if(raw) {
+        const parsed = JSON.parse(raw);
+        const entry = parsed.find(item => item.key === key);
+        if(entry) dataFromLocal = JSON.parse(entry.value);
+    }
+  } catch(e) {}
+  
+  cache[key] = dataFromNetwork || dataFromLocal || {};
+  return cache[key];
 }
 
 function getGithubSettings() {
@@ -941,8 +950,6 @@ async function saveMonth(d){
   } catch(e) {
       alert('오류 발생: ' + e.message);
   }
-}
-}
 
 function buildTagEl(en, big){
   const t = document.createElement('div');
