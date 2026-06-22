@@ -976,7 +976,7 @@ async function loadMonth(d){
 
 // ===== Cloudflare Worker 기반 관리자 로그인 / 저장 =====
 // 배포한 Worker 주소로 바꿔주세요 (예: https://crank-admin.내서브도메인.workers.dev)
-const WORKER_URL = 'https://crank-admin.YOUR_SUBDOMAIN.workers.dev';
+const WORKER_URL = 'https://crank-admin.axcrank.workers.dev';
 
 function getSession() {
   try {
@@ -1319,6 +1319,8 @@ async function renderListMonth(){
             
             if (daysDiff >= 3) {
                 emptyCol.innerHTML = `<span style="font-size:20px; line-height:1.2;">📺</span><br>치지직 다시보기를<br>통해 봐주세요`;
+            } else if (daysDiff === 0) {
+                emptyCol.innerHTML = `<span>⏳</span>방송 이후<br>업데이트 예정`;
             } else {
                 emptyCol.innerHTML = `<span>⏳</span>다시보기 대기중`;
             }

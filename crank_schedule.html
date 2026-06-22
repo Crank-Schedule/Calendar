@@ -1199,6 +1199,8 @@ async function renderListMonth(){
             
             if (daysDiff >= 3) {
                 emptyCol.innerHTML = `<span style="font-size:20px; line-height:1.2;">📺</span><br>치지직 다시보기를<br>통해 봐주세요`;
+            } else if (daysDiff === 0) {
+                emptyCol.innerHTML = `<span>⏳</span>방송 이후<br>업데이트 예정`;
             } else {
                 emptyCol.innerHTML = `<span>⏳</span>다시보기 대기중`;
             }
