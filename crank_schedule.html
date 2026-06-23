@@ -563,6 +563,28 @@
     .tag .tag-title, .special-badge .sp-label { font-size: 7.5px !important; line-height:1.1 !important; }
     .date-num { font-size: 10px !important; }
     .cell { padding: 1.5px !important; min-height: 60px !important; }
+    
+    .tag .tag-title, .tag .t-time, .tag .tag-icon, .tag .tag-abbr { display: none !important; }
+    .tag::after {
+        content: attr(data-first-char);
+        display: flex !important;
+        width: 16px !important; height: 16px !important; border-radius: 50% !important;
+        align-items: center !important; justify-content: center !important;
+        background: currentColor !important;
+        color: var(--bg-main) !important;
+        font-size: 10px !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+    }
+    .tag {
+        padding: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        justify-content: center !important;
+        flex: 0 0 auto !important;
+        box-shadow: none !important;
+    }
+
     .month-label{font-size:14px;}
   }
 
@@ -1173,6 +1195,7 @@ async function loadMonth(d){
 function buildTagEl(en){
   const t = document.createElement('div');
   t.className='tag';
+  t.setAttribute('data-first-char', (en.title||' ').charAt(0));
   t.style.borderColor = getDisplayColor(en.color);
   t.style.color = getDisplayColor(en.color);
   t.style.background = en.color+'1A';
