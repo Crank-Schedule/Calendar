@@ -230,10 +230,10 @@
     max-height:70vh; overflow-y:auto;
   }
   @media (max-width:480px){
-    .tournament-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:6px; }
-    .tournament-card{ flex:initial; padding:7px; }
-    .tournament-card:last-child:nth-child(odd){ grid-column:1 / -1; max-width:55%; margin:0 auto; }
-    .t-badge{ font-size:8.5px; margin-bottom:4px; }
+    .tournament-grid{ display:grid !important; grid-template-columns:repeat(2,1fr) !important; gap:6px !important; }
+    .tournament-card{ flex:initial !important; padding:7px !important; }
+    .tournament-card:last-child:nth-child(odd){ grid-column:1 / -1 !important; max-width:55% !important; margin:0 auto !important; }
+    .t-badge{ font-size:8.5px !important; margin-bottom:4px !important; }
     .t-name{ font-size:12px !important; }
     .t-go{ font-size:10px !important; }
   }
