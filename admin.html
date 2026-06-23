@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>크랭크 방송 스케줄</title>
 <style>
+  @import url('https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css');
   @font-face {
-    font-family: 'DnfBitbeatV2';
-    src: url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf') format('opentype');
-    font-weight: 400;
+    font-family: 'Cafe24Surround';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff') format('woff');
+    font-weight: normal;
     font-display: swap;
   }
   @font-face {
@@ -174,7 +175,7 @@
   }
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
   .brand-text{
-    font-family:'DnfBitbeatV2','Paperozi',sans-serif;
+    font-family:'Cafe24Surround','Paperozi',sans-serif;
     font-weight:700;
     letter-spacing:0.08em;
     font-size:13px;
@@ -189,7 +190,7 @@
   }
   .mode-badge.show{display:inline-block;}
   h1{
-    font-family:'DnfBitbeatV2','Paperozi',sans-serif;
+    font-family:'Cafe24Surround','Paperozi',sans-serif;
     font-weight:800;
     font-size:clamp(20px,3.5vw,28px);
     margin:2px 0 0;
@@ -546,8 +547,7 @@
     width:100%; aspect-ratio:16/9; background:var(--bg-cell-hover); object-fit:cover; display:block;
   }
   .video-card .vc-label{
-    font-size:10px; font-weight:700; color:var(--neon-cyan); padding:8px 8px 0; display:block; letter-spacing:0.02em;
-    text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    display:none;
   }
   .video-card .vc-title{
     font-size:11.5px; font-weight:600; color:var(--text-primary); padding:4px 8px 10px; display:block;
@@ -668,6 +668,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 .timeline-yt img { width: 100%;  display: block; object-fit: cover;  height: 100%; }
 .timeline-yt-empty {  flex-shrink: 0; display: flex; flex-direction:column; align-items: center; justify-content: center; border: 2px dashed var(--border); color: var(--text-dim); font-size: 11px; text-align: center; padding: 8px; gap:6px; width: 178px; height: 100px; box-sizing: border-box; }
 .timeline-yt-empty .yt-icon { font-size:20px; }
+.timeline-yt-empty .yt-label { font-family:'Galmuri11','Paperozi',sans-serif; }
   .timeline-yt .yt-play-icon{ display:none; }
 .schedule-tag { display: flex; align-items: center; gap: 4px; font-size: 14px; color: var(--text-main); padding: 4px 8px; border: 1px solid; background: var(--bg-main); font-weight:bold; width: 100%; max-width: 100%; box-sizing: border-box; overflow: hidden; white-space: nowrap; }
 .section-title { font-size: 20px; color: var(--text-main); border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; margin-top: 24px; text-shadow: 2px 2px 0 rgba(0,0,0,0.3); }
@@ -676,6 +677,11 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 .timeline-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   #themeToggleBtn {
+    position: fixed !important;
+    top: 12px !important;
+    right: 12px !important;
+    z-index: 150 !important;
+    margin: 0 !important;
     width: 28px !important;
     height: 28px !important;
     border-radius: 6px !important;
@@ -812,6 +818,8 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
       <label for="tNoLiveCheck" style="margin:0; font-size:12px;">생중계 불가능</label>
     </div>
     <button class="save-btn" id="addTournamentBtn">대회 추가</button>
+    <button class="save-btn" id="saveTournamentsBtn" style="margin-top:8px; background:var(--neon-cyan); color:#000;">변경사항 저장</button>
+    <div style="font-size:11px; color:var(--text-dim); margin-top:6px; text-align:center;">추가/삭제/순서변경은 바로 적용되고, 실제 사이트(GitHub)에는 "변경사항 저장"을 눌러야 반영돼요.</div>
   </div>
 </div>
 
@@ -1657,6 +1665,12 @@ renderTournaments();
   } catch(e) {}
 })();
 
+function updateTournamentsLocal(){
+  localStorage.setItem('crank_tournaments_v1', JSON.stringify(TOURNAMENTS));
+  renderTournaments();
+  renderTournamentList();
+}
+
 async function saveTournaments(){
   let session = getSession();
   if (!session) {
@@ -1670,6 +1684,9 @@ async function saveTournaments(){
   renderTournaments();
   renderTournamentList();
 
+  const saveTBtn = document.getElementById('saveTournamentsBtn');
+  if (saveTBtn) { saveTBtn.textContent = '저장 중...'; saveTBtn.disabled = true; }
+
   try {
     const res = await fetch(`${WORKER_URL}/api/tournaments`, {
       method: 'PUT',
@@ -1680,16 +1697,18 @@ async function saveTournaments(){
       body: JSON.stringify(TOURNAMENTS),
     });
     const json = await res.json();
-    if (!res.ok) {
-      if (res.status === 401) {
-        localStorage.removeItem('crank_admin_session');
-        alert(json.error || '로그인이 만료됐어요. 다시 시도해주세요.');
-      } else {
-        alert('대회 정보 저장 실패: ' + (json.error || '알 수 없는 오류') + (json.details ? ('\n\n상세: ' + json.details) : ''));
-      }
+    if (res.ok) {
+      alert('대진표가 저장됐어요!\n약 1~2분 뒤 실제 사이트에 반영됩니다.');
+    } else if (res.status === 401) {
+      localStorage.removeItem('crank_admin_session');
+      alert(json.error || '로그인이 만료됐어요. 다시 시도해주세요.');
+    } else {
+      alert('대회 정보 저장 실패: ' + (json.error || '알 수 없는 오류') + (json.details ? ('\n\n상세: ' + json.details) : ''));
     }
   } catch(e) {
     alert('대회 정보 저장 중 오류: ' + e.message);
+  } finally {
+    if (saveTBtn) { saveTBtn.textContent = '변경사항 저장'; saveTBtn.disabled = false; }
   }
 }
 
@@ -1701,7 +1720,14 @@ const tBadgeInput = document.getElementById('tBadgeInput');
 const tNameInput = document.getElementById('tNameInput');
 const tLinkInput = document.getElementById('tLinkInput');
 const addTournamentBtn = document.getElementById('addTournamentBtn');
+const saveTournamentsBtn = document.getElementById('saveTournamentsBtn');
 const tNoLiveCheck = document.getElementById('tNoLiveCheck');
+
+if (saveTournamentsBtn) {
+  saveTournamentsBtn.addEventListener('click', async () => {
+    await saveTournaments();
+  });
+}
 
 tLinkInput.addEventListener('input', (e) => {
   const url = e.target.value.trim();
@@ -1742,14 +1768,14 @@ function renderTournamentList(){
         <button class="action-btn del">✕</button>
       </div>
     `;
-    row.querySelector('.up').addEventListener('click', async ()=>{
-      if(idx>0){ [TOURNAMENTS[idx-1], TOURNAMENTS[idx]] = [TOURNAMENTS[idx], TOURNAMENTS[idx-1]]; await saveTournaments(); }
+    row.querySelector('.up').addEventListener('click', ()=>{
+      if(idx>0){ [TOURNAMENTS[idx-1], TOURNAMENTS[idx]] = [TOURNAMENTS[idx], TOURNAMENTS[idx-1]]; updateTournamentsLocal(); }
     });
-    row.querySelector('.down').addEventListener('click', async ()=>{
-      if(idx<TOURNAMENTS.length-1){ [TOURNAMENTS[idx+1], TOURNAMENTS[idx]] = [TOURNAMENTS[idx], TOURNAMENTS[idx+1]]; await saveTournaments(); }
+    row.querySelector('.down').addEventListener('click', ()=>{
+      if(idx<TOURNAMENTS.length-1){ [TOURNAMENTS[idx+1], TOURNAMENTS[idx]] = [TOURNAMENTS[idx], TOURNAMENTS[idx+1]]; updateTournamentsLocal(); }
     });
-    row.querySelector('.del').addEventListener('click', async ()=>{
-      TOURNAMENTS.splice(idx, 1); await saveTournaments();
+    row.querySelector('.del').addEventListener('click', ()=>{
+      TOURNAMENTS.splice(idx, 1); updateTournamentsLocal();
     });
     tEntryList.appendChild(row);
   });
@@ -1768,7 +1794,7 @@ if(closeTournamentModal) {
   });
 }
 if(addTournamentBtn) {
-  addTournamentBtn.addEventListener('click', async ()=>{
+  addTournamentBtn.addEventListener('click', ()=>{
     if(!tNameInput.value.trim() || !tLinkInput.value.trim()) return alert('대회명과 링크를 입력해주세요.');
     TOURNAMENTS.push({
       badge: tBadgeInput.value.trim() || 'Notice',
@@ -1777,7 +1803,7 @@ if(addTournamentBtn) {
       noLive: tNoLiveCheck.checked
     });
     tBadgeInput.value = ''; tNameInput.value = ''; tLinkInput.value = ''; tNoLiveCheck.checked = false;
-    await saveTournaments();
+    updateTournamentsLocal();
   });
 }
 
