@@ -687,8 +687,8 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 .timeline-date { width: 60px; flex-shrink: 0; text-align: center; }
 .timeline-date .m-d { font-size: 14px; font-weight: bold; color: var(--text-main); }
 .timeline-date .dow { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
-.timeline-date .today-mark { font-size: 10px; color: var(--bg-main); background: var(--neon-magenta); border-radius:4px; padding:2px; margin:4px 0 2px; font-weight:bold; }
-.timeline-item.is-today { border: 2px solid var(--neon-magenta); border-bottom: 2px solid var(--neon-magenta); border-radius: 4px; padding: 12px 10px; margin: 2px 0; }
+.timeline-date .today-mark { font-size: 10px; color: var(--bg-main); background: var(--neon-magenta); border-radius:4px; padding:2px; margin:4px 0 4px !important; font-weight:bold; }
+.timeline-item.is-today { border: 2px solid var(--neon-magenta) !important; border-radius: 4px !important; padding: 14px 10px !important; margin: 2px 0 !important; }
 .timeline-content { flex: 1; display: grid; grid-template-rows: repeat(3, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; padding-top: 2px; overflow-x: auto; overflow-y: hidden; align-content: start; justify-content: start; max-height: 100%; }
 .timeline-yt {  flex-shrink: 0; border: 2px solid var(--border-strong); border-radius: 4px; overflow: hidden; display: block; position: relative;  width: 178px; height: 100px; }
 .timeline-yt:hover { border-color: var(--neon-cyan); }
@@ -746,8 +746,10 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         <span class="dot" style="background:#3B9EFF;"></span><span class="brand-text" style="color:#3B9EFF;"><span class="bt-full">ADMIN PAGE</span><span class="bt-short">ADMIN</span></span>
         <span class="mode-badge" id="modeBadge">관리자 모드</span>
       </div>
-      <h1><span class="h1-full">크랭크 <span>방송</span> 스케줄</span><span class="h1-short">크랭크</span></h1>
-      <button id="ghSettingsBtn" style="margin-left:12px; padding:4px 8px; font-size:11px; background:var(--brand); color:#fff; border:none; border-radius:4px; cursor:pointer;">관리자 로그인</button>
+      <h1 style="display:flex; align-items:center; gap:8px;">
+        크랭크
+        <button id="ghSettingsBtn" title="관리자 로그인" aria-label="관리자 로그인" style="width:24px; height:24px; padding:0; font-size:13px; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-strong); border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; vertical-align:middle;">🔒</button>
+      </h1>
     </div>
     <div class="nav">
       <div class="view-toggle">
@@ -2103,6 +2105,15 @@ render();
     });
   }
 
+function updateLockIcon() {
+  const btn = document.getElementById('ghSettingsBtn');
+  if (!btn) return;
+  const session = getSession();
+  btn.textContent = session ? '🔓' : '🔒';
+  btn.title = session ? '관리자 로그아웃' : '관리자 로그인';
+}
+updateLockIcon();
+
 document.getElementById('ghSettingsBtn').addEventListener('click', async ()=>{
     const session = getSession();
     if (session) {
@@ -2110,9 +2121,11 @@ document.getElementById('ghSettingsBtn').addEventListener('click', async ()=>{
         localStorage.removeItem('crank_admin_session');
         alert('로그아웃했어요.');
       }
+      updateLockIcon();
       return;
     }
     await adminLogin();
+    updateLockIcon();
 });
 
 </script>
