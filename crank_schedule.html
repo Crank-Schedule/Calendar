@@ -692,12 +692,12 @@
     max-height:70vh; overflow-y:auto;
   }
   @media (max-width:480px){
-    .tournament-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
-    .tournament-card{ flex:initial; padding:5px 2px; }
+    .tournament-grid{ display:flex; flex-wrap:wrap; justify-content:center; gap:3px; }
+    .tournament-card{ flex: 0 0 65px; padding:3px 1px; }
     .tournament-card:last-child:nth-child(odd){ grid-column:auto; max-width:100%; margin:0; }
-    .tournament-card .t-badge { font-size: 7.5px; margin-bottom: 2px; }
-    .tournament-card .t-name { font-size: 10px; line-height: 1.1; word-break: keep-all; }
-    .tournament-card .t-go { font-size: 8px; margin-top: 3px; }
+    .tournament-card .t-badge { font-size: 6.5px; margin-bottom: 2px; letter-spacing:0; }
+    .tournament-card .t-name { font-size: 8.5px; line-height: 1.1; word-break: keep-all; }
+    .tournament-card .t-go { font-size: 7px; margin-top: 2px; }
     .t-badge{ font-size:8.5px; margin-bottom:4px; }
     .t-name{ font-size:12px !important; }
     .t-go{ font-size:10px !important; }
