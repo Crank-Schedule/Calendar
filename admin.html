@@ -331,7 +331,7 @@
   .cell.today{border-color:var(--neon-cyan); box-shadow:inset 0 0 0 1px rgba(52,245,216,0.3);}
   .date-num{font-family:'Paperozi',sans-serif; font-size:14px; font-weight:600; color:var(--text-dim); font-variant-numeric: tabular-nums;}
   .cell.today .date-num{color:var(--neon-cyan);}
-  .cell.is-rest{background: rgba(0, 209, 255, 0.05); box-shadow:inset 0 0 0 1px rgba(0, 209, 255, 0.4);}
+  .cell.is-rest { border-color: rgba(100, 180, 255, 0.5) !important; background: rgba(100, 180, 255, 0.15) !important; }
   .cell.is-rest:hover{background: rgba(0, 209, 255, 0.1);}
   .cell.is-trip{background: rgba(255, 200, 87, 0.05); box-shadow:inset 0 0 0 1px rgba(255, 200, 87, 0.4);}
   .cell.is-trip:hover{background: rgba(255, 200, 87, 0.1);}
@@ -480,9 +480,39 @@
   .pin-error{color:var(--neon-red); font-size:11px; margin-bottom:10px; display:none;}
   .pin-error.show{display:block;}
   @media (max-width:560px){
-    .tag-icon, .tag .tag-title, .tag .t-time, .tag a { display: none !important; }
-    .sp-icon, .special-badge .sp-label { display: none !important; }
-    .tag-abbr, .sp-abbr { display: inline-block !important; font-weight: 800; font-family: 'Paperozi', sans-serif; letter-spacing: 0; }
+    .special-badge.badge-circle {
+      border: 1px solid currentColor !important;
+      border-radius: 12px !important;
+      padding: 2px 4px !important;
+      background: transparent !important;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      margin: 1px;
+    }
+    .special-badge.badge-circle .sp-abbr {
+      display: inline-block !important;
+      font-size: 8.5px !important;
+      font-weight: 900 !important;
+      line-height: 1;
+    }
+    .special-badge.badge-circle .sp-label, .special-badge.badge-circle .sp-icon {
+      display: none !important;
+    }
+
+    .tag-icon, .tag-abbr, .sp-abbr, .sp-icon { display: none !important; }
+    .tag .t-time, .tag a { display: none !important; }
+    .tag .tag-title, .special-badge .sp-label {
+      display: -webkit-box !important;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      white-space: normal !important;
+      font-size: 9px !important;
+      line-height: 1.2 !important;
+      word-break: keep-all;
+    }
+    .special-badge { padding: 3px 4px !important; }
 
     .cell{min-height:78px; padding:6px;}
     .tag{font-size:9.5px;}
@@ -991,15 +1021,21 @@ const PRESETS = [
 // 제목 키워드 -> 아이콘. 이미지 아이콘을 받으면 이 부분을 <img> 태그로 교체할 예정.
 function getAbbr(title) {
   if (!title) return '';
-  if (title.includes('스타') || title.toUpperCase().includes('SC')) return '스2';
-  if (title.includes('휴방')) return '휴방';
-  if (title.includes('야구')) return '야구';
-  if (title.includes('월드컵') || title.includes('축구')) return '축구';
-  if (title.includes('이터널')) return '이리';
-  if (title.includes('모험가') || title.includes('앨리엇')) return '앨리';
-  if (title.includes('유로트럭')) return '트럭';
-  if (title.includes('토크') || title.includes('저챗')) return '저챗';
-  if (title.includes('대회') || title.includes('컵') || title.includes('Cup')) return '대회';
+  const up = title.toUpperCase();
+  if (up.includes('올리비아 귀국')) return '올귀';
+  if (up.includes('올리비아 출국')) return '올출';
+  if (up.includes('스타2') || up.includes('스타 II') || up.includes('스타II') || up.includes('SC2')) return '스II';
+  if (up.includes('스타크래프트') || up.includes('스타1') || up.includes('스타')) return '스타';
+  if (up.includes('마리오 카트') || up.includes('마카')) return '마카';
+  if (up.includes('롤') || up.includes('리그 오브 레전드') || up.includes('리그오브레전드')) return '롤';
+  if (up.includes('이터널') || up.includes('이리')) return '이리';
+  if (up.includes('휴방')) return '휴방';
+  if (up.includes('야구')) return '야구';
+  if (up.includes('월드컵') || up.includes('축구')) return '축구';
+  if (up.includes('모험가') || up.includes('앨리엇')) return '앨리';
+  if (up.includes('유로트럭')) return '트럭';
+  if (up.includes('토크') || up.includes('저챗')) return '저챗';
+  if (up.includes('대회') || up.includes('컵') || up.includes('CUP')) return '대회';
   const clean = title.replace(/[\[\]\s]/g, '');
   return clean.substring(0, 2);
 }
@@ -1291,7 +1327,7 @@ async function renderCalendarMonth(){
         const color = getDisplayColor(isRest ? '#00FFFF' : (isTrip ? '#FF9900' : '#FF0000'));
         const icon = isRest ? '😴' : (isTrip ? '✈️' : '🚫');
         const s = document.createElement('span');
-        s.className = 'special-badge';
+        s.className = 'special-badge' + ((isRest || isTrip) ? ' badge-circle' : '');
         s.style.color = color;
         s.style.background = isRest ? 'rgba(0,255,255,0.1)' : (isTrip ? 'rgba(255,153,0,0.1)' : 'rgba(255,0,0,0.1)');
         s.title = sp.title;
