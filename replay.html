@@ -3,10 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css">
 <title>다시보기 · 크랭크 방송 스케줄</title>
 <style>
-  @import url("paperozi.css");
+  @font-face {
+    font-family: 'DnfBitbeatV2';
+    src: url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf') format('opentype');
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-2ExtraLight.woff2') format('woff2');
+    font-weight: 200;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-3Light.woff2') format('woff2');
+    font-weight: 300;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-6SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2') format('woff2');
+    font-weight: 900;
+    font-display: swap;
+  }
   :root[data-theme='light'] {
   --bg-main: #F0F0E8;
   --bg-panel: #E4E4D9;
@@ -82,7 +140,7 @@
   }
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
   .brand-text{
-    font-family:'Paperozi',sans-serif;
+    font-family:'DnfBitbeatV2','Paperozi',sans-serif;
     font-weight:700;
     letter-spacing:0.08em;
     font-size:13px;
@@ -91,14 +149,14 @@
     display:flex; align-items:center; gap:6px;
   }
   h1{
-    font-family:'Paperozi',sans-serif;
+    font-family:'DnfBitbeatV2','Paperozi',sans-serif;
     font-weight:800;
     font-size:clamp(20px,3.5vw,28px);
-    margin:2px 0 16px;
+    margin:2px 0 10px;
     letter-spacing:0.01em;
   }
   h1 span{color:var(--neon-cyan);}
-  .quicklinks{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:30px;}
+  .quicklinks{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:14px;}
   .qlink{
     display:flex; align-items:center; justify-content:center; gap:8px;
     padding:11px; border-radius: 2px; border:1px solid var(--border-strong);
@@ -113,9 +171,17 @@
   @media (max-width:680px){
     .columns-wrap{gap:6px;}
     .col-section{gap:6px;}
-    .section-title{font-size:11px; gap:4px; letter-spacing:-0.03em;}
+    .section-title{font-size:11px !important; gap:4px !important; letter-spacing:-0.03em;}
     .video-card{border-radius: 2px;}
     .video-card .vc-title{display:none !important;}
+  }
+  /* 갤럭시 폴드 커버 화면 등 초협소 폭: 한 단계 더 축소 */
+  @media (max-width:400px){
+    h1{font-size:16px !important;}
+    .brand-text{font-size:10px !important;}
+    .qlink{font-size:11px !important; padding:8px !important;}
+    .section-title{font-size:9.5px !important; gap:3px !important;}
+    .columns-wrap{gap:4px !important;}
   }
   .col-section{
     display:flex; flex-direction:column; gap:12px;
@@ -137,7 +203,7 @@
     word-break: keep-all; overflow-wrap: break-word;
   }
   
-  .top-sticky { position: sticky; top: 0; z-index: 100; background: var(--bg-main); padding-top: 24px; padding-bottom: 10px; border-bottom: 1px solid var(--border-strong); transform:translateZ(0); -webkit-transform:translateZ(0); will-change:transform; }
+  .top-sticky { position: sticky; top: 0; z-index: 100; background: var(--bg-main); padding-top: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-strong); transform:translateZ(0); -webkit-transform:translateZ(0); will-change:transform; }
 
   .empty-section{font-size:12px; color:var(--text-dim); padding:14px 0;}
 
@@ -199,7 +265,7 @@
   .social-icon:hover{border-color:var(--neon-cyan); color:var(--neon-cyan); box-shadow: none;}
   
 /* Retro & List CSS Additions */
-body { font-family: 'Galmuri11', 'Paperozi', monospace !important; background: var(--bg-main) !important; background-image: none !important; }
+body { font-family: 'Paperozi', sans-serif !important; background: var(--bg-main) !important; background-image: none !important; }
 body::after { content:''; position:fixed; inset:0; pointer-events:none; background:repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.04) 4px); z-index:9999; }
 * { border-radius: 2px !important; box-shadow: none !important; }
 .video-card { border-radius: 2px !important; box-shadow: 4px 4px 0 rgba(0,0,0,0.4) !important; transition: all 0.1s steps(2); }
@@ -226,7 +292,6 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   <script>
     if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
   </script>
-  <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css'>
   <script src="data/replays.js"></script>
 </head>
 <body>
@@ -381,6 +446,7 @@ try {
   TOURNAMENTS = defaultTournaments;
 }
 const tournamentGrid = document.getElementById('tournamentGrid');
+function renderTournaments(){
 tournamentGrid.innerHTML = '';
 TOURNAMENTS.forEach(t=>{
   const a = document.createElement('a');
@@ -392,6 +458,22 @@ TOURNAMENTS.forEach(t=>{
   a.innerHTML = `<span class="t-badge">${displayBadge}</span><span class="t-name">${escapeHtml(t.name)}</span>${noLiveEl}<span class="t-go">자세히 보기 ›</span>`;
   tournamentGrid.appendChild(a);
 });
+}
+renderTournaments();
+
+(async function loadTournamentsFromNetwork(){
+  try {
+    const baseUrl = location.protocol === 'file:' ? 'https://crank-schedule.github.io/Calendar/' : '';
+    const res = await fetch(`${baseUrl}data/tournaments.json?t=${Date.now()}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) {
+        TOURNAMENTS = data;
+        renderTournaments();
+      }
+    }
+  } catch(e) {}
+})();
 
 // 유튜브 공식 Data API v3 사용 - 구글 클라우드에서 발급받은 키로 교체하세요
 const YT_API_KEY = 'AIzaSyCipMzgxeA7Ty6AUct6y2UszlwOWHEJqgU';

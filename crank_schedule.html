@@ -6,6 +6,12 @@
 <title>크랭크 방송 스케줄</title>
 <style>
   @font-face {
+    font-family: 'DnfBitbeatV2';
+    src: url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf') format('opentype');
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
     font-family: 'Paperozi';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2') format('woff2');
     font-weight: 100;
@@ -175,7 +181,7 @@
   }
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
   .brand-text{
-    font-family:'Paperozi',sans-serif;
+    font-family:'DnfBitbeatV2','Paperozi',sans-serif;
     font-weight:700;
     letter-spacing:0.08em;
     font-size:13px;
@@ -190,7 +196,7 @@
   }
   .mode-badge.show{display:inline-block;}
   h1{
-    font-family:'Paperozi',sans-serif;
+    font-family:'DnfBitbeatV2','Paperozi',sans-serif;
     font-weight:800;
     font-size:clamp(20px,3.5vw,28px);
     margin:2px 0 0;
@@ -681,6 +687,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 .timeline-date .m-d { font-size: 14px; font-weight: bold; color: var(--text-main); }
 .timeline-date .dow { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 .timeline-date .today-mark { font-size: 10px; color: var(--bg-main); background: var(--neon-magenta); border-radius:4px; padding:2px; margin-top:4px; font-weight:bold; }
+.timeline-item.is-today { border: 2px solid var(--neon-magenta); border-bottom: 2px solid var(--neon-magenta); border-radius: 4px; padding: 10px 8px; margin: 2px 0; }
 .timeline-content { flex: 1; display: grid; grid-template-rows: repeat(3, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; padding-top: 2px; overflow-x: auto; overflow-y: hidden; align-content: start; justify-content: start; max-height: 100%; }
 .timeline-yt {  flex-shrink: 0; border: 2px solid var(--border-strong); border-radius: 4px; overflow: hidden; display: block; position: relative;  width: 178px; height: 100px; }
 .timeline-yt:hover { border-color: var(--neon-cyan); }
