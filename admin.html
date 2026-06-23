@@ -384,8 +384,9 @@
 
   .overlay{
     position:fixed; inset:0; background:rgba(5,6,10,0.72);
-    display:none; align-items:center; justify-content:center;
-    z-index:110; padding:16px; 
+    display:none; align-items:flex-start; justify-content:center;
+    z-index:9999; padding:60px 16px 16px 16px; 
+    overflow-y:auto;
   }
   .overlay.show{display:flex;}
   .modal{
@@ -393,7 +394,7 @@
     border:1px solid var(--border-strong);
     border-radius: 4px;
     width:100%; max-width:460px;
-    max-height:86vh; overflow-y:auto;
+    margin:auto;
     padding:22px;
     box-shadow:0 20px 60px rgba(0,0,0,0.5);
   }
