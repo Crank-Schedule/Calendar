@@ -70,23 +70,33 @@
   --bg-main: #DCDCD3;
   --bg-panel: #D0D0C6;
   --bg-panel-solid: #D0D0C6;
-  --bg-cell: #C4C4BA;
-  --bg-cell-hover: #B8B8AD;
-  --text-primary: #1A1A1A;
-  --text-main: #1A1A1A;
-  --text-dim: #4A4A4A;
-  --border: #999999;
-  --border-strong: #777777;
-  --neon-cyan: #006699;
-  --neon-magenta: #990077;
-  --neon-amber: #994400;
-  --neon-lime: #1A7700;
-  --neon-violet: #440099;
-  --neon-red: #990000;
+  --bg-cell: #E4E4D9;
+  --bg-cell-hover: #D8D8CC;
+  --text-primary: #000000;
+  --text-main: #000000;
+  --text-dim: #222222;
+  --border: #777777;
+  --border-strong: #444444;
+  --neon-cyan: #005588;
+  --neon-magenta: #880066;
+  --neon-amber: #883300;
+  --neon-lime: #116600;
+  --neon-violet: #330088;
+  --neon-red: #880000;
   --glow-cyan: none;
   --glow-magenta: none;
-  --glow-amber: none;
   --bg-body: #DCDCD3;
+}
+[data-theme='light'] .tag, [data-theme='light'] .special-badge {
+  font-weight: 800 !important;
+  border-width: 1.5px !important;
+  background: rgba(255, 255, 255, 0.4) !important;
+}
+[data-theme='light'] .cell {
+  border-color: var(--border-strong) !important;
+}
+[data-theme='light'] .date-num {
+  font-weight: 800 !important;
 }
   :root[data-theme="light"] .tag {
     background: rgba(0,0,0,0.05);
