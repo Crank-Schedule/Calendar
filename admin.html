@@ -913,7 +913,11 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     <div class="entry-list" id="entryList"></div>
 
     <div id="editArea" style="display:none;">
-      <button class="quick-rest" id="quickRest">+ 휴방 태그 추가</button>
+      <div style="display:flex; gap:6px; margin-bottom:12px;">
+        <button id="quickRest" style="flex:1; padding:8px 0; font-weight:700; background:rgba(255,0,0,0.1); border:1px solid var(--neon-red); color:var(--neon-red); border-radius: 4px; cursor:pointer; font-size:12px;">+ 휴방</button>
+        <button id="quickReturn" style="flex:1; padding:8px 0; font-weight:700; background:rgba(0,150,255,0.1); border:1px solid var(--neon-cyan); color:var(--neon-cyan); border-radius: 4px; cursor:pointer; font-size:12px;">+ 올귀</button>
+        <button id="quickDepart" style="flex:1; padding:8px 0; font-weight:700; background:rgba(255,150,0,0.1); border:1px solid var(--neon-amber); color:var(--neon-amber); border-radius: 4px; cursor:pointer; font-size:12px;">+ 올출</button>
+      </div>
 
       <div class="presets" id="presets"></div>
 
@@ -1263,7 +1267,7 @@ async function saveMonth(d){
     if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
 
     if (res.ok) {
-      alert(`저장 성공! (${y}년 ${m}월)\n약 1~2분 뒤 실제 사이트에 반영됩니다.`);
+      // alert(`저장 성공! (${y}년 ${m}월)\n약 1~2분 뒤 실제 사이트에 반영됩니다.`);
     } else if (res.status === 401) {
       localStorage.removeItem('crank_admin_session');
       alert(json.error || '로그인이 만료됐어요. 다시 시도해주세요.');
@@ -1700,15 +1704,19 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
   render();
 });
 
-document.getElementById('quickRest').addEventListener('click', async ()=>{
+function addQuickTag(title, color) {
   const data = cache[storageKey(activeDate)];
   const day = activeDate.getDate();
   if(!data[day]) data[day]=[];
-  data[day].push({title:'휴방', time:'', link:'', color:'#FF0000'});
-  await saveMonth(activeDate);
-  renderEntries(activeDate);
-  render();
-});
+  data[day].push({title: title, time:'', link:'', color: color});
+  saveMonth(activeDate).then(() => {
+    renderEntries(activeDate);
+    render();
+  });
+}
+document.getElementById('quickRest').addEventListener('click', () => addQuickTag('휴방', '#FF0000'));
+document.getElementById('quickReturn').addEventListener('click', () => addQuickTag('올귀', '#00BFFF'));
+document.getElementById('quickDepart').addEventListener('click', () => addQuickTag('올출', '#FFA500'));
 
 document.getElementById('prevBtn').addEventListener('click', ()=>{
   current = new Date(current.getFullYear(), current.getMonth()-1, 1);
@@ -1802,7 +1810,7 @@ async function saveTournaments(){
     });
     const json = await res.json();
     if (res.ok) {
-      alert('대진표가 저장됐어요!\n약 1~2분 뒤 실제 사이트에 반영됩니다.');
+      // alert('대진표가 저장됐어요!\n약 1~2분 뒤 실제 사이트에 반영됩니다.');
     } else if (res.status === 401) {
       localStorage.removeItem('crank_admin_session');
       alert(json.error || '로그인이 만료됐어요. 다시 시도해주세요.');
