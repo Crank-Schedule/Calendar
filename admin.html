@@ -919,6 +919,10 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         <button id="quickReturn" style="flex:1; padding:8px 0; font-weight:700; background:rgba(0,150,255,0.1); border:1px solid var(--neon-cyan); color:var(--neon-cyan); border-radius: 4px; cursor:pointer; font-size:12px;">+ 올귀</button>
         <button id="quickDepart" style="flex:1; padding:8px 0; font-weight:700; background:rgba(255,150,0,0.1); border:1px solid var(--neon-amber); color:var(--neon-amber); border-radius: 4px; cursor:pointer; font-size:12px;">+ 올출</button>
       </div>
+      <div style="display:flex; gap:6px; margin-bottom:12px;">
+        <input type="text" id="customQuickTagInput" placeholder="커스텀 태그 텍스트 입력..." style="flex:1; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-strong); padding:8px; border-radius:4px; font-size:12px;">
+        <button id="customQuickTagBtn" style="padding:8px 14px; font-weight:700; background:rgba(255,255,255,0.1); border:1px solid var(--border-strong); color:var(--text-primary); border-radius: 4px; cursor:pointer; font-size:12px;">+ 추가</button>
+      </div>
 
       <div class="presets" id="presets"></div>
 
@@ -1688,7 +1692,13 @@ async function openModal(dateObj){
 }
 
 document.getElementById('closeModal').addEventListener('click', ()=>overlay.classList.remove('show'));
-document.getElementById('doneBtn').addEventListener('click', ()=>overlay.classList.remove('show'));
+document.getElementById('doneBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('doneBtn');
+  btn.textContent = '저장 중...'; btn.disabled = true;
+  await saveMonth(activeDate);
+  btn.textContent = '완료'; btn.disabled = false;
+  overlay.classList.remove('show');
+});
 document.getElementById('doneBtn2').addEventListener('click', ()=>overlay.classList.remove('show'));
 overlay.addEventListener('click', (e)=>{ if(e.target===overlay) overlay.classList.remove('show'); });
 
@@ -1699,7 +1709,6 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
   const day = activeDate.getDate();
   if(!data[day]) data[day]=[];
   data[day].push({title, time:timeInput.value.trim(), link:linkInput.value.trim(), color:pickedColor});
-  await saveMonth(activeDate);
   titleInput.value=''; timeInput.value=''; linkInput.value='';
   renderEntries(activeDate);
   render();
@@ -1710,14 +1719,19 @@ function addQuickTag(title, color) {
   const day = activeDate.getDate();
   if(!data[day]) data[day]=[];
   data[day].push({title: title, time:'', link:'', color: color});
-  saveMonth(activeDate).then(() => {
-    renderEntries(activeDate);
-    render();
-  });
+  renderEntries(activeDate);
+  render();
 }
 document.getElementById('quickRest').addEventListener('click', () => addQuickTag('휴방', '#FF0000'));
 document.getElementById('quickReturn').addEventListener('click', () => addQuickTag('올귀', '#00BFFF'));
 document.getElementById('quickDepart').addEventListener('click', () => addQuickTag('올출', '#FFA500'));
+document.getElementById('customQuickTagBtn').addEventListener('click', () => {
+  const val = document.getElementById('customQuickTagInput').value.trim();
+  if (val) {
+    addQuickTag(val, pickedColor || '#FFFFFF');
+    document.getElementById('customQuickTagInput').value = '';
+  }
+});
 
 document.getElementById('prevBtn').addEventListener('click', ()=>{
   current = new Date(current.getFullYear(), current.getMonth()-1, 1);
