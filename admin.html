@@ -147,10 +147,11 @@
 
   .header{
     display:flex;align-items:flex-end;justify-content:space-between;
-    flex-wrap:wrap;gap:8px;margin-bottom:0;
+    flex-wrap:nowrap;gap:8px;margin-bottom:0;
     padding:10px 0 12px;
     position:relative;
   }
+  .header-left{ flex-shrink:0; white-space:nowrap; }
   .top-sticky{
     position:sticky; top:0; z-index:50;
     background:var(--bg-main);
@@ -210,7 +211,12 @@
   .replay-link.chzzk:hover{border-color:#00FFA3; color:#00FFA3;}
   .replay-link svg{width:14px;height:14px;flex-shrink:0;}
 
-  .nav{display:flex;align-items:center;gap:3px; flex-wrap:wrap; justify-content:flex-end;}
+  .nav{
+    display:flex;align-items:center;gap:3px; flex-wrap:nowrap; justify-content:flex-start;
+    flex-shrink:1; min-width:0; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  }
+  .nav::-webkit-scrollbar{ display:none; }
+  .nav > *{ flex-shrink:0; }
   .nav > *{flex-shrink:0;}
   .nav button{
     width:28px;height:28px;border-radius:6px;
@@ -631,6 +637,15 @@
     position:fixed; bottom:62px; left:12px; right:12px; z-index:54;
     background:var(--bg-panel); border:1px solid var(--border-strong); border-radius: 4px;
     padding:14px; display:none; box-shadow: 4px 4px 0 rgba(0,0,0,1); border: 2px solid var(--border-strong);
+    max-height:70vh; overflow-y:auto;
+  }
+  @media (max-width:480px){
+    .tournament-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:6px; }
+    .tournament-card{ flex:initial; padding:7px; }
+    .tournament-card:last-child:nth-child(odd){ grid-column:1 / -1; max-width:55%; margin:0 auto; }
+    .t-badge{ font-size:8.5px; margin-bottom:4px; }
+    .t-name{ font-size:12px !important; }
+    .t-go{ font-size:10px !important; }
   }
   .popover.show{display:block;}
   .popover .pop-title{font-family:'Paperozi',sans-serif; font-weight:700; font-size:13px; margin-bottom:10px; color:var(--text-dim);}
@@ -677,11 +692,6 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 .timeline-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   #themeToggleBtn {
-    position: fixed !important;
-    top: 12px !important;
-    right: 12px !important;
-    z-index: 150 !important;
-    margin: 0 !important;
     width: 28px !important;
     height: 28px !important;
     border-radius: 6px !important;
@@ -818,6 +828,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
       <label for="tNoLiveCheck" style="margin:0; font-size:12px;">생중계 불가능</label>
     </div>
     <button class="save-btn" id="addTournamentBtn">대회 추가</button>
+    <button id="cancelEditTournamentBtn" style="display:none; margin-top:6px; width:100%; padding:6px; background:transparent; border:1px solid var(--border-strong); color:var(--text-dim); border-radius:4px; cursor:pointer; font-size:12px;">수정 취소</button>
     <button class="save-btn" id="saveTournamentsBtn" style="margin-top:8px; background:var(--neon-cyan); color:#000;">변경사항 저장</button>
     <div style="font-size:11px; color:var(--text-dim); margin-top:6px; text-align:center;">추가/삭제/순서변경은 바로 적용되고, 실제 사이트(GitHub)에는 "변경사항 저장"을 눌러야 반영돼요.</div>
   </div>
@@ -1763,11 +1774,22 @@ function renderTournamentList(){
         <div class="entry-time">${escapeHtml(t.badge)} ${t.noLive ? '<span style="color:var(--neon-red);font-size:10px;">(생중계 불가)</span>' : ''}</div>
       </div>
       <div class="entry-actions">
+        <button class="action-btn edit" title="수정">✎</button>
         <button class="action-btn up">▲</button>
         <button class="action-btn down">▼</button>
         <button class="action-btn del">✕</button>
       </div>
     `;
+    row.querySelector('.edit').addEventListener('click', ()=>{
+      editingTournamentIndex = idx;
+      tBadgeInput.value = t.badge || '';
+      tNameInput.value = t.name || '';
+      tLinkInput.value = t.url || '';
+      tNoLiveCheck.checked = !!t.noLive;
+      addTournamentBtn.textContent = '수정 완료';
+      if (cancelEditBtn) cancelEditBtn.style.display = 'inline-block';
+      tNameInput.focus();
+    });
     row.querySelector('.up').addEventListener('click', ()=>{
       if(idx>0){ [TOURNAMENTS[idx-1], TOURNAMENTS[idx]] = [TOURNAMENTS[idx], TOURNAMENTS[idx-1]]; updateTournamentsLocal(); }
     });
@@ -1791,18 +1813,38 @@ if(editTournamentsBtn) {
 if(closeTournamentModal) {
   closeTournamentModal.addEventListener('click', ()=>{
     tournamentModal.classList.remove('show');
+    if (typeof resetTournamentForm === 'function') resetTournamentForm();
   });
 }
+let editingTournamentIndex = null;
+const cancelEditBtn = document.getElementById('cancelEditTournamentBtn');
+
+function resetTournamentForm(){
+  editingTournamentIndex = null;
+  tBadgeInput.value = ''; tNameInput.value = ''; tLinkInput.value = ''; tNoLiveCheck.checked = false;
+  addTournamentBtn.textContent = '대회 추가';
+  if (cancelEditBtn) cancelEditBtn.style.display = 'none';
+}
+
+if (cancelEditBtn) {
+  cancelEditBtn.addEventListener('click', resetTournamentForm);
+}
+
 if(addTournamentBtn) {
   addTournamentBtn.addEventListener('click', ()=>{
     if(!tNameInput.value.trim() || !tLinkInput.value.trim()) return alert('대회명과 링크를 입력해주세요.');
-    TOURNAMENTS.push({
+    const entry = {
       badge: tBadgeInput.value.trim() || 'Notice',
       name: tNameInput.value.trim(),
       url: tLinkInput.value.trim(),
       noLive: tNoLiveCheck.checked
-    });
-    tBadgeInput.value = ''; tNameInput.value = ''; tLinkInput.value = ''; tNoLiveCheck.checked = false;
+    };
+    if (editingTournamentIndex !== null) {
+      TOURNAMENTS[editingTournamentIndex] = entry;
+    } else {
+      TOURNAMENTS.push(entry);
+    }
+    resetTournamentForm();
     updateTournamentsLocal();
   });
 }
