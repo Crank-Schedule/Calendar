@@ -559,10 +559,10 @@
     .schedule-tag{font-size:10.5px !important; padding:3px 5px !important; gap:2px !important;}
     .timeline-item{gap:6px !important; padding:6px 0 !important;}
     
-    .tag { font-size: 8.5px !important; }
-    .tag .tag-title { font-size: 8.5px !important; }
+    .tag { font-size: 7.5px !important; }
+    .tag .tag-title, .special-badge .sp-label { font-size: 7.5px !important; line-height:1.1 !important; }
     .date-num { font-size: 10px !important; }
-    .cell { padding: 3px !important; min-height: 70px !important; }
+    .cell { padding: 1.5px !important; min-height: 60px !important; }
     .month-label{font-size:14px;}
   }
 
@@ -1183,13 +1183,21 @@ function buildTagEl(en){
   }
   t.innerHTML = html;
   t.title = (en.title||'') + (en.time ? ' · '+en.time : '');
+  
   const startMarquee = () => {
       const textSpan = t.querySelector('.tag-title');
-      if(textSpan && textSpan.scrollWidth > textSpan.clientWidth) {
-          textSpan.style.whiteSpace = 'nowrap';
+      if(!textSpan) return;
+      textSpan.dataset.origDisplay = textSpan.style.display || '';
+      textSpan.dataset.origWhiteSpace = textSpan.style.whiteSpace || '';
+      textSpan.style.display = 'block';
+      textSpan.style.whiteSpace = 'nowrap';
+      if(textSpan.scrollWidth > textSpan.clientWidth) {
           const diff = textSpan.scrollWidth - textSpan.clientWidth + 10;
-          textSpan.style.transition = `transform ${diff * 0.02}s linear`;
-          textSpan.style.transform = `translateX(-${diff}px)`;
+          textSpan.style.transition = 	ransform s linear;
+          textSpan.style.transform = 	ranslateX(-px);
+      } else {
+          textSpan.style.display = textSpan.dataset.origDisplay;
+          textSpan.style.whiteSpace = textSpan.dataset.origWhiteSpace;
       }
   };
   const stopMarquee = () => {
@@ -1197,10 +1205,11 @@ function buildTagEl(en){
       if(textSpan) {
           textSpan.style.transition = 'none';
           textSpan.style.transform = 'translateX(0)';
-          textSpan.style.whiteSpace = '';
+          textSpan.style.display = textSpan.dataset.origDisplay || '';
+          textSpan.style.whiteSpace = textSpan.dataset.origWhiteSpace || '';
       }
   };
-  t.onmouseenter = startMarquee;
+t.onmouseenter = startMarquee;
   t.onmouseleave = stopMarquee;
   t.ontouchstart = startMarquee;
   t.ontouchend = stopMarquee;
