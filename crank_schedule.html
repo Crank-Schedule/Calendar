@@ -579,6 +579,15 @@
     border:1px solid var(--neon-cyan); padding:5px 10px; border-radius:7px; white-space:nowrap;
   }
 
+  
+  @media (max-width:768px){
+    .tournament-grid{ display:flex !important; flex-wrap:wrap !important; justify-content:center !important; gap:4px !important; }
+    .tournament-card{ flex: 0 1 110px !important; max-width: 140px !important; padding:4px 2px !important; }
+    .tournament-card .t-badge { font-size: 7.5px !important; margin-bottom: 2px !important; letter-spacing:0 !important; }
+    .tournament-card .t-name { font-size: 10px !important; line-height: 1.1 !important; word-break: keep-all !important; }
+    .tournament-card .t-go { font-size: 8px !important; margin-top: 3px !important; }
+  }
+
   /* 소셜미디어 */
   .social-row{display:flex; gap:8px; margin-top:0; flex-wrap:wrap;}
   .social-icon{
@@ -654,7 +663,7 @@
     .b-short{display:inline !important;}
   }
   .tournament-card{
-    flex:1 1 110px; max-width:100%;
+    flex:0 1 140px; max-width:140px;
     background:var(--bg-cell); border:1px solid var(--border); border-radius: 3px; padding:6px; text-decoration:none; display:flex; flex-direction:column; align-items:center; text-align:center; transition:.15s;
   }
   .tournament-card:hover{border-color:var(--neon-cyan); background:var(--bg-cell-hover);}
@@ -664,6 +673,15 @@
   }
   .tournament-card .t-name{font-family:'Paperozi',sans-serif; font-weight:700; font-size:11px; color:var(--text-primary);}
   .tournament-card .t-go{font-size:8.5px; color:var(--neon-cyan); margin-top:4px; display:block;}
+
+  
+  @media (max-width:768px){
+    .tournament-grid{ display:flex !important; flex-wrap:wrap !important; justify-content:center !important; gap:4px !important; }
+    .tournament-card{ flex: 0 1 110px !important; max-width: 140px !important; padding:4px 2px !important; }
+    .tournament-card .t-badge { font-size: 7.5px !important; margin-bottom: 2px !important; letter-spacing:0 !important; }
+    .tournament-card .t-name { font-size: 10px !important; line-height: 1.1 !important; word-break: keep-all !important; }
+    .tournament-card .t-go { font-size: 8px !important; margin-top: 3px !important; }
+  }
 
   /* 하단 네비게이션 바 */
   .bottom-nav{
