@@ -1216,8 +1216,8 @@ function buildTagEl(en){
       textSpan.style.whiteSpace = 'nowrap';
       if(textSpan.scrollWidth > textSpan.clientWidth) {
           const diff = textSpan.scrollWidth - textSpan.clientWidth + 10;
-          textSpan.style.transition = 	ransform s linear;
-          textSpan.style.transform = 	ranslateX(-px);
+          textSpan.style.transition = `transform ${diff * 0.02}s linear`;
+          textSpan.style.transform = `translateX(-${diff}px)`;
       } else {
           textSpan.style.display = textSpan.dataset.origDisplay;
           textSpan.style.whiteSpace = textSpan.dataset.origWhiteSpace;
