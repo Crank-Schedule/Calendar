@@ -87,11 +87,7 @@
   --glow-magenta: none;
   --bg-body: #DCDCD3;
 }
-[data-theme='light'] .tag, [data-theme='light'] .special-badge {
-  font-weight: 800 !important;
-  border-width: 1.5px !important;
-  background: rgba(255, 255, 255, 0.4) !important;
-}
+[data-theme='light'] .tag, [data-theme='light'] 
 [data-theme='light'] .cell {
   border-color: var(--border-strong) !important;
 }
@@ -357,7 +353,7 @@
   .tag a{color:inherit; text-decoration:none; margin-left:auto; flex-shrink:0; opacity:0.75;}
   .tag a:hover{opacity:1;}
   .more{font-size:10px; color:var(--text-dim); padding-left:2px;}
-  .special-badge{display:flex; align-items:center; gap:3px; font-size:10px; font-weight:700; padding:1px 4px; border-radius:3px; white-space:nowrap;}
+  
 
   @media (max-width:680px){
     .timeline-item{ min-height:64px !important; }
@@ -389,7 +385,7 @@
     }
     
     
-    .special-badge{font-size:13px; padding:0; background:transparent !important;}
+    
   }
 
   .overlay{
@@ -491,25 +487,9 @@
   .pin-error{color:var(--neon-red); font-size:11px; margin-bottom:10px; display:none;}
   .pin-error.show{display:block;}
   @media (max-width:560px){
-    .special-badge.badge-circle {
-      border: 1px solid currentColor !important;
-      border-radius: 12px !important;
-      padding: 2px 4px !important;
-      background: transparent !important;
-      display: inline-flex !important;
-      align-items: center;
-      justify-content: center;
-      margin: 1px;
-    }
-    .special-badge.badge-circle .sp-abbr {
-      display: inline-block !important;
-      font-size: 8.5px !important;
-      font-weight: 900 !important;
-      line-height: 1;
-    }
-    .special-badge.badge-circle .sp-label, .special-badge.badge-circle .sp-icon {
-      display: none !important;
-    }
+    
+    
+    
 
     .tag-icon, .tag-abbr, .sp-abbr, .sp-icon { display: none !important; }
     .tag .t-time, .tag a { display: none !important; }
@@ -523,7 +503,7 @@
       line-height: 1.2 !important;
       word-break: keep-all;
     }
-    .special-badge { padding: 3px 4px !important; }
+    
 
     .cell{min-height:78px; padding:6px;}
     .tag{font-size:9.5px;}
@@ -564,18 +544,9 @@
     .cell { padding: 1.5px !important; min-height: 60px !important; }
     
     
-    .special-badge .sp-label, .special-badge .sp-icon { display: none !important; }
-    .special-badge .sp-abbr { 
-        display: inline-block !important; 
-        font-size: 10px !important; 
-        line-height: 1 !important; 
-    }
-    .special-badge {
-        width: 16px !important; height: 16px !important; border-radius: 50% !important;
-        display: inline-flex !important; align-items: center !important; justify-content: center !important;
-        padding: 0 !important; background: var(--neon-cyan) !important; color: #11131A !important;
-        flex: 0 0 auto !important;
-    }
+    
+    
+    
 
     .month-label{font-size:14px;}
   }
@@ -812,12 +783,35 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 
   @media (max-width: 1000px) and (min-width: 561px) {
     .tag { font-size: 7.5px !important; padding: 2px 3px !important; line-height: 1.1 !important; gap: 0 !important; }
-    .tag .tag-title, .special-badge .sp-inner-text { -webkit-line-clamp: 3 !important; font-size: 7.5px !important; line-height: 1.1 !important; display: inline-block !important; letter-spacing: -0.5px; }
-    .tag .tag-icon, .special-badge .sp-icon, .special-badge .sp-label { display: none !important; }
+    .tag .tag-title { -webkit-line-clamp: 3 !important; font-size: 7.5px !important; line-height: 1.1 !important; display: inline-block !important; letter-spacing: -0.5px; }
+    
+    .tag .tag-icon { display: none !important; }
+    
     .cell { padding: 2px !important; min-height: 70px !important; }
     .date-num { font-size: 10px !important; }
   }
+
+  @media (max-width: 1000px) {
+
+    .special-badge.badge-circle {
+        width: 18px !important; height: 18px !important; border-radius: 50% !important;
+        border: 1.5px solid currentColor !important;
+        display: inline-flex !important; align-items: center !important; justify-content: center !important;
+        padding: 0 !important; flex: 0 0 auto !important;
+        background-color: transparent; /* allows JS inline rgba to shine through */
+    }
+    .special-badge.badge-circle .sp-abbr {
+        display: inline-block !important; font-size: 10px !important; font-weight: 900 !important; line-height: 1 !important; letter-spacing: 0 !important;
+    }
+    .special-badge.badge-circle .sp-label,
+    .special-badge.badge-circle .sp-icon,
+    .special-badge.badge-circle .sp-inner-text {
+        display: none !important;
+    }
+    
+  }
 </style>
+
 <script>
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
