@@ -812,8 +812,8 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 
   @media (max-width: 1000px) and (min-width: 561px) {
     .tag { font-size: 7.5px !important; padding: 2px 3px !important; line-height: 1.1 !important; gap: 0 !important; }
-    .tag .tag-title, .special-badge .sp-label { -webkit-line-clamp: 3 !important; font-size: 7.5px !important; line-height: 1.1 !important; }
-    .tag .tag-icon, .special-badge .sp-icon { display: none !important; }
+    .tag .tag-title, .special-badge .sp-inner-text { -webkit-line-clamp: 3 !important; font-size: 7.5px !important; line-height: 1.1 !important; display: inline-block !important; letter-spacing: -0.5px; }
+    .tag .tag-icon, .special-badge .sp-icon, .special-badge .sp-label { display: none !important; }
     .cell { padding: 2px !important; min-height: 70px !important; }
     .date-num { font-size: 10px !important; }
   }
@@ -1429,7 +1429,12 @@ async function renderCalendarMonth(){
         s.style.color = color;
         s.style.background = isRest ? 'rgba(0,255,255,0.1)' : (isTrip ? 'rgba(255,153,0,0.1)' : 'rgba(255,0,0,0.1)');
         s.title = sp.title;
-        s.innerHTML = `<span class="sp-icon">${icon}</span><span class="sp-abbr">${getAbbr(sp.title)}</span><span class="sp-label">${escapeHtml(sp.title)}</span>`;
+        let innerText = sp.title;
+        if(isRest) innerText = '(휴방)';
+        else if(sp.title.includes('출국')) innerText = '(올출)';
+        else if(sp.title.includes('귀국') || sp.title.includes('입국')) innerText = '(올귀)';
+
+        s.innerHTML = `<span class="sp-icon">${icon}</span><span class="sp-abbr">${getAbbr(sp.title)}</span><span class="sp-inner-text" style="display:none; font-weight:800;">${innerText}</span><span class="sp-label">${escapeHtml(sp.title)}</span>`;
         spWrap.appendChild(s);
       });
       headerWrap.appendChild(spWrap);
