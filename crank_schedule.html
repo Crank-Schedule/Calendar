@@ -830,6 +830,14 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   }
 
   .tag-abbr, .sp-abbr { display: none; }
+
+  @media (max-width: 1000px) and (min-width: 561px) {
+    .tag { font-size: 7.5px !important; padding: 2px 3px !important; line-height: 1.1 !important; gap: 0 !important; }
+    .tag .tag-title, .special-badge .sp-label { -webkit-line-clamp: 3 !important; font-size: 7.5px !important; line-height: 1.1 !important; }
+    .tag .tag-icon, .special-badge .sp-icon { display: none !important; }
+    .cell { padding: 2px !important; min-height: 70px !important; }
+    .date-num { font-size: 10px !important; }
+  }
 </style>
 <script>
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
