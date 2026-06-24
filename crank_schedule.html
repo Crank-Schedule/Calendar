@@ -525,7 +525,7 @@
     
     
 
-    .tag-abbr, .sp-abbr { display: inline-block !important; font-weight: 800; font-family: 'Paperozi', sans-serif; letter-spacing: 0; }
+    .tag-abbr, .sp-abbr { display: inline-block !important; text-shadow: 0 0 4px currentColor, 0 0 8px currentColor;  font-weight: 800; font-family: 'Paperozi', sans-serif; letter-spacing: 0; }
 
     .cell{min-height:78px; padding:6px;}
     .tag{font-size:9.5px;}
@@ -574,7 +574,7 @@
     .special-badge {
         width: 16px !important; height: 16px !important; border-radius: 50% !important;
         display: inline-flex !important; align-items: center !important; justify-content: center !important;
-        padding: 0 !important; background: currentColor !important; color: var(--bg-main) !important;
+        padding: 0 !important; background: var(--neon-cyan) !important; color: #11131A !important;
         flex: 0 0 auto !important;
     }
 
@@ -1041,7 +1041,7 @@ function getAbbr(title) {
   if (up.includes('마리오 카트') || up.includes('마카')) return '마카';
   if (up.includes('롤') || up.includes('리그 오브 레전드') || up.includes('리그오브레전드')) return '롤';
   if (up.includes('이터널') || up.includes('이리')) return '이리';
-  if (up.includes('휴방')) return '휴방';
+  if (up.includes('휴방')) return '휴';
   if (up.includes('야구')) return '야구';
   if (up.includes('월드컵') || up.includes('축구')) return '축구';
   if (up.includes('모험가') || up.includes('앨리엇')) return '앨리';
