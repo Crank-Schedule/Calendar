@@ -1276,6 +1276,35 @@ let activeDate = null; // 모달에서 다루는 날짜 (Date 객체)
 let cache = {};
 let pickedColor = COLORS[0].hex;
 
+const ICONS = [
+  {id:'auto', name:'자동', html:'🤖'},
+  {id:'lol', name:'롤', html:'<img src="lol_icon.png" onerror="this.outerHTML=\'⚔️\'">'},
+  {id:'sc2', name:'스타 II', html:'<img src="sc2_icon.png" onerror="this.outerHTML=\'👾\'">'},
+  {id:'sc1', name:'스타', html:'<img src="sc_icon.png" onerror="this.outerHTML=\'👾\'">'},
+  {id:'er', name:'이리', html:'<img src="er_icon.png" onerror="this.outerHTML=\'🏹\'">'},
+  {id:'mk', name:'마카', html:'<img src="mk_icon.png" onerror="this.outerHTML=\'🎮\'">'},
+  {id:'bb', name:'야구', html:'⚾'},
+  {id:'poke', name:'포켓몬', html:'<img src="poke_icon.png" onerror="this.outerHTML=\'🔴\'">'},
+  {id:'chat', name:'저챗', html:'<img src="chat_icon.png" onerror="this.outerHTML=\'💬\'">'},
+  {id:'watch', name:'같이보기', html:'<img src="watch_icon.png" onerror="this.outerHTML=\'📺\'">'},
+  {id:'none', name:'없음', html:'❌'}
+];
+let pickedIcon = 'auto';
+
+function buildIconSwatches(){
+  const container = document.getElementById('iconSwatches');
+  if(!container) return;
+  container.innerHTML='';
+  ICONS.forEach(ic=>{
+    const btn = document.createElement('div');
+    btn.className='icon-sw'+(pickedIcon===ic.id?' active':'');
+    btn.innerHTML = `${ic.html} <span>${ic.name}</span>`;
+    btn.addEventListener('click', ()=>{ pickedIcon=ic.id; buildIconSwatches(); });
+    container.appendChild(btn);
+  });
+}
+
+
 const grid = document.getElementById('grid');
 const agenda = document.getElementById('agenda');
 const monthLabel = document.getElementById('monthLabel');
