@@ -1631,7 +1631,7 @@ async function renderListMonth(){
     listTimeline.appendChild(item);
   }
 
-  if (m === today.getMonth() && y === today.getFullYear()) {
+  if (m === today.getMonth() && y === today.getFullYear() && !window.hasAutoScrolled) {
     setTimeout(() => {
       const targetDay = Math.max(1, today.getDate() - 2); // 2 days before today
       const targetElem = document.getElementById('item-day-' + targetDay);
@@ -1641,6 +1641,7 @@ async function renderListMonth(){
         const elementPosition = targetElem.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 20;
         window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        window.hasAutoScrolled = true;
       }
     }, 200);
   } else {
@@ -1722,7 +1723,7 @@ document.getElementById('nextBtn').addEventListener('click', ()=>{
   render();
 });
 document.getElementById('todayBtn').addEventListener('click', ()=>{
-  current = new Date();
+  current = new Date(); window.hasAutoScrolled = false;
   sessionStorage.setItem('viewingDate', current.toISOString());
   render();
 });
