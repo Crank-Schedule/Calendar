@@ -1366,17 +1366,33 @@ function buildTagEl(en){
   const startMarquee = () => {
       const textSpan = t.querySelector('.tag-title');
       if(!textSpan) return;
-      textSpan.dataset.origDisplay = textSpan.style.display || '';
-      textSpan.dataset.origWhiteSpace = textSpan.style.whiteSpace || '';
-      textSpan.style.display = 'block';
-      textSpan.style.whiteSpace = 'nowrap';
-      if(textSpan.scrollWidth > textSpan.clientWidth) {
-          const diff = textSpan.scrollWidth - textSpan.clientWidth + 10;
-          textSpan.style.transition = `transform ${diff * 0.02}s linear`;
-          textSpan.style.transform = `translateX(-${diff}px)`;
+      
+      const avail = t.clientWidth - (textSpan.offsetLeft - t.offsetLeft);
+      const oldFlex = textSpan.style.getPropertyValue('flex-shrink');
+      const oldFlexPriority = textSpan.style.getPropertyPriority('flex-shrink');
+      const oldWhiteSpace = textSpan.style.getPropertyValue('white-space');
+      const oldWhiteSpacePriority = textSpan.style.getPropertyPriority('white-space');
+      
+      textSpan.dataset.origFlex = oldFlex;
+      textSpan.dataset.origFlexPri = oldFlexPriority;
+      textSpan.dataset.origWs = oldWhiteSpace;
+      textSpan.dataset.origWsPri = oldWhiteSpacePriority;
+
+      textSpan.style.setProperty('flex-shrink', '0', 'important');
+      textSpan.style.setProperty('white-space', 'nowrap', 'important');
+      
+      const trueWidth = textSpan.scrollWidth;
+      
+      if(trueWidth > avail) {
+          const diff = trueWidth - avail + 8;
+          textSpan.style.transition = 	ransform s linear;
+          textSpan.style.transform = 	ranslateX(-px);
       } else {
-          textSpan.style.display = textSpan.dataset.origDisplay;
-          textSpan.style.whiteSpace = textSpan.dataset.origWhiteSpace;
+          if (oldFlexPriority) textSpan.style.setProperty('flex-shrink', oldFlex, oldFlexPriority);
+          else textSpan.style.flexShrink = oldFlex;
+          
+          if (oldWhiteSpacePriority) textSpan.style.setProperty('white-space', oldWhiteSpace, oldWhiteSpacePriority);
+          else textSpan.style.whiteSpace = oldWhiteSpace;
       }
   };
   const stopMarquee = () => {
@@ -1384,8 +1400,12 @@ function buildTagEl(en){
       if(textSpan) {
           textSpan.style.transition = 'none';
           textSpan.style.transform = 'translateX(0)';
-          textSpan.style.display = textSpan.dataset.origDisplay || '';
-          textSpan.style.whiteSpace = textSpan.dataset.origWhiteSpace || '';
+          
+          if (textSpan.dataset.origFlexPri) textSpan.style.setProperty('flex-shrink', textSpan.dataset.origFlex, textSpan.dataset.origFlexPri);
+          else textSpan.style.flexShrink = textSpan.dataset.origFlex || '';
+          
+          if (textSpan.dataset.origWsPri) textSpan.style.setProperty('white-space', textSpan.dataset.origWs, textSpan.dataset.origWsPri);
+          else textSpan.style.whiteSpace = textSpan.dataset.origWs || '';
       }
   };
 t.onmouseenter = startMarquee;
