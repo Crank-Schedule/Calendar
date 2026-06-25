@@ -1935,13 +1935,30 @@ document.getElementById('doneBtn2').addEventListener('click', ()=>overlay.classL
 overlay.addEventListener('click', (e)=>{ if(e.target===overlay) overlay.classList.remove('show'); });
 
 document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
-  const title = titleInput.value.trim();
+  let title = titleInput.value.trim();
+  if(!title) {
+    if(pickedIcon !== 'auto' && pickedIcon !== 'none') {
+      const icObj = ICONS.find(i => i.id === pickedIcon);
+      if(icObj) title = icObj.name;
+    }
+  }
   if(!title) return;
+  
   const data = cache[storageKey(activeDate)];
   const day = activeDate.getDate();
   if(!data[day]) data[day]=[];
-  data[day].push({title, time:timeInput.value.trim(), link:linkInput.value.trim(), color:pickedColor});
+  data[day].push({
+    title, 
+    time:timeInput.value.trim(), 
+    link:linkInput.value.trim(), 
+    color:pickedColor,
+    icon: pickedIcon === 'auto' ? undefined : pickedIcon
+  });
+  
   titleInput.value=''; timeInput.value=''; linkInput.value='';
+  pickedIcon = 'auto';
+  if (typeof buildIconSwatches === 'function') buildIconSwatches();
+  
   renderEntries(activeDate);
   render();
 });
