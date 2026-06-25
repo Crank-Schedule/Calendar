@@ -1127,6 +1127,8 @@ function parseTitle(en) {
   let isBaseball = false;
   let isWatch = false;
   let isChat = false;
+  let isPoke = false;
+  let isEr = false;
   
   const lolRegex = /(?:리그\s*오브\s*레전드|리그오브레전드|롤|LOL)/i;
   const lolKeepRegex = /(?:LEC|LCK)/i;
@@ -1135,6 +1137,8 @@ function parseTitle(en) {
   const mkRegex = /(?:마리오\s*카트|마리오카트|마카)/i;
   const watchRegex = /(?:월드컵|올림픽)/i;
   const chatRegex = /(?:저챗|토크|Just\s*Chatting)/i;
+  const pokeRegex = /(?:포켓몬스터|포켓몬)/i;
+  const erRegex = /(?:이터널\s*리턴|이리)/i;
   
   if(lolRegex.test(displayTitle)) {
       isLol = true;
@@ -1180,6 +1184,16 @@ function parseTitle(en) {
       let rest = displayTitle.replace(chatRegex, '').trim();
       rest = rest.replace(/^[-:,\s]+/, '');
       displayTitle = rest === '' ? '저챗' : rest;
+  } else if(pokeRegex.test(displayTitle)) {
+      isPoke = true;
+      let rest = displayTitle.replace(pokeRegex, '').trim();
+      rest = rest.replace(/^[-:,\s]+/, '');
+      displayTitle = rest === '' ? '포켓몬' : rest;
+  } else if(erRegex.test(displayTitle)) {
+      isEr = true;
+      let rest = displayTitle.replace(erRegex, '').trim();
+      rest = rest.replace(/^[-:,\s]+/, '');
+      displayTitle = rest === '' ? '솔랭' : rest;
   }
   
   let iconHtml = getIcon(displayTitle);
@@ -1205,6 +1219,12 @@ function parseTitle(en) {
       customIcon = true;
   } else if(isChat) {
       iconHtml = `💬`;
+      customIcon = true;
+  } else if(isPoke) {
+      iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`;
+      customIcon = true;
+  } else if(isEr) {
+      iconHtml = `<img src="er_icon.png" onerror="this.outerHTML='🏹'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`;
       customIcon = true;
   }
   
