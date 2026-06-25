@@ -222,7 +222,7 @@
   }
   .replay-link.yt:hover{border-color:#FF0033; color:#FF0033;}
   .replay-link.chzzk:hover{border-color:#00FFA3; color:#00FFA3;}
-  .replay-link svg{width:14px;height:14px;flex-shrink:0;}
+  .replay-link svg{width:12px;height:12px;flex-shrink:0;}
 
   .nav{
     display:flex;align-items:center;gap:3px; flex-wrap:nowrap; justify-content:flex-end;
@@ -1095,15 +1095,15 @@ function parseTitle(en) {
     let customIcon = false;
     let iconHtml = '';
     
-    if(explicitIcon === 'lol') { iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
-    else if(explicitIcon === 'sc2') { iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
-    else if(explicitIcon === 'sc1') { iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
-    else if(explicitIcon === 'er') { iconHtml = `<img src="er_icon.png" onerror="this.outerHTML='🏹'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
-    else if(explicitIcon === 'mk') { iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    if(explicitIcon === 'lol') { iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'sc2') { iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'sc1') { iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'er') { iconHtml = `<img src="er_icon.png" onerror="this.outerHTML='🏹'" style="width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'mk') { iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:2px;">`; customIcon=true;}
     else if(explicitIcon === 'bb') { iconHtml = `⚾`; customIcon=true;}
-    else if(explicitIcon === 'poke') { iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
-    else if(explicitIcon === 'chat') { iconHtml = `<img src="chat_icon.png" onerror="this.outerHTML='💬'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
-    else if(explicitIcon === 'watch') { iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'poke') { iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'chat') { iconHtml = `<img src="chat_icon.png" onerror="this.outerHTML='💬'" style="width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'watch') { iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:2px;">`; customIcon=true;}
     
     return {
         displayTitle: displayTitle,
@@ -1147,10 +1147,10 @@ function parseTitle(en) {
   let customIcon = false;
   
   if(isLol) {
-      iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`;
+      iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:2px;">`;
       customIcon = true;
   } else if(isSc2) {
-      iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`;
+      iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:2px;">`;
       customIcon = true;
   } else if(isBaseball) {
       iconHtml = `⚾`;
