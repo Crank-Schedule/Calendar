@@ -1001,6 +1001,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
       </div>
       <div class="modal-actions">
         <button class="primary" id="addEntryBtn">추가하기</button>
+        <button id="cancelEditBtn" style="display:none; padding:10px; background:transparent; border:1px solid var(--border-strong); color:var(--text-dim); border-radius:4px; cursor:pointer; margin-top:8px; width:100%;">수정 취소</button>
         <button id="doneBtn">완료</button>
       </div>
     </div>
@@ -1287,6 +1288,7 @@ let current = savedDate ? new Date(savedDate) : new Date(); // 오늘 날짜를 
 let activeDate = null; // 모달에서 다루는 날짜 (Date 객체)
 let cache = {};
 let pickedColor = COLORS[0].hex;
+let editingEntryIndex = -1;
 
 const ICONS = [
   {id:'auto', name:'자동', html:'🤖'},
@@ -1903,7 +1905,7 @@ function renderEntries(dateObj){
           <button class="up" ${idx===0?'disabled':''}>▲</button>
           <button class="down" ${idx===entries.length-1?'disabled':''}>▼</button>
         </div>
-        <button class="del">✕</button>`;
+        <button class="edit" style="margin-right:4px;">✏️</button><button class="del">✕</button>`;
     }
     row.innerHTML = html;
     if(isAdmin){
@@ -1912,6 +1914,18 @@ function renderEntries(dateObj){
       });
       row.querySelector('.down').addEventListener('click', async ()=>{
         if(idx<entries.length-1){ [entries[idx+1],entries[idx]]=[entries[idx],entries[idx+1]]; await saveMonth(dateObj); renderEntries(dateObj); render(); }
+      });
+      row.querySelector('.edit').addEventListener('click', ()=>{
+        editingEntryIndex = idx;
+        titleInput.value = en.title || '';
+        timeInput.value = en.time || '';
+        linkInput.value = en.link || '';
+        pickedColor = en.color || COLORS[0].hex;
+        pickedIcon = en.icon || 'auto';
+        buildSwatches();
+        if(typeof buildIconSwatches === 'function') buildIconSwatches();
+        document.getElementById('addEntryBtn').textContent = '수정 완료';
+        document.getElementById('cancelEditBtn').style.display = 'block';
       });
       row.querySelector('.del').addEventListener('click', async ()=>{
         entries.splice(idx,1);
@@ -1926,6 +1940,11 @@ function renderEntries(dateObj){
 
 async function openModal(dateObj){
   activeDate = dateObj;
+  editingEntryIndex = -1;
+  const aeb = document.getElementById('addEntryBtn');
+  if(aeb) aeb.textContent = '추가하기';
+  const ceb = document.getElementById('cancelEditBtn');
+  if(ceb) ceb.style.display = 'none';
   await loadMonth(dateObj); // 해당 월 데이터가 캐시에 있는지 보장
   modalDate.textContent = (dateObj.getMonth()+1)+'월 '+dateObj.getDate()+'일';
   titleInput.value=''; timeInput.value=''; linkInput.value='';
@@ -1968,13 +1987,27 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
   const data = cache[storageKey(activeDate)];
   const day = activeDate.getDate();
   if(!data[day]) data[day]=[];
-  data[day].push({
-    title, 
-    time:timeInput.value.trim(), 
-    link:linkInput.value.trim(), 
-    color:pickedColor,
-    icon: pickedIcon === 'auto' ? undefined : pickedIcon
-  });
+  
+  if(editingEntryIndex >= 0) {
+    data[day][editingEntryIndex] = {
+      title, 
+      time:timeInput.value.trim(), 
+      link:linkInput.value.trim(), 
+      color:pickedColor,
+      icon: pickedIcon === 'auto' ? undefined : pickedIcon
+    };
+    editingEntryIndex = -1;
+    document.getElementById('addEntryBtn').textContent = '추가하기';
+    document.getElementById('cancelEditBtn').style.display = 'none';
+  } else {
+    data[day].push({
+      title, 
+      time:timeInput.value.trim(), 
+      link:linkInput.value.trim(), 
+      color:pickedColor,
+      icon: pickedIcon === 'auto' ? undefined : pickedIcon
+    });
+  }
   
   titleInput.value=''; timeInput.value=''; linkInput.value='';
   pickedIcon = 'auto';
@@ -1983,6 +2016,18 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
   renderEntries(activeDate);
   render();
 });
+
+document.getElementById('cancelEditBtn').addEventListener('click', ()=>{
+  editingEntryIndex = -1;
+  titleInput.value=''; timeInput.value=''; linkInput.value='';
+  pickedIcon = 'auto';
+  pickedColor = COLORS[0].hex;
+  buildSwatches();
+  if (typeof buildIconSwatches === 'function') buildIconSwatches();
+  document.getElementById('addEntryBtn').textContent = '추가하기';
+  document.getElementById('cancelEditBtn').style.display = 'none';
+});
+
 
 function addQuickTag(title, color) {
   const data = cache[storageKey(activeDate)];
