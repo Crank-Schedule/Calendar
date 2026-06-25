@@ -970,6 +970,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         <button id="quickRest" style="flex:1; padding:8px 0; font-weight:700; background:rgba(255,0,0,0.1); border:1px solid var(--neon-red); color:var(--neon-red); border-radius: 4px; cursor:pointer; font-size:12px;">+ 휴방</button>
         <button id="quickReturn" style="flex:1; padding:8px 0; font-weight:700; background:rgba(0,150,255,0.1); border:1px solid var(--neon-cyan); color:var(--neon-cyan); border-radius: 4px; cursor:pointer; font-size:12px;">+ 올귀</button>
         <button id="quickDepart" style="flex:1; padding:8px 0; font-weight:700; background:rgba(255,150,0,0.1); border:1px solid var(--neon-amber); color:var(--neon-amber); border-radius: 4px; cursor:pointer; font-size:12px;">+ 올출</button>
+        <button id="quickTrip" style="flex:1; padding:8px 0; font-weight:700; background:rgba(153,0,255,0.1); border:1px solid var(--neon-violet); color:var(--neon-violet); border-radius: 4px; cursor:pointer; font-size:12px;">+ 올출장</button>
       </div>
       <div style="display:flex; gap:6px; margin-bottom:12px;">
         <input type="text" id="customQuickTagInput" placeholder="커스텀 태그 텍스트 입력..." style="flex:1; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-strong); padding:8px; border-radius:4px; font-size:12px;">
@@ -1109,6 +1110,7 @@ function getAbbr(title) {
   const up = title.toUpperCase();
   if (up.includes('귀국') || up.includes('입국')) return '귀';
   if (up.includes('출국')) return '출';
+  if (up.includes('출장')) return '출장';
   if (up.includes('스타2') || up.includes('스타 II') || up.includes('스타II') || up.includes('SC2')) return '스II';
   if (up.includes('스타크래프트') || up.includes('스타1') || up.includes('스타')) return '스타';
   if (up.includes('마리오 카트') || up.includes('마카')) return '마카';
@@ -1165,17 +1167,22 @@ function parseTitle(en) {
   let isSc1 = false;
   let isMk = false;
   let isBaseball = false;
+  let isWatch = false;
   
   const lolRegex = /(?:리그\s*오브\s*레전드|리그오브레전드|롤|LOL)/i;
+  const lolKeepRegex = /(?:LEC|LCK)/i;
   const sc2Regex = /(?:스타크래프트\s*2|스타크래프트2|스타\s*2|스타2|스타\s*II|스타II|SC2)/i;
   const sc1Regex = /(?:스타크래프트\s*1|스타크래프트1|스타\s*1|스타1|스타크래프트|스타)/i;
   const mkRegex = /(?:마리오\s*카트|마리오카트|마카)/i;
+  const watchRegex = /(?:월드컵|올림픽)/i;
   
   if(lolRegex.test(displayTitle)) {
       isLol = true;
       let rest = displayTitle.replace(lolRegex, '').trim();
       rest = rest.replace(/^[-:,\s]+/, '');
       displayTitle = rest === '' ? '솔랭' : rest;
+  } else if (lolKeepRegex.test(displayTitle)) {
+      isLol = true;
   } else if(sc2Regex.test(displayTitle)) {
       isSc2 = true;
       let rest = displayTitle.replace(sc2Regex, '').trim();
@@ -1206,6 +1213,8 @@ function parseTitle(en) {
       let rest = displayTitle.replace(/야구/g, '').trim();
       rest = rest.replace(/^[-:,\s]+/, '');
       displayTitle = rest === '' ? '야구' : rest;
+  } else if(watchRegex.test(displayTitle)) {
+      isWatch = true;
   }
   
   let iconHtml = getIcon(displayTitle);
@@ -1225,6 +1234,9 @@ function parseTitle(en) {
       customIcon = true;
   } else if(isBaseball) {
       iconHtml = `⚾`;
+      customIcon = true;
+  } else if(isWatch) {
+      iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`;
       customIcon = true;
   }
   
@@ -1481,11 +1493,20 @@ async function saveMonth(d){
   }
 }
 
+
+function getFirstChar(title) {
+  if(!title) return '';
+  if(title.includes('출장') || title.includes('출국')) return '출';
+  if(title.includes('귀국') || title.includes('입국')) return '귀';
+  if(title.includes('휴방')) return '휴';
+  return title.charAt(0);
+}
+
 function buildTagEl(en){
   const parsed = parseTitle(en);
   const t = document.createElement('div');
   t.className='tag' + (parsed.customIcon ? ' tag-custom-icon' : '');
-  t.setAttribute('data-first-char', parsed.displayTitle.charAt(0));
+  t.setAttribute('data-first-char', getFirstChar(parsed.displayTitle));
   t.style.borderColor = getDisplayColor(en.color);
   t.style.color = getDisplayColor(en.color);
   t.style.background = getDisplayColor(en.color)+'1A';
@@ -1974,6 +1995,7 @@ function addQuickTag(title, color) {
 document.getElementById('quickRest').addEventListener('click', () => addQuickTag('휴방', '#FF0000'));
 document.getElementById('quickReturn').addEventListener('click', () => addQuickTag('올귀', '#00BFFF'));
 document.getElementById('quickDepart').addEventListener('click', () => addQuickTag('올출', '#FFA500'));
+document.getElementById('quickTrip').addEventListener('click', () => addQuickTag('올리비아 출장', '#9900FF'));
 document.getElementById('customQuickTagBtn').addEventListener('click', () => {
   const val = document.getElementById('customQuickTagInput').value.trim();
   if (val) {
