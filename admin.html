@@ -1837,7 +1837,7 @@ async function renderListMonth(){
     listTimeline.appendChild(item);
   }
 
-  if (m === today.getMonth() && y === today.getFullYear()) {
+  if (m === today.getMonth() && y === today.getFullYear() && !sessionStorage.getItem('hasAutoScrolled')) {
     setTimeout(() => {
       const targetDay = Math.max(1, today.getDate() - 2); // 2 days before today
       const targetElem = document.getElementById('item-day-' + targetDay);
@@ -1846,10 +1846,12 @@ async function renderListMonth(){
         const headerOffset = stickyHeader ? stickyHeader.offsetHeight : 200;
         const elementPosition = targetElem.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 20;
+        sessionStorage.setItem('hasAutoScrolled', 'true');
         window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
       }
     }, 200);
   } else {
+    sessionStorage.setItem('hasAutoScrolled', 'true');
     window.scrollTo({ top: 0, behavior: 'auto' });
   }
 }
@@ -2061,6 +2063,7 @@ document.getElementById('nextBtn').addEventListener('click', ()=>{
 });
 document.getElementById('todayBtn').addEventListener('click', ()=>{
   current = new Date();
+  sessionStorage.removeItem('hasAutoScrolled');
   sessionStorage.setItem('viewingDate', current.toISOString());
   render();
 });
