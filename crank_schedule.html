@@ -1104,7 +1104,7 @@ function parseTitle(en) {
     else if(explicitIcon === 'bb') { iconHtml = `⚾`; customIcon=true;}
     else if(explicitIcon === 'poke') { iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`; customIcon=true;}
     else if(explicitIcon === 'chat') { iconHtml = `<img src="chat_icon.png" onerror="this.outerHTML='💬'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`; customIcon=true;}
-    else if(explicitIcon === 'watch') { iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'watch') { iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:1.2em;height:1.2em;border-radius:2px;vertical-align:-0.3em;margin-right:0px;margin-left:-0.15em;">`; customIcon=true;}
     
     return {
         displayTitle: displayTitle,
@@ -1194,7 +1194,7 @@ function parseTitle(en) {
       iconHtml = `⚾`;
       customIcon = true;
   } else if(isWatch) {
-      iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`;
+      iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:20px;height:20px;border-radius:2px;vertical-align:-5px;margin-right:-2px;margin-left:-3px;">`;
       customIcon = true;
   }
   
