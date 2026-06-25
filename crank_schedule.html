@@ -1366,22 +1366,17 @@ function buildTagEl(en){
   const startMarquee = () => {
       const textSpan = t.querySelector('.tag-title');
       if(!textSpan) return;
-      
-      // Temporarily set styles to measure true width
-      textSpan.style.setProperty('white-space', 'nowrap', 'important');
-      
-      // Measure how much it overflows the parent
-      // textSpan.scrollWidth is its true unconstrained width
-      // t.clientWidth is the width of the visible container
-      // But we also need to account for icon and padding.
-      // So we just check if textSpan is wider than its available space.
-      
-      const availableSpace = t.clientWidth - (textSpan.offsetLeft - t.offsetLeft);
-      
-      if(textSpan.scrollWidth > availableSpace) {
-          const diff = textSpan.scrollWidth - availableSpace + 10;
-          textSpan.style.transition = 	ransform s linear;
-          textSpan.style.transform = 	ranslateX(-px);
+      textSpan.dataset.origDisplay = textSpan.style.display || '';
+      textSpan.dataset.origWhiteSpace = textSpan.style.whiteSpace || '';
+      textSpan.style.display = 'block';
+      textSpan.style.whiteSpace = 'nowrap';
+      if(textSpan.scrollWidth > textSpan.clientWidth) {
+          const diff = textSpan.scrollWidth - textSpan.clientWidth + 10;
+          textSpan.style.transition = `transform ${diff * 0.02}s linear`;
+          textSpan.style.transform = `translateX(-${diff}px)`;
+      } else {
+          textSpan.style.display = textSpan.dataset.origDisplay;
+          textSpan.style.whiteSpace = textSpan.dataset.origWhiteSpace;
       }
   };
   const stopMarquee = () => {
@@ -1389,10 +1384,261 @@ function buildTagEl(en){
       if(textSpan) {
           textSpan.style.transition = 'none';
           textSpan.style.transform = 'translateX(0)';
-          textSpan.style.whiteSpace = '';
+          textSpan.style.display = textSpan.dataset.origDisplay || '';
+          textSpan.style.whiteSpace = textSpan.dataset.origWhiteSpace || '';
       }
   };
-  t.onmouseenter = startMarquee;
+t.onmouseenter = startMarquee;
+  t.onmouseleave = stopMarquee;
+  t.ontouchstart = startMarquee;
+  t.ontouchend = stopMarquee;
+  return t;
+}
+
+async function renderCalendarMonth(){
+  const data = await loadMonth(current);
+  const grid = document.getElementById('grid');
+  const agenda = document.getElementById('agenda');
+  if(grid) grid.innerHTML = '';
+  if(agenda) agenda.innerHTML = '';
+
+  const firstDay = new Date(current.getFullYear(), current.getMonth(), 1);
+  const startOffset = firstDay.getDay();
+  const daysInMonth = new Date(current.getFullYear(), current.getMonth()+1, 0).getDate();
+  const today = new Date();
+  const dowNames = ['일','월','화','수','목','금','토'];
+
+  for(let i=0;i<startOffset;i++){
+    const c = document.createElement('div');
+    c.className='cell empty';
+    if(grid) grid.appendChild(c);
+  }
+  for(let day=1; day<=daysInMonth; day++){
+    const cellDate = new Date(current.getFullYear(), current.getMonth(), day);
+    const entries = data[day] || [];
+    
+    const c = document.createElement('div');
+    c.className='cell';
+    if(isSameYMD(cellDate, today)) c.classList.add('today');
+    
+    const headerWrap = document.createElement('div');
+    headerWrap.style.display = 'flex';
+    headerWrap.style.justifyContent = 'space-between';
+    headerWrap.style.alignItems = 'flex-start';
+    
+    const num = document.createElement('div');
+    num.className='date-num'; num.textContent=day;
+    headerWrap.appendChild(num);
+
+    const specialKeywords = ['휴방', '출국', '귀국', '입국', '결방'];
+    const specials = entries.filter(e => specialKeywords.some(k => e.title.includes(k)));
+    const regulars = entries.filter(e => !specialKeywords.some(k => e.title.includes(k)));
+
+    if(specials.length > 0){
+      const spWrap = document.createElement('div');
+      spWrap.style.display = 'flex';
+      spWrap.style.flexDirection = 'column';
+      spWrap.style.alignItems = 'flex-end';
+      spWrap.style.gap = '2px';
+      let hasRest = false;
+      let hasTrip = false;
+      specials.forEach(sp => {
+        const isRest = sp.title.includes('휴방');
+        const isTrip = sp.title.includes('귀국') || sp.title.includes('출국') || sp.title.includes('입국');
+        if (isRest) hasRest = true;
+        if (isTrip) hasTrip = true;
+        const color = getDisplayColor(isRest ? '#00FFFF' : (isTrip ? '#FF9900' : '#FF0000'));
+        const icon = isRest ? '😴' : (isTrip ? '✈️' : '🚫');
+        const s = document.createElement('span');
+        s.className = 'special-badge' + ((isRest || isTrip) ? ' badge-circle' : '');
+        s.style.color = color;
+        s.style.background = isRest ? 'rgba(0,255,255,0.1)' : (isTrip ? 'rgba(255,153,0,0.1)' : 'rgba(255,0,0,0.1)');
+        s.title = sp.title;
+        let innerText = sp.title;
+        if(isRest) innerText = '(휴방)';
+        else if(sp.title.includes('출국')) innerText = '(올출)';
+        else if(sp.title.includes('귀국') || sp.title.includes('입국')) innerText = '(올귀)';
+
+        s.innerHTML = `<span class="sp-icon">${icon}</span><span class="sp-abbr">${getAbbr(sp.title)}</span><span class="sp-inner-text" style="display:none; font-weight:800;">${innerText}</span><span class="sp-label">${escapeHtml(sp.title)}</span>`;
+        spWrap.appendChild(s);
+      });
+      headerWrap.appendChild(spWrap);
+      if(hasRest) c.classList.add('is-rest');
+      if(hasTrip) c.classList.add('is-trip');
+    }
+    c.appendChild(headerWrap);
+
+    const tagsWrap = document.createElement('div');
+    tagsWrap.className='tags';
+    regulars.slice(0,4).forEach(en=> tagsWrap.appendChild(buildTagEl(en)));
+    if(regulars.length>4){
+      const more = document.createElement('div');
+      more.className='more'; more.textContent='+'+(regulars.length-4)+'개';
+      tagsWrap.appendChild(more);
+    }
+    c.appendChild(tagsWrap);
+    c.addEventListener('click', ()=>openModal(cellDate));
+    if(grid) grid.appendChild(c);
+
+    const row = document.createElement('div');
+    row.className = 'agenda-row'+(isSameYMD(cellDate, today) ? ' today' : '');
+    const dateBlock = document.createElement('div');
+    dateBlock.className = 'agenda-date';
+    dateBlock.innerHTML = `<span class="num">${day}</span><span class="dow">${dowNames[cellDate.getDay()]}</span>`;
+    row.appendChild(dateBlock);
+    if(entries.length===0){
+      const empty = document.createElement('div');
+      empty.className='agenda-empty'; empty.textContent='일정 없음';
+      row.appendChild(empty);
+    } else {
+      const tagsBlock = document.createElement('div');
+      tagsBlock.className = 'agenda-tags';
+      entries.forEach(en=>{
+        const t = document.createElement('span');
+        t.className='agenda-tag';
+        t.style.color = getDisplayColor(en.color);
+        const label = document.createElement('span');
+        label.innerHTML = withIcon(en.title) + (en.time ? ' · '+escapeHtml(en.time) : '');
+        t.appendChild(label);
+        if(en.link){
+          const a = document.createElement('a');
+          a.href=en.link; a.target='_blank'; a.rel='noopener'; a.textContent='🔗';
+          a.addEventListener('click', e=>e.stopPropagation());
+          t.appendChild(a);
+        }
+        tagsBlock.appendChild(t);
+      });
+      row.appendChild(tagsBlock);
+    }
+    row.addEventListener('click', ()=>openModal(cellDate));
+    if(agenda) agenda.appendChild(row);
+  }
+}
+
+
+// --- OVERRIDE RENDER FUNCTION FOR LIST LAYOUT ---
+let currentView = 'list'; // 'list' or 'calendar'
+
+async function render(){
+  const y = current.getFullYear();
+  const m = current.getMonth();
+  const monthLabel = document.getElementById('monthLabel');
+  if(monthLabel) monthLabel.innerHTML = `<span class="ml-full">${y}년 ${m+1}월</span><span class="ml-short">${m+1}월</span>`;
+
+  const gridSec = document.getElementById('scheduleGridSection');
+  const listSec = document.getElementById('scheduleListSection');
+  const monthBtn = document.getElementById('monthViewBtn');
+  const weekBtn = document.getElementById('weekViewBtn');
+
+  if(monthBtn) monthBtn.classList.toggle('active', currentView === 'calendar');
+  if(weekBtn) weekBtn.classList.toggle('active', currentView === 'list');
+
+  if (currentView === 'calendar') {
+    if(gridSec) gridSec.style.display = 'block';
+    if(listSec) listSec.style.display = 'none';
+    await renderCalendarMonth();
+  } else {
+    if(gridSec) gridSec.style.display = 'none';
+    if(listSec) listSec.style.display = 'block';
+    await renderListMonth();
+  }
+}
+
+async function renderListMonth(){
+  const today = new Date();
+  const dowNames = ['일','월','화','수','목','금','토'];
+  
+  const y = current.getFullYear();
+  const m = current.getMonth();
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+
+  const allDates = [];
+  for(let i=1; i<=daysInMonth; i++){
+    allDates.push(new Date(y, m, i));
+  }
+
+  const listTimeline = document.getElementById('listTimeline');
+  if(!listTimeline) return;
+  listTimeline.innerHTML = '';
+
+  const replayChannel = YT_CHANNELS.find(c=>c.key==='replay');
+  let replayVideos = (window.ALL_REPLAYS || []).slice();
+  try {
+    const fetched = await fetchLatestVideos(replayChannel, 50);
+    const existingIds = new Set(replayVideos.map(v => v.videoId));
+    fetched.reverse().forEach(v => {
+      if(!existingIds.has(v.videoId)) replayVideos.unshift(v);
+    });
+  } catch(e) {}
+  
+  const videoDateMap = {}; 
+  replayVideos.forEach(v => {
+    const rm = v.title.match(/^(\d{2})(\d{2})(\d{2})/);
+    if(rm) {
+      const vy = "20" + rm[1];
+      const vmo = parseInt(rm[2],10);
+      const vd = parseInt(rm[3],10);
+      videoDateMap[`${vy}-${vmo}-${vd}`] = v;
+    }
+  });
+
+  for(const dt of allDates){
+    const sk = storageKey(dt);
+    if(!cache[sk]) {
+        await loadMonth(dt);
+    }
+    const entries = (cache[sk] && cache[sk][dt.getDate()]) || [];
+    
+    const dtZero = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+    const todayZero = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const isPast = dtZero < todayZero;
+    const isToday = dtZero.getTime() === todayZero.getTime();
+    
+    const daysDiff = Math.floor((todayZero - dtZero) / (1000 * 60 * 60 * 24));
+
+    const item = document.createElement('div');
+    item.className = 'timeline-item';
+    item.id = 'item-day-' + dt.getDate();
+    if(isToday) item.classList.add('is-today');
+    item.addEventListener('click', ()=> {
+        if(typeof openModal === 'function') openModal(dt);
+    }); 
+    
+    const dateCol = document.createElement('div');
+    dateCol.className = 'timeline-date';
+    dateCol.innerHTML = `<div class="m-d">${dt.getMonth()+1}/${dt.getDate()}</div><div class="dow">${dowNames[dt.getDay()]}</div>`;
+    if(isToday) dateCol.innerHTML += `<div class="today-mark">TODAY</div>`;
+    item.appendChild(dateCol);
+
+    const contentCol = document.createElement('div');
+    contentCol.className = 'timeline-content';
+    if(entries.length === 0){
+        contentCol.innerHTML = `<span style="color:var(--text-dim); font-size:14px;">일정 없음</span>`;
+    } else {
+        entries.forEach(en => {
+            const t = document.createElement('span');
+            t.className = 'schedule-tag';
+            t.style.borderColor = getDisplayColor(en.color);
+            t.innerHTML = `<span class="marquee-text" style="display:inline-block; white-space:nowrap; flex-shrink:0;">${withIcon(en.title)} ${en.time ? '· '+escapeHtml(en.time) : ''}</span>`;
+            if(en.link && safeUrl(en.link)) {
+                t.innerHTML += ` <a href="${safeUrl(en.link)}" target="_blank" style="margin-left:4px; flex-shrink:0;" onclick="event.stopPropagation()">🔗</a>`;
+            }
+            const startMarquee = () => {
+                const textSpan = t.querySelector('.marquee-text');
+                if (textSpan && textSpan.scrollWidth > t.clientWidth) {
+                    const diff = textSpan.scrollWidth - t.clientWidth + 20;
+                    textSpan.style.transition = `transform ${diff * 0.015}s linear`;
+                    textSpan.style.transform = `translateX(-${diff}px)`;
+                }
+            };
+            const stopMarquee = () => {
+                const textSpan = t.querySelector('.marquee-text');
+                if (textSpan) {
+                    textSpan.style.transition = 'none';
+                    textSpan.style.transform = 'translateX(0)';
+                }
+            };
+            t.onmouseenter = startMarquee;
             t.ontouchstart = startMarquee;
             t.onmouseleave = stopMarquee;
             t.ontouchend = stopMarquee;
