@@ -1847,7 +1847,7 @@ async function renderListMonth(){
         const elementPosition = targetElem.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 20;
         sessionStorage.setItem('hasAutoScrolled', 'true');
-        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        window.scrollTo({ top: offsetPosition, behavior: 'auto' });
       }
     }, 200);
   } else {
