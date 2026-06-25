@@ -2009,5 +2009,46 @@ render();
     });
   }
 </script>
+
+<script>
+// --- Mobile Swipe Gestures for Month Navigation ---
+(function(){
+  let touchStartX = 0;
+  let touchStartY = 0;
+  
+  window.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, {passive: true});
+  
+  window.addEventListener('touchend', function(e) {
+    let touchEndX = e.changedTouches[0].screenX;
+    let touchEndY = e.changedTouches[0].screenY;
+    
+    let diffX = touchEndX - touchStartX;
+    let diffY = touchEndY - touchStartY;
+    
+    // Check if it's mostly horizontal swipe and distance is at least 60px
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 60) {
+      // Prevent swiping if a modal overlay is currently open
+      let overlay = document.getElementById('overlay');
+      if (overlay && overlay.classList.contains('show')) return;
+      
+      let popovers = document.querySelectorAll('.popover.show');
+      if (popovers.length > 0) return; // ignore if popovers are open
+      
+      if (diffX < 0) {
+        // Swiped left -> Next
+        let nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) nextBtn.click();
+      } else {
+        // Swiped right -> Prev
+        let prevBtn = document.getElementById('prevBtn');
+        if (prevBtn) prevBtn.click();
+      }
+    }
+  }, {passive: true});
+})();
+</script>
 </body>
 </html>
