@@ -850,6 +850,17 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
       .tag.tag-custom-icon .tag-title { display: -webkit-box !important; }
   }
 
+
+    .icon-swatches { display:flex; flex-wrap:wrap; gap:6px; margin-top:5px; }
+    .icon-sw { 
+      display:flex; align-items:center; gap:4px; 
+      padding:4px 8px; border-radius:4px; 
+      border:1px solid var(--border-strong); 
+      background:var(--bg-panel); cursor:pointer; 
+      font-size:11px; color:var(--text-primary); transition:all 0.2s; 
+    }
+    .icon-sw img { width:14px; height:14px; border-radius:2px; }
+    .icon-sw.active { border-color:var(--neon-cyan); background:rgba(0,150,255,0.1); font-weight:bold; }
 </style>
 
 <script>
@@ -1073,8 +1084,41 @@ function getAbbr(title) {
   return clean.substring(0, 2);
 }
 
-function parseTitle(title) {
-  let displayTitle = title || '';
+function parseTitle(en) {
+  let titleStr = typeof en === 'string' ? en : (en.title || '');
+  let explicitIcon = typeof en === 'object' && en.icon ? en.icon : null;
+  if(explicitIcon === 'auto') explicitIcon = null;
+
+  let displayTitle = titleStr || '';
+  
+  if (explicitIcon && explicitIcon !== 'none') {
+    let customIcon = false;
+    let iconHtml = '';
+    
+    if(explicitIcon === 'lol') { iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'sc2') { iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'sc1') { iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'er') { iconHtml = `<img src="er_icon.png" onerror="this.outerHTML='🏹'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'mk') { iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'bb') { iconHtml = `⚾`; customIcon=true;}
+    else if(explicitIcon === 'poke') { iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'chat') { iconHtml = `<img src="chat_icon.png" onerror="this.outerHTML='💬'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'watch') { iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    
+    return {
+        displayTitle: displayTitle,
+        customIcon: customIcon,
+        iconHtml: iconHtml
+    };
+  } else if (explicitIcon === 'none') {
+    return {
+        displayTitle: displayTitle,
+        customIcon: false,
+        iconHtml: ''
+    };
+  }
+
+  // Auto Mode
   let isLol = false;
   let isSc2 = false;
   let isBaseball = false;
@@ -1082,7 +1126,6 @@ function parseTitle(title) {
   const lolRegex = /(?:리그\s*오브\s*레전드|리그오브레전드|롤|LOL)/i;
   const sc2Regex = /(?:스타크래프트\s*2|스타크래프트2|스타\s*2|스타2|스타\s*II|스타II|SC2)/i;
   
-  // Only Lol, Sc2, and Baseball have active abbreviation rules right now.
   if(lolRegex.test(displayTitle)) {
       isLol = true;
       let rest = displayTitle.replace(lolRegex, '').trim();
@@ -1116,9 +1159,6 @@ function parseTitle(title) {
   
   return {
       displayTitle: displayTitle,
-      isLol: isLol,
-      isSc2: isSc2,
-      isBaseball: isBaseball,
       customIcon: customIcon,
       iconHtml: iconHtml
   };
@@ -1136,10 +1176,10 @@ function getIcon(title){
   if(generalGames.some(k=>t.includes(k))) return '🎮';
   return '📌';
 }
-function withIcon(title){
-  const parsed = parseTitle(title);
+function withIcon(en){
+  const parsed = parseTitle(en);
   const safe = escapeHtml(parsed.displayTitle);
-  return (parsed.customIcon ? parsed.iconHtml + ' ' : (getIcon(parsed.displayTitle) ? getIcon(parsed.displayTitle) + ' ' : '')) + safe;
+  return (parsed.iconHtml ? parsed.iconHtml + ' ' : '') + safe;
 }
 
 
@@ -1258,7 +1298,7 @@ async function loadMonth(d){
 // saveMonth removed
 
 function buildTagEl(en){
-  const parsed = parseTitle(en.title);
+  const parsed = parseTitle(en);
   const t = document.createElement('div');
   t.className='tag' + (parsed.customIcon ? ' tag-custom-icon' : '');
   t.setAttribute('data-first-char', parsed.displayTitle.charAt(0));

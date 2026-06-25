@@ -819,6 +819,17 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
       .tag.tag-custom-icon .tag-title { display: -webkit-box !important; }
   }
 
+
+    .icon-swatches { display:flex; flex-wrap:wrap; gap:6px; margin-top:5px; }
+    .icon-sw { 
+      display:flex; align-items:center; gap:4px; 
+      padding:4px 8px; border-radius:4px; 
+      border:1px solid var(--border-strong); 
+      background:var(--bg-panel); cursor:pointer; 
+      font-size:11px; color:var(--text-primary); transition:all 0.2s; 
+    }
+    .icon-sw img { width:14px; height:14px; border-radius:2px; }
+    .icon-sw.active { border-color:var(--neon-cyan); background:rgba(0,150,255,0.1); font-weight:bold; }
 </style>
 
 <script>
@@ -983,6 +994,10 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         <label>태그 색상</label>
         <div class="swatches" id="swatches"></div>
       </div>
+      <div class="form-row">
+        <label>아이콘 선택</label>
+        <div class="icon-swatches" id="iconSwatches"></div>
+      </div>
       <div class="modal-actions">
         <button class="primary" id="addEntryBtn">추가하기</button>
         <button id="doneBtn">완료</button>
@@ -1110,8 +1125,41 @@ function getAbbr(title) {
   return clean.substring(0, 2);
 }
 
-function parseTitle(title) {
-  let displayTitle = title || '';
+function parseTitle(en) {
+  let titleStr = typeof en === 'string' ? en : (en.title || '');
+  let explicitIcon = typeof en === 'object' && en.icon ? en.icon : null;
+  if(explicitIcon === 'auto') explicitIcon = null;
+
+  let displayTitle = titleStr || '';
+  
+  if (explicitIcon && explicitIcon !== 'none') {
+    let customIcon = false;
+    let iconHtml = '';
+    
+    if(explicitIcon === 'lol') { iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'sc2') { iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'sc1') { iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'er') { iconHtml = `<img src="er_icon.png" onerror="this.outerHTML='🏹'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'mk') { iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'bb') { iconHtml = `⚾`; customIcon=true;}
+    else if(explicitIcon === 'poke') { iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'chat') { iconHtml = `<img src="chat_icon.png" onerror="this.outerHTML='💬'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    else if(explicitIcon === 'watch') { iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`; customIcon=true;}
+    
+    return {
+        displayTitle: displayTitle,
+        customIcon: customIcon,
+        iconHtml: iconHtml
+    };
+  } else if (explicitIcon === 'none') {
+    return {
+        displayTitle: displayTitle,
+        customIcon: false,
+        iconHtml: ''
+    };
+  }
+
+  // Auto Mode
   let isLol = false;
   let isSc2 = false;
   let isBaseball = false;
@@ -1119,7 +1167,6 @@ function parseTitle(title) {
   const lolRegex = /(?:리그\s*오브\s*레전드|리그오브레전드|롤|LOL)/i;
   const sc2Regex = /(?:스타크래프트\s*2|스타크래프트2|스타\s*2|스타2|스타\s*II|스타II|SC2)/i;
   
-  // Only Lol, Sc2, and Baseball have active abbreviation rules right now.
   if(lolRegex.test(displayTitle)) {
       isLol = true;
       let rest = displayTitle.replace(lolRegex, '').trim();
@@ -1153,9 +1200,6 @@ function parseTitle(title) {
   
   return {
       displayTitle: displayTitle,
-      isLol: isLol,
-      isSc2: isSc2,
-      isBaseball: isBaseball,
       customIcon: customIcon,
       iconHtml: iconHtml
   };
@@ -1173,10 +1217,10 @@ function getIcon(title){
   if(generalGames.some(k=>t.includes(k))) return '🎮';
   return '📌';
 }
-function withIcon(title){
-  const parsed = parseTitle(title);
+function withIcon(en){
+  const parsed = parseTitle(en);
   const safe = escapeHtml(parsed.displayTitle);
-  return (parsed.customIcon ? parsed.iconHtml + ' ' : (getIcon(parsed.displayTitle) ? getIcon(parsed.displayTitle) + ' ' : '')) + safe;
+  return (parsed.iconHtml ? parsed.iconHtml + ' ' : '') + safe;
 }
 
 let isAdmin = true;
@@ -1378,7 +1422,7 @@ async function saveMonth(d){
 }
 
 function buildTagEl(en){
-  const parsed = parseTitle(en.title);
+  const parsed = parseTitle(en);
   const t = document.createElement('div');
   t.className='tag' + (parsed.customIcon ? ' tag-custom-icon' : '');
   t.setAttribute('data-first-char', parsed.displayTitle.charAt(0));
@@ -1527,7 +1571,7 @@ async function renderCalendarMonth(){
         t.className='agenda-tag';
         t.style.color = getDisplayColor(en.color);
         const label = document.createElement('span');
-        label.innerHTML = withIcon(en.title) + (en.time ? ' · '+escapeHtml(en.time) : '');
+        label.innerHTML = withIcon(en) + (en.time ? ' · '+escapeHtml(en.time) : '');
         t.appendChild(label);
         if(en.link){
           const a = document.createElement('a');
@@ -1648,7 +1692,7 @@ async function renderListMonth(){
             const t = document.createElement('span');
             t.className = 'schedule-tag';
             t.style.borderColor = getDisplayColor(en.color);
-            t.innerHTML = `<span class="marquee-text" style="display:inline-block; white-space:nowrap; flex-shrink:0;">${withIcon(en.title)} ${en.time ? '· '+escapeHtml(en.time) : ''}</span>`;
+            t.innerHTML = `<span class="marquee-text" style="display:inline-block; white-space:nowrap; flex-shrink:0;">${withIcon(en)} ${en.time ? '· '+escapeHtml(en.time) : ''}</span>`;
             if(en.link && safeUrl(en.link)) {
                 t.innerHTML += ` <a href="${safeUrl(en.link)}" target="_blank" style="margin-left:4px; flex-shrink:0;" onclick="event.stopPropagation()">🔗</a>`;
             }
@@ -1733,7 +1777,7 @@ function buildSwatches(){
     const s = document.createElement('div');
     s.className='sw'+(c.hex===pickedColor?' active':'');
     s.style.background=c.hex;
-    s.addEventListener('click', ()=>{ pickedColor=c.hex; buildSwatches(); });
+    s.addEventListener('click', ()=>{ pickedColor=c.hex; buildSwatches(); buildIconSwatches(); });
     swatchesEl.appendChild(s);
   });
 }
@@ -1748,7 +1792,7 @@ function buildPresets(){
     chip.addEventListener('click', ()=>{
       titleInput.value = p.title;
       pickedColor = p.color;
-      buildSwatches();
+      buildSwatches(); buildIconSwatches();
     });
     presetsEl.appendChild(chip);
   });
@@ -1768,7 +1812,7 @@ function renderEntries(dateObj){
     const row = document.createElement('div');
     row.className='entry';
     let html = `<span class="swatch" style="background:${getDisplayColor(en.color)}"></span>
-      <span class="e-title">${withIcon(en.title)}</span>
+      <span class="e-title">${withIcon(en)}</span>
       <span class="e-time">${escapeHtml(en.time||'')}</span>`;
     if(en.link && safeUrl(en.link)){
       html += `<a class="e-link" href="${safeUrl(en.link)}" target="_blank" rel="noopener">🔗</a>`;
@@ -1809,7 +1853,7 @@ async function openModal(dateObj){
   if(isAdmin){
     editArea.style.display='block';
     viewOnlyClose.style.display='none';
-    buildSwatches();
+    buildSwatches(); buildIconSwatches();
     buildPresets();
   } else {
     editArea.style.display='none';
@@ -1846,7 +1890,7 @@ function addQuickTag(title, color) {
   const data = cache[storageKey(activeDate)];
   const day = activeDate.getDate();
   if(!data[day]) data[day]=[];
-  data[day].push({title: title, time:'', link:'', color: color});
+  data[day].push({title: title, time:'', link:'', color: color, icon: undefined});
   renderEntries(activeDate);
   render();
 }
