@@ -1385,8 +1385,8 @@ function buildTagEl(en){
       
       if(trueWidth > avail) {
           const diff = trueWidth - avail + 8;
-          textSpan.style.transition = 	ransform s linear;
-          textSpan.style.transform = 	ranslateX(-px);
+          textSpan.style.transition = `transform ${diff * 0.02}s linear`;
+          textSpan.style.transform = `translateX(-${diff}px)`;
       } else {
           if (oldFlexPriority) textSpan.style.setProperty('flex-shrink', oldFlex, oldFlexPriority);
           else textSpan.style.flexShrink = oldFlex;
