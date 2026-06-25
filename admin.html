@@ -1169,6 +1169,7 @@ function parseTitle(en) {
   let isMk = false;
   let isBaseball = false;
   let isWatch = false;
+  let isChat = false;
   
   const lolRegex = /(?:리그\s*오브\s*레전드|리그오브레전드|롤|LOL)/i;
   const lolKeepRegex = /(?:LEC|LCK)/i;
@@ -1176,6 +1177,7 @@ function parseTitle(en) {
   const sc1Regex = /(?:스타크래프트\s*1|스타크래프트1|스타\s*1|스타1|스타크래프트|스타)/i;
   const mkRegex = /(?:마리오\s*카트|마리오카트|마카)/i;
   const watchRegex = /(?:월드컵|올림픽)/i;
+  const chatRegex = /(?:저챗|토크|Just\s*Chatting)/i;
   
   if(lolRegex.test(displayTitle)) {
       isLol = true;
@@ -1216,28 +1218,36 @@ function parseTitle(en) {
       displayTitle = rest === '' ? '야구' : rest;
   } else if(watchRegex.test(displayTitle)) {
       isWatch = true;
+  } else if(chatRegex.test(displayTitle)) {
+      isChat = true;
+      let rest = displayTitle.replace(chatRegex, '').trim();
+      rest = rest.replace(/^[-:,\s]+/, '');
+      displayTitle = rest === '' ? '저챗' : rest;
   }
   
   let iconHtml = getIcon(displayTitle);
   let customIcon = false;
   
   if(isLol) {
-      iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`;
+      iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`;
       customIcon = true;
   } else if(isSc2) {
-      iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`;
+      iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`;
       customIcon = true;
   } else if(isSc1) {
-      iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`;
+      iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`;
       customIcon = true;
   } else if(isMk) {
-      iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`;
+      iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`;
       customIcon = true;
   } else if(isBaseball) {
       iconHtml = `⚾`;
       customIcon = true;
   } else if(isWatch) {
-      iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`;
+      iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:2px;">`;
+      customIcon = true;
+  } else if(isChat) {
+      iconHtml = `💬`;
       customIcon = true;
   }
   
