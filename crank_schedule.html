@@ -1122,11 +1122,13 @@ function parseTitle(en) {
   let isLol = false;
   let isSc2 = false;
   let isSc1 = false;
+  let isMk = false;
   let isBaseball = false;
   
   const lolRegex = /(?:리그\s*오브\s*레전드|리그오브레전드|롤|LOL)/i;
   const sc2Regex = /(?:스타크래프트\s*2|스타크래프트2|스타\s*2|스타2|스타\s*II|스타II|SC2)/i;
   const sc1Regex = /(?:스타크래프트\s*1|스타크래프트1|스타\s*1|스타1|스타크래프트|스타)/i;
+  const mkRegex = /(?:마리오\s*카트|마리오카트|마카)/i;
   
   if(lolRegex.test(displayTitle)) {
       isLol = true;
@@ -1143,6 +1145,21 @@ function parseTitle(en) {
       let rest = displayTitle.replace(sc1Regex, '').trim();
       rest = rest.replace(/^[-:,\s]+/, '');
       displayTitle = rest === '' ? '스타' : rest;
+  } else if(mkRegex.test(displayTitle)) {
+      isMk = true;
+      let rest = displayTitle.replace(mkRegex, '').trim();
+      rest = rest.replace(/^[-:,\s]+/, '');
+      rest = rest.replace(/8\s*디럭스/i, '').trim();
+      rest = rest.replace(/^[-:,\s]+/, '');
+      
+      if (rest === '') {
+          displayTitle = '8 디럭스';
+      } else {
+          if (/월[드즈]/.test(rest)) {
+              rest = rest.replace(/월즈/g, '월드');
+          }
+          displayTitle = rest;
+      }
   } else if(/야구|삼성/.test(displayTitle)) {
       isBaseball = true;
       let rest = displayTitle.replace(/야구/g, '').trim();
@@ -1161,6 +1178,9 @@ function parseTitle(en) {
       customIcon = true;
   } else if(isSc1) {
       iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`;
+      customIcon = true;
+  } else if(isMk) {
+      iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:0.85em;height:0.85em;border-radius:2px;vertical-align:-0.1em;margin-right:2px;">`;
       customIcon = true;
   } else if(isBaseball) {
       iconHtml = `⚾`;
