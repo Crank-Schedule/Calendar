@@ -318,6 +318,7 @@
     font-size:12px; padding:4px 9px; border-radius:7px;
     border:1px solid currentColor; background:rgba(255,255,255,0.02);
     white-space:nowrap; display:inline-flex; align-items:center; gap:4px;
+    font-weight: 500;
   }
   .agenda-tag a{color:inherit; text-decoration:none; opacity:0.8;}
   .agenda-tag a:hover{opacity:1;}
@@ -358,6 +359,7 @@
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     border:1px solid currentColor; opacity:0.92;
     display:flex; align-items:center; gap:4px;
+    font-weight: 500;
   }
   .tag .t-time{opacity:0.7; font-size:10px; margin-left:3px;}
   .tag a{color:inherit; text-decoration:none; margin-left:auto; flex-shrink:0; opacity:0.75;}
@@ -1115,14 +1117,19 @@ function hslToHex(h,s,l){
 function getDisplayColor(hex){
   if(!hex) return hex;
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  if(!isLight) return hex;
   try{
     const [h,s,l] = hexToHsl(hex);
-    const isYellowish = h>=40 && h<=110;
-    const cap = isYellowish ? 22 : 28;
-    const newL = Math.min(l, cap);
-    const newS = Math.min(100, s+10);
-    return hslToHex(h, newS, newL);
+    if(!isLight) {
+      const newL = Math.max(l, 65);
+      const newS = Math.min(100, s + 15);
+      return hslToHex(h, newS, newL);
+    } else {
+      const isYellowish = h>=40 && h<=110;
+      const cap = isYellowish ? 22 : 28;
+      const newL = Math.min(l, cap);
+      const newS = Math.min(100, s+10);
+      return hslToHex(h, newS, newL);
+    }
   }catch(e){ return hex; }
 }
 
@@ -1486,9 +1493,9 @@ function buildTagEl(en){
   t.className='tag' + (parsed.customIcon ? ' tag-custom-icon' : '');
   t.setAttribute('data-first-char', getFirstChar(parsed.displayTitle));
   t.style.borderColor = getDisplayColor(en.color);
-  t.style.color = getDisplayColor(en.color);
+  t.style.setProperty('--tag-color', getDisplayColor(en.color));
   t.style.background = en.color+'1A';
-  let html = `<span class="tag-icon">${parsed.iconHtml}</span><span class="tag-abbr">${getAbbr(parsed.displayTitle)}</span><span class="title-wrap" style="overflow:hidden; display:flex; flex:1; min-width:0;"><span class="tag-title">${escapeHtml(parsed.displayTitle)}</span></span>`;
+  let html = `<span class="tag-icon" style="color:var(--tag-color)">${parsed.iconHtml}</span><span class="tag-abbr" style="color:var(--tag-color)">${getAbbr(parsed.displayTitle)}</span><span class="title-wrap" style="overflow:hidden; display:flex; flex:1; min-width:0;"><span class="tag-title">${escapeHtml(parsed.displayTitle)}</span></span>`;
   if(en.time) {
       html += `<span class="t-time">${escapeHtml(en.time)}</span>`;
   }
@@ -1687,9 +1694,10 @@ async function renderCalendarMonth(){
       entries.forEach(en=>{
         const t = document.createElement('span');
         t.className='agenda-tag';
-        t.style.color = getDisplayColor(en.color);
+        t.style.setProperty('--tag-color', getDisplayColor(en.color));
+        const parsed = parseTitle(en);
         const label = document.createElement('span');
-        label.innerHTML = withIcon(en.title) + (en.time ? ' · '+escapeHtml(en.time) : '');
+        label.innerHTML = (parsed.iconHtml ? `<span style="color:var(--tag-color)">${parsed.iconHtml}</span> ` : '') + escapeHtml(parsed.displayTitle) + (en.time ? ' · '+escapeHtml(en.time) : '');
         t.appendChild(label);
         if(en.link){
           const a = document.createElement('a');
