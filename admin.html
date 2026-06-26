@@ -1411,7 +1411,7 @@ function withIcon(en){
 let isAdmin = true;
 
 let isWeekView = false;
-const mql = window.matchMedia('(max-width: 680px)');
+const mql = window.matchMedia('(max-width: 600px)');
 if (mql.matches) isWeekView = true;
 mql.addEventListener('change', (e) => {
   currentView = e.matches ? 'list' : 'calendar';
@@ -1857,7 +1857,7 @@ async function renderCalendarMonth(){
 
 
 // --- OVERRIDE RENDER FUNCTION FOR LIST LAYOUT ---
-let currentView = 'calendar'; // 'list' or 'calendar'
+let currentView = window.matchMedia('(max-width: 600px)').matches ? 'list' : 'calendar';
 
 async function render(){
   const y = current.getFullYear();
