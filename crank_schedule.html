@@ -647,9 +647,9 @@
     .video-card .vc-title { display: none !important; }
   }
 
-  /* 달력 모드 (481px 이상) 전체: 유튜브 섬네일 영역 숨김
-     일반 스마트폰(리스트 모드 ≤480px)에서는 섬네일 그대로 보임 */
-  @media (min-width:481px){
+  /* 달력 모드 중간 폭 (481~900px, 폴드 내부 등): 유튜브 섬네일 숨김
+     일반 폰 (≤480px)는 보임, 데스크(≥901px)도 보임 */
+  @media (min-width:481px) and (max-width:900px){
     .video-cards{ display:none !important; }
   }
 
