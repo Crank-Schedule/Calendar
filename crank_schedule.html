@@ -966,7 +966,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
     <script src="data/replays.js"></script>
-  <link rel="stylesheet" href="schedule_css.css?v=62636">
+  <link rel="stylesheet" href="schedule_css.css?v=62637">
 </head>
 <body>
 <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
@@ -1488,7 +1488,7 @@ function buildTagEl(en){
   t.style.borderColor = getDisplayColor(en.color);
   t.style.color = getDisplayColor(en.color);
   t.style.background = en.color+'1A';
-  let html = `<span class="tag-icon">${parsed.iconHtml}</span><span class="tag-abbr">${getAbbr(parsed.displayTitle)}</span><span class="tag-title">${escapeHtml(parsed.displayTitle)}</span>`;
+  let html = `<span class="tag-icon">${parsed.iconHtml}</span><span class="tag-abbr">${getAbbr(parsed.displayTitle)}</span><span class="title-wrap" style="overflow:hidden; display:flex; flex:1; min-width:0;"><span class="tag-title">${escapeHtml(parsed.displayTitle)}</span></span>`;
   if(en.time) {
       html += `<span class="t-time">${escapeHtml(en.time)}</span>`;
   }

@@ -17,8 +17,8 @@
 
 .cell-thumb-yt {
     flex-shrink: 0;
-    width: 56px;
-    height: 56px;
+    width: clamp(36px, 30%, 56px);
+    aspect-ratio: 1; height: auto;
     align-self: center;
     margin-left: 6px;
     border: 2px solid var(--border-strong);
@@ -71,13 +71,13 @@
 
 
 @media(min-width: 1600px) {
-  .cell-thumb-yt { width: 70px; height: 70px; margin-left: 8px; border-radius: 12px; }
+  .cell-thumb-yt { width: clamp(50px, 30%, 70px); aspect-ratio: 1; height: auto; margin-left: 8px; border-radius: 12px; }
   .cell-thumb-yt .yt-play-icon { width: 20px; height: 20px; }
   .cell-thumb-yt .yt-play-icon::after { border-width: 4px 0 4px 6px; }
 }
 
 @media(min-width: 2400px) {
-  .cell-thumb-yt { width: 90px; height: 90px; margin-left: 12px; border-radius: 14px; }
+  .cell-thumb-yt { width: clamp(60px, 30%, 90px); aspect-ratio: 1; height: auto; margin-left: 12px; border-radius: 14px; }
   .cell-thumb-yt .yt-play-icon { width: 24px; height: 24px; }
   .cell-thumb-yt .yt-play-icon::after { border-width: 5px 0 5px 7px; }
 }
