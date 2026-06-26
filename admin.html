@@ -636,8 +636,8 @@
     .video-card .vc-title { display: none !important; }
   }
 
-  /* 달력 모드(481px+)인데 세로가 짧은 환경 → 섬네일 최소화 */
-  @media (min-width:481px) and (max-height:820px){
+  /* 달력 모드(481px+)인데 중간 폭 환경 (폴드 내부 세로~가로 등 ~900px) → 섬네일 최소화 */
+  @media (min-width:481px) and (max-width:900px){
     .video-cards{
       display:grid !important;
       grid-template-columns:repeat(3,1fr) !important;
