@@ -647,34 +647,9 @@
     .video-card .vc-title { display: none !important; }
   }
 
-  /* 달력 모드(481px+)인데 중간 폭 환경 (폴드 내부 세로~가로 등 ~900px)
-     → 섬네일 3개를 한 줄에 아주 작게 고정 높이로 */
+  /* 폴드 내부 화면 이하(~900px) 달력 모드: 유튜브 섬네일 영역 숨김 */
   @media (min-width:481px) and (max-width:900px){
-    .video-cards{
-      display:flex !important;
-      flex-direction:row !important;
-      gap:4px !important;
-      height:54px !important;
-      margin-bottom:4px !important;
-      overflow:hidden !important;
-    }
-    .video-card{
-      flex:1 1 0 !important;
-      overflow:hidden !important;
-      border-radius:4px !important;
-      padding:0 !important;
-      min-width:0 !important;
-    }
-    .video-card .vc-thumb{
-      width:100% !important;
-      height:100% !important;
-      aspect-ratio:unset !important;
-      object-fit:cover !important;
-      display:block !important;
-      border-radius:0 !important;
-    }
-    .video-card .vc-title{ display:none !important; }
-    .video-card .vc-label{ display:none !important; }
+    .video-cards{ display:none !important; }
   }
 
 
