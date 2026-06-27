@@ -1667,12 +1667,12 @@ function getFirstChar(title) {
 }
 
 // ===== 드래그 앤 드롭: 일정 날짜 이동 (데스크탑 전용) =====
-let _dragFrom = null; // { day: number, idx: number }
+let _dragFrom = null;
+let _dragOverCell = null;
 
 function onTagDragStart(e) {
   _dragFrom = { day: parseInt(this.dataset.dragDay), idx: parseInt(this.dataset.dragIdx) };
   e.dataTransfer.effectAllowed = 'move';
-  // 마퀴 애니메이션 중단
   const textSpan = this.querySelector('.tag-title');
   if (textSpan) { textSpan.style.transition='none'; textSpan.style.transform='translateX(0)'; }
   const self = this;
@@ -1680,40 +1680,60 @@ function onTagDragStart(e) {
 }
 function onTagDragEnd(e) {
   this.classList.remove('dragging');
-  document.querySelectorAll('.cell.drag-over').forEach(c => c.classList.remove('drag-over'));
+  if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
 }
-function onCellDragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  this.classList.add('drag-over');
-}
-function onCellDragLeave(e) {
-  // 자식 요소로 이동 시 false positive 방지
-  if (!this.contains(e.relatedTarget)) this.classList.remove('drag-over');
-}
-async function onCellDrop(e) {
-  e.preventDefault();
-  this.classList.remove('drag-over');
-  if (!_dragFrom) return;
-  const toDay   = parseInt(this.dataset.cellDay);
-  const fromDay = _dragFrom.day;
-  const fromIdx = _dragFrom.idx;
-  _dragFrom = null;
-  if (isNaN(toDay) || toDay === fromDay) return;
 
-  const data = await loadMonth(current);
-  const fromEntries = data[fromDay] ? [...data[fromDay]] : [];
-  const toEntries   = data[toDay]   ? [...data[toDay]]   : [];
-  if (fromIdx < 0 || fromIdx >= fromEntries.length) return;
+// 그리드 전체에 이벤트 위임 등록 (케릭 후 한 번만)
+function initGridDragDrop() {
+  if (window.innerWidth <= 900) return;
+  const grid = document.getElementById('grid');
+  if (!grid || grid._dragInited) return;
+  grid._dragInited = true;
 
-  const [moved] = fromEntries.splice(fromIdx, 1);
-  toEntries.push(moved);
-  data[fromDay] = fromEntries;
-  data[toDay]   = toEntries;
+  grid.addEventListener('dragover', (e) => {
+    const cell = e.target.closest('.cell:not(.empty)');
+    if (!cell) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (_dragOverCell !== cell) {
+      if (_dragOverCell) _dragOverCell.classList.remove('drag-over');
+      _dragOverCell = cell;
+      cell.classList.add('drag-over');
+    }
+  });
 
-  // 저장 후 리렌더
-  await saveMonth(current);
-  await render();
+  grid.addEventListener('dragleave', (e) => {
+    // 그리드 바깥으로 나갈 때만 하이라이트 제거
+    if (!grid.contains(e.relatedTarget)) {
+      if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
+    }
+  });
+
+  grid.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    const cell = e.target.closest('.cell:not(.empty)');
+    if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
+    if (!cell || !_dragFrom) return;
+
+    const toDay   = parseInt(cell.dataset.cellDay);
+    const fromDay = _dragFrom.day;
+    const fromIdx = _dragFrom.idx;
+    _dragFrom = null;
+    if (isNaN(toDay) || toDay === fromDay) return;
+
+    const data = await loadMonth(current);
+    const fromEntries = data[fromDay] ? [...data[fromDay]] : [];
+    const toEntries   = data[toDay]   ? [...data[toDay]]   : [];
+    if (fromIdx < 0 || fromIdx >= fromEntries.length) return;
+
+    const [moved] = fromEntries.splice(fromIdx, 1);
+    toEntries.push(moved);
+    data[fromDay] = fromEntries;
+    data[toDay]   = toEntries;
+
+    await saveMonth(current);
+    await render();
+  });
 }
 
 function buildTagEl(en){
@@ -1900,12 +1920,8 @@ async function renderCalendarMonth(){
 
     c.appendChild(cellBody);
     c.addEventListener('click', ()=>openModal(cellDate));
-    // 데스크탑에서만 드롭 이벤트 등록
     if (window.innerWidth > 900) {
-      c.dataset.cellDay = day;
-      c.addEventListener('dragover',  onCellDragOver);
-      c.addEventListener('dragleave', onCellDragLeave);
-      c.addEventListener('drop',      onCellDrop);
+      c.dataset.cellDay = day; // 드롭 대상 식별용
     }
     if(grid) grid.appendChild(c);
 
@@ -1943,6 +1959,9 @@ async function renderCalendarMonth(){
     row.addEventListener('click', ()=>openModal(cellDate));
     if(agenda) agenda.appendChild(row);
   }
+
+  // 그리드 드래그 앤 드롭 초기화 (렌더 후)
+  initGridDragDrop();
 }
 
 
