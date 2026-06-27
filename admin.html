@@ -371,8 +371,8 @@
     transition:none !important;
   }
   .cell.drag-over .date-num{ color:var(--neon-cyan); }
-  /* 드래그 중 셀 내부 자식요소를 투명하게 해서 drop이 셜 자체에 정확히 날아오게 */
-  #grid.drag-active .cell > * { pointer-events: none !important; }
+  /* 드래그 중 셀 내부 모든 하위요소 pointer-events 차단 → drop이 셀 자체에 정확히 */
+  #grid.drag-active .cell * { pointer-events: none !important; }
 
   @media (max-width:680px){
     .timeline-item{ min-height:64px !important; }
