@@ -371,6 +371,8 @@
     transition:none !important;
   }
   .cell.drag-over .date-num{ color:var(--neon-cyan); }
+  /* 드래그 중 셀 내부 자식요소를 투명하게 해서 drop이 셜 자체에 정확히 날아오게 */
+  #grid.drag-active .cell > * { pointer-events: none !important; }
 
   @media (max-width:680px){
     .timeline-item{ min-height:64px !important; }
@@ -1671,19 +1673,31 @@ let _dragFrom = null;
 let _dragOverCell = null;
 
 function onTagDragStart(e) {
-  _dragFrom = { day: parseInt(this.dataset.dragDay), idx: parseInt(this.dataset.dragIdx) };
+  const day = parseInt(this.dataset.dragDay);
+  const idx = parseInt(this.dataset.dragIdx);
+  _dragFrom = { day, idx };
+  // dataTransfer에도 남겨서 안정성 확보
+  e.dataTransfer.setData('text/plain', JSON.stringify({ day, idx }));
   e.dataTransfer.effectAllowed = 'move';
+  // 마퀴 애니메이션 중단
   const textSpan = this.querySelector('.tag-title');
   if (textSpan) { textSpan.style.transition='none'; textSpan.style.transform='translateX(0)'; }
   const self = this;
-  setTimeout(() => self.classList.add('dragging'), 0);
+  setTimeout(() => {
+    self.classList.add('dragging');
+    // 셈 자식요소 pointer-events 제거 → drop이 셀 자체에 정확히 낙습
+    const grid = document.getElementById('grid');
+    if (grid) grid.classList.add('drag-active');
+  }, 0);
 }
 function onTagDragEnd(e) {
   this.classList.remove('dragging');
+  const grid = document.getElementById('grid');
+  if (grid) grid.classList.remove('drag-active');
   if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
 }
 
-// 그리드 전체에 이벤트 위임 등록 (케릭 후 한 번만)
+// 그리드 전체에 이벤트 위임 등록 (렌더링 후 한 번만)
 function initGridDragDrop() {
   if (window.innerWidth <= 900) return;
   const grid = document.getElementById('grid');
@@ -1691,6 +1705,7 @@ function initGridDragDrop() {
   grid._dragInited = true;
 
   grid.addEventListener('dragover', (e) => {
+    // pointer-events:none 로 인해 e.target은 항상 .cell 자체
     const cell = e.target.closest('.cell:not(.empty)');
     if (!cell) return;
     e.preventDefault();
@@ -1703,7 +1718,6 @@ function initGridDragDrop() {
   });
 
   grid.addEventListener('dragleave', (e) => {
-    // 그리드 바깥으로 나갈 때만 하이라이트 제거
     if (!grid.contains(e.relatedTarget)) {
       if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
     }
@@ -1711,14 +1725,23 @@ function initGridDragDrop() {
 
   grid.addEventListener('drop', async (e) => {
     e.preventDefault();
+    // drag-active 해제 (pointer-events 복원)
+    grid.classList.remove('drag-active');
     const cell = e.target.closest('.cell:not(.empty)');
     if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
-    if (!cell || !_dragFrom) return;
+    if (!cell) return;
+
+    // _dragFrom 또는 dataTransfer에서 fromInfo 확보
+    let fromInfo = _dragFrom;
+    if (!fromInfo) {
+      try { fromInfo = JSON.parse(e.dataTransfer.getData('text/plain')); } catch(err) {}
+    }
+    _dragFrom = null;
+    if (!fromInfo) return;
 
     const toDay   = parseInt(cell.dataset.cellDay);
-    const fromDay = _dragFrom.day;
-    const fromIdx = _dragFrom.idx;
-    _dragFrom = null;
+    const fromDay = fromInfo.day;
+    const fromIdx = fromInfo.idx;
     if (isNaN(toDay) || toDay === fromDay) return;
 
     const data = await loadMonth(current);
