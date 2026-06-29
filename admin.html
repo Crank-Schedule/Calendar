@@ -1669,7 +1669,8 @@ function getFirstChar(title) {
 }
 
 // ===== 드래그 앤 드롭: 일정 날짜 이동 (데스크탑 전용) =====
-let _dragFrom = null;
+// _dragFrom 전역변수 없이 dataTransfer로만 데이터 전달 (타이밍 레이스 조건 완전 제거)
+const DND_TYPE = 'application/x-crank-dnd';
 let _dragOverCell = null;
 
 // 디버그 패널 (문제 파악용)
@@ -1688,7 +1689,8 @@ function dndLog(msg) {
 function onTagDragStart(e) {
   const day = parseInt(this.dataset.dragDay);
   const idx = parseInt(this.dataset.dragIdx);
-  _dragFrom = { day, idx };
+  // dataTransfer에만 저장 (_dragFrom 없음)
+  e.dataTransfer.setData(DND_TYPE, JSON.stringify({ day, idx }));
   e.dataTransfer.setData('text/plain', JSON.stringify({ day, idx }));
   e.dataTransfer.effectAllowed = 'move';
   const textSpan = this.querySelector('.tag-title');
@@ -1699,8 +1701,7 @@ function onTagDragStart(e) {
 function onTagDragEnd(e) {
   this.classList.remove('dragging');
   if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
-  dndLog('dragend (no drop)');
-  _dragFrom = null;
+  dndLog('dragend');
 }
 
 function initGridDragDrop() {
@@ -1710,6 +1711,8 @@ function initGridDragDrop() {
   grid._dndReady = true;
 
   grid.addEventListener('dragover', (e) => {
+    // 우리 드래그인지 MIME 타입으로 확인 (_dragFrom 불필요)
+    if (!e.dataTransfer.types.includes(DND_TYPE)) return;
     const cell = e.target.closest('.cell:not(.empty)');
     if (!cell) return;
     e.preventDefault();
@@ -1733,41 +1736,39 @@ function initGridDragDrop() {
     const cell = e.target.closest('.cell:not(.empty)');
     if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
 
-    dndLog('drop on cell=' + (cell ? cell.dataset.cellDay : 'null') + ' _dragFrom=' + JSON.stringify(_dragFrom));
+    // dataTransfer에서 직접 읽기 (_dragFrom 없음)
+    const raw = e.dataTransfer.getData(DND_TYPE) || e.dataTransfer.getData('text/plain');
+    dndLog('drop cell=' + (cell ? cell.dataset.cellDay : 'null') + ' raw=' + raw);
 
     if (!cell) { dndLog('STOP: no cell'); return; }
-    if (!_dragFrom) { dndLog('STOP: _dragFrom null'); return; }
+    if (!raw) { dndLog('STOP: no data in dataTransfer'); return; }
+
+    let fromInfo;
+    try { fromInfo = JSON.parse(raw); } catch(err) { dndLog('STOP: parse err'); return; }
 
     const toDay   = parseInt(cell.dataset.cellDay);
-    const fromDay = _dragFrom.day;
-    const fromIdx = _dragFrom.idx;
-    _dragFrom = null;
+    const fromDay = fromInfo.day;
+    const fromIdx = fromInfo.idx;
 
     dndLog('toDay=' + toDay + ' fromDay=' + fromDay + ' fromIdx=' + fromIdx);
-
-    if (isNaN(toDay)) { dndLog('STOP: toDay NaN'); return; }
+    if (isNaN(toDay) || isNaN(fromDay)) { dndLog('STOP: NaN'); return; }
     if (toDay === fromDay) { dndLog('STOP: same day'); return; }
 
     const data = await loadMonth(current);
-    const fromEntries = data[fromDay] ? [...data[fromDay]] : [];
-    const toEntries   = data[toDay]   ? [...data[toDay]]   : [];
+    const fromArr = data[fromDay] ? [...data[fromDay]] : [];
+    const toArr   = data[toDay]   ? [...data[toDay]]   : [];
 
-    dndLog('fromEntries.len=' + fromEntries.length + ' toEntries.len=' + toEntries.length);
+    dndLog('fromArr.len=' + fromArr.length);
+    if (fromIdx < 0 || fromIdx >= fromArr.length) { dndLog('STOP: idx out of range'); return; }
 
-    if (fromIdx < 0 || fromIdx >= fromEntries.length) {
-      dndLog('STOP: fromIdx out of range');
-      return;
-    }
+    const [moved] = fromArr.splice(fromIdx, 1);
+    toArr.push(moved);
+    data[fromDay] = fromArr;
+    data[toDay]   = toArr;
 
-    const [moved] = fromEntries.splice(fromIdx, 1);
-    toEntries.push(moved);
-    data[fromDay] = fromEntries;
-    data[toDay]   = toEntries;
-
-    dndLog('moved! "' + moved.title + '" → day ' + toDay);
-    dndLog('saving...');
+    dndLog('moving "' + moved.title + '" → day ' + toDay);
     await saveMonth(current);
-    dndLog('saved! re-rendering...');
+    dndLog('saved! rendering...');
     await render();
     dndLog('done!');
   });
