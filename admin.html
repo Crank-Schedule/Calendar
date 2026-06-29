@@ -1669,9 +1669,68 @@ function getFirstChar(title) {
 }
 
 // ===== 드래그 앤 드롭: 일정 날짜 이동 (데스크탑 전용) =====
-// document 레벨에서 한 번만 등록 — grid 재렌더링의 영향 없음
+// 투명 오버레이 방식: 드래그 시작 시 각 셀 위에 오버레이를 올려서 drop target으로 사용
 let _dragFrom = null;
-let _dragOverCell = null;
+
+function _removeDragOverlays() {
+  document.querySelectorAll('.dnd-overlay').forEach(el => el.remove());
+  document.querySelectorAll('.cell.drag-over').forEach(c => c.classList.remove('drag-over'));
+  document.body.classList.remove('drag-active');
+}
+
+function _makeDragOverlay(cell, day) {
+  const ov = document.createElement('div');
+  ov.className = 'dnd-overlay';
+  ov.style.cssText = [
+    'position:absolute', 'inset:0', 'z-index:50',
+    'cursor:copy', 'border-radius:inherit',
+  ].join(';');
+
+  ov.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    cell.classList.add('drag-over');
+  });
+  ov.addEventListener('dragleave', (e) => {
+    if (!ov.contains(e.relatedTarget)) cell.classList.remove('drag-over');
+  });
+  ov.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  });
+  ov.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    cell.classList.remove('drag-over');
+    _removeDragOverlays();
+
+    let fromInfo = _dragFrom;
+    _dragFrom = null;
+    if (!fromInfo) {
+      try { fromInfo = JSON.parse(e.dataTransfer.getData('text/plain')); } catch(_) { return; }
+    }
+    if (!fromInfo) return;
+
+    const toDay   = day;
+    const fromDay = fromInfo.day;
+    const fromIdx = fromInfo.idx;
+    if (toDay === fromDay) return;
+
+    const data = await loadMonth(current);
+    const fromArr = data[fromDay] ? [...data[fromDay]] : [];
+    const toArr   = data[toDay]   ? [...data[toDay]]   : [];
+    if (fromIdx < 0 || fromIdx >= fromArr.length) return;
+    const [moved] = fromArr.splice(fromIdx, 1);
+    toArr.push(moved);
+    data[fromDay] = fromArr;
+    data[toDay]   = toArr;
+
+    await saveMonth(current);
+    await render();
+  });
+
+  // cell이 position:relative여야 absolute 오버레이가 잘 올라감
+  if (getComputedStyle(cell).position === 'static') cell.style.position = 'relative';
+  cell.appendChild(ov);
+}
 
 function onTagDragStart(e) {
   const day = parseInt(this.dataset.dragDay);
@@ -1685,66 +1744,19 @@ function onTagDragStart(e) {
   setTimeout(() => {
     self.classList.add('dragging');
     document.body.classList.add('drag-active');
+    // 모든 달력 셀에 오버레이 생성
+    document.querySelectorAll('#grid .cell:not(.empty)').forEach(cell => {
+      const d = parseInt(cell.dataset.cellDay);
+      if (!isNaN(d)) _makeDragOverlay(cell, d);
+    });
   }, 0);
 }
+
 function onTagDragEnd(e) {
   this.classList.remove('dragging');
-  document.body.classList.remove('drag-active');
-  if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
-  // _dragFrom은 drop 핸들러에서만 지움 (dragend가 dragover보다 먼저 불리는 브라우저 대응)
-  setTimeout(() => { _dragFrom = null; }, 100);
+  _removeDragOverlays();
+  _dragFrom = null;
 }
-
-// 한 번만 등록 (document 레벨)
-(function setupDragDrop() {
-  if (window.innerWidth <= 900) return;
-
-  document.addEventListener('dragover', (e) => {
-    if (!_dragFrom) return; // 우리 드래그 세션이 아니면 무시
-    const cell = e.target.closest && e.target.closest('#grid .cell:not(.empty)');
-    e.preventDefault(); // 드롭을 허용하려면 반드시 호요
-    e.dataTransfer.dropEffect = 'move';
-    if (_dragOverCell !== cell) {
-      if (_dragOverCell) _dragOverCell.classList.remove('drag-over');
-      _dragOverCell = cell || null;
-      if (cell) cell.classList.add('drag-over');
-    }
-  });
-
-  document.addEventListener('drop', async (e) => {
-    if (!_dragFrom) return;
-    e.preventDefault();
-    document.body.classList.remove('drag-active');
-    if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
-
-    const cell = e.target.closest && e.target.closest('#grid .cell:not(.empty)');
-    if (!cell) { _dragFrom = null; return; }
-
-    let fromInfo = _dragFrom;
-    _dragFrom = null;
-    if (!fromInfo) {
-      try { fromInfo = JSON.parse(e.dataTransfer.getData('text/plain')); } catch(err) { return; }
-    }
-
-    const toDay   = parseInt(cell.dataset.cellDay);
-    const fromDay = fromInfo.day;
-    const fromIdx = fromInfo.idx;
-    if (isNaN(toDay) || isNaN(fromDay) || toDay === fromDay) return;
-
-    const data = await loadMonth(current);
-    const fromEntries = data[fromDay] ? [...data[fromDay]] : [];
-    const toEntries   = data[toDay]   ? [...data[toDay]]   : [];
-    if (fromIdx < 0 || fromIdx >= fromEntries.length) return;
-
-    const [moved] = fromEntries.splice(fromIdx, 1);
-    toEntries.push(moved);
-    data[fromDay] = fromEntries;
-    data[toDay]   = toEntries;
-
-    await saveMonth(current);
-    await render();
-  });
-}());
 
 function buildTagEl(en){
   const parsed = parseTitle(en);
