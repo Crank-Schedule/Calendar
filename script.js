@@ -10,12 +10,12 @@ const COLORS = [
 ];
 
 const PRESETS = [
-  {title:'스타 II MoG 2', color:'#00FFFF'},
-  {title:'스타 II 군심 로그라이크', color:'#00FFFF'},
+  {title:'스타 II MoG 2', color:'#9900FF'},
+  {title:'스타 II 군심 로그라이크', color:'#9900FF'},
   {title:'이터널 리턴', color:'#FF00FF'},
   {title:'모험가 앨리엇 천 년의 이야기', color:'#FF9900'},
   {title:'유로트럭', color:'#FF9900'},
-  {title:'롤', color:'#9900FF'},
+  {title:'롤', color:'#33FF00'},
   {title:'같이보기', color:'#9AD1FF'},
   {title:'야구', color:'#FF9F43'},
   {title:'휴방', color:'#FF0000'},

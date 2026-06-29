@@ -2373,6 +2373,10 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
   }
   if(!title) return;
   
+  let finalColor = pickedColor;
+  if(title.includes('스타')) finalColor = '#9900FF'; // 보라색
+  else if(title.includes('롤') || title.includes('리그 오브 레전드')) finalColor = '#33FF00'; // 녹색
+  
   const data = cache[storageKey(activeDate)];
   const day = activeDate.getDate();
   if(!data[day]) data[day]=[];
@@ -2382,7 +2386,7 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
       title, 
       time:timeInput.value.trim(), 
       link:linkInput.value.trim(), 
-      color:pickedColor,
+      color:finalColor,
       icon: pickedIcon === 'auto' ? undefined : pickedIcon
     };
     editingEntryIndex = -1;
@@ -2393,7 +2397,7 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
       title, 
       time:timeInput.value.trim(), 
       link:linkInput.value.trim(), 
-      color:pickedColor,
+      color:finalColor,
       icon: pickedIcon === 'auto' ? undefined : pickedIcon
     });
   }
@@ -2433,7 +2437,11 @@ document.getElementById('quickTrip').addEventListener('click', () => addQuickTag
 document.getElementById('customQuickTagBtn').addEventListener('click', () => {
   const val = document.getElementById('customQuickTagInput').value.trim();
   if (val) {
-    addQuickTag(val, pickedColor || '#FFFFFF');
+    let finalColor = pickedColor || '#FFFFFF';
+    if(val.includes('스타')) finalColor = '#9900FF';
+    else if(val.includes('롤') || val.includes('리그 오브 레전드')) finalColor = '#33FF00';
+    
+    addQuickTag(val, finalColor);
     document.getElementById('customQuickTagInput').value = '';
   }
 });
