@@ -1669,8 +1669,6 @@ function getFirstChar(title) {
 }
 
 // ===== 드래그 앤 드롭: 일정 날짜 이동 (데스크탑 전용) =====
-// _dragFrom 전역변수 없이 dataTransfer로만 데이터 전달 (타이밍 레이스 조건 완전 제거)
-const DND_TYPE = 'application/x-crank-dnd';
 let _dragOverCell = null;
 
 // 디버그 패널 (문제 파악용)
@@ -1687,10 +1685,10 @@ function dndLog(msg) {
 }
 
 function onTagDragStart(e) {
+  dndLog('dragstart fired'); // 가장 먼저 로깅
   const day = parseInt(this.dataset.dragDay);
   const idx = parseInt(this.dataset.dragIdx);
-  // dataTransfer에만 저장 (_dragFrom 없음)
-  e.dataTransfer.setData(DND_TYPE, JSON.stringify({ day, idx }));
+  // text/plain만 사용 (커스텀 MIME 타입 제거)
   e.dataTransfer.setData('text/plain', JSON.stringify({ day, idx }));
   e.dataTransfer.effectAllowed = 'move';
   const textSpan = this.querySelector('.tag-title');
@@ -1711,8 +1709,7 @@ function initGridDragDrop() {
   grid._dndReady = true;
 
   grid.addEventListener('dragover', (e) => {
-    // 우리 드래그인지 MIME 타입으로 확인 (_dragFrom 불필요)
-    if (!e.dataTransfer.types.includes(DND_TYPE)) return;
+    // 셀 위에 있으면 무조건 preventDefault (입력 내용 관계없이)
     const cell = e.target.closest('.cell:not(.empty)');
     if (!cell) return;
     e.preventDefault();
@@ -1736,8 +1733,8 @@ function initGridDragDrop() {
     const cell = e.target.closest('.cell:not(.empty)');
     if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
 
-    // dataTransfer에서 직접 읽기 (_dragFrom 없음)
-    const raw = e.dataTransfer.getData(DND_TYPE) || e.dataTransfer.getData('text/plain');
+    // text/plain에서 직접 읽기
+    const raw = e.dataTransfer.getData('text/plain');
     dndLog('drop cell=' + (cell ? cell.dataset.cellDay : 'null') + ' raw=' + raw);
 
     if (!cell) { dndLog('STOP: no cell'); return; }
