@@ -372,7 +372,7 @@
   }
   .cell.drag-over .date-num{ color:var(--neon-cyan); }
   /* 드래그 중 셀 내부 모든 하위요소 pointer-events 차단 → drop이 셀 자체에 정확히 */
-  #grid.drag-active .cell * { pointer-events: none !important; }
+  body.drag-active #grid .cell * { pointer-events: none !important; }
 
   @media (max-width:680px){
     .timeline-item{ min-height:64px !important; }
@@ -1669,6 +1669,7 @@ function getFirstChar(title) {
 }
 
 // ===== 드래그 앤 드롭: 일정 날짜 이동 (데스크탑 전용) =====
+// document 레벨에서 한 번만 등록 — grid 재렌더링의 영향 없음
 let _dragFrom = null;
 let _dragOverCell = null;
 
@@ -1676,73 +1677,58 @@ function onTagDragStart(e) {
   const day = parseInt(this.dataset.dragDay);
   const idx = parseInt(this.dataset.dragIdx);
   _dragFrom = { day, idx };
-  // dataTransfer에도 남겨서 안정성 확보
   e.dataTransfer.setData('text/plain', JSON.stringify({ day, idx }));
   e.dataTransfer.effectAllowed = 'move';
-  // 마퀴 애니메이션 중단
   const textSpan = this.querySelector('.tag-title');
   if (textSpan) { textSpan.style.transition='none'; textSpan.style.transform='translateX(0)'; }
   const self = this;
   setTimeout(() => {
     self.classList.add('dragging');
-    // 셈 자식요소 pointer-events 제거 → drop이 셀 자체에 정확히 낙습
-    const grid = document.getElementById('grid');
-    if (grid) grid.classList.add('drag-active');
+    document.body.classList.add('drag-active');
   }, 0);
 }
 function onTagDragEnd(e) {
+  _dragFrom = null;
   this.classList.remove('dragging');
-  const grid = document.getElementById('grid');
-  if (grid) grid.classList.remove('drag-active');
+  document.body.classList.remove('drag-active');
   if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
 }
 
-// 그리드 전체에 이벤트 위임 등록 (렌더링 후 한 번만)
-function initGridDragDrop() {
+// 한 번만 등록 (document 레벨)
+(function setupDragDrop() {
   if (window.innerWidth <= 900) return;
-  const grid = document.getElementById('grid');
-  if (!grid || grid._dragInited) return;
-  grid._dragInited = true;
 
-  grid.addEventListener('dragover', (e) => {
-    // pointer-events:none 로 인해 e.target은 항상 .cell 자체
-    const cell = e.target.closest('.cell:not(.empty)');
-    if (!cell) return;
-    e.preventDefault();
+  document.addEventListener('dragover', (e) => {
+    if (!_dragFrom) return; // 우리 드래그 세션이 아니면 무시
+    const cell = e.target.closest && e.target.closest('#grid .cell:not(.empty)');
+    e.preventDefault(); // 드롭을 허용하려면 반드시 호요
     e.dataTransfer.dropEffect = 'move';
     if (_dragOverCell !== cell) {
       if (_dragOverCell) _dragOverCell.classList.remove('drag-over');
-      _dragOverCell = cell;
-      cell.classList.add('drag-over');
+      _dragOverCell = cell || null;
+      if (cell) cell.classList.add('drag-over');
     }
   });
 
-  grid.addEventListener('dragleave', (e) => {
-    if (!grid.contains(e.relatedTarget)) {
-      if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
-    }
-  });
-
-  grid.addEventListener('drop', async (e) => {
+  document.addEventListener('drop', async (e) => {
+    if (!_dragFrom) return;
     e.preventDefault();
-    // drag-active 해제 (pointer-events 복원)
-    grid.classList.remove('drag-active');
-    const cell = e.target.closest('.cell:not(.empty)');
+    document.body.classList.remove('drag-active');
     if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
-    if (!cell) return;
 
-    // _dragFrom 또는 dataTransfer에서 fromInfo 확보
+    const cell = e.target.closest && e.target.closest('#grid .cell:not(.empty)');
+    if (!cell) { _dragFrom = null; return; }
+
     let fromInfo = _dragFrom;
-    if (!fromInfo) {
-      try { fromInfo = JSON.parse(e.dataTransfer.getData('text/plain')); } catch(err) {}
-    }
     _dragFrom = null;
-    if (!fromInfo) return;
+    if (!fromInfo) {
+      try { fromInfo = JSON.parse(e.dataTransfer.getData('text/plain')); } catch(err) { return; }
+    }
 
     const toDay   = parseInt(cell.dataset.cellDay);
     const fromDay = fromInfo.day;
     const fromIdx = fromInfo.idx;
-    if (isNaN(toDay) || toDay === fromDay) return;
+    if (isNaN(toDay) || isNaN(fromDay) || toDay === fromDay) return;
 
     const data = await loadMonth(current);
     const fromEntries = data[fromDay] ? [...data[fromDay]] : [];
@@ -1757,7 +1743,7 @@ function initGridDragDrop() {
     await saveMonth(current);
     await render();
   });
-}
+}());
 
 function buildTagEl(en){
   const parsed = parseTitle(en);
@@ -1983,8 +1969,7 @@ async function renderCalendarMonth(){
     if(agenda) agenda.appendChild(row);
   }
 
-  // 그리드 드래그 앤 드롭 초기화 (렌더 후)
-  initGridDragDrop();
+  // 그리드 드래그 앤 드롭 초기화 제거 (document 레벨로 이동)
 }
 
 
