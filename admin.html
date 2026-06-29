@@ -1669,6 +1669,7 @@ function getFirstChar(title) {
 }
 
 // ===== 드래그 앤 드롭: 일정 날짜 이동 (데스크탑 전용) =====
+let _dragState = null; // 어떤 태그가 드래그 중인지 저장 (dataTransfer 오류 대비)
 let _dragOverCell = null;
 
 // 디버그 패널 (문제 파악용)
@@ -1685,21 +1686,31 @@ function dndLog(msg) {
 }
 
 function onTagDragStart(e) {
-  dndLog('dragstart fired'); // 가장 먼저 로깅
+  dndLog('dragstart fired');
   const day = parseInt(this.dataset.dragDay);
   const idx = parseInt(this.dataset.dragIdx);
-  // text/plain만 사용 (커스텀 MIME 타입 제거)
-  e.dataTransfer.setData('text/plain', JSON.stringify({ day, idx }));
-  e.dataTransfer.effectAllowed = 'move';
+  
+  _dragState = { day, idx }; // 전역 변수에 안전하게 저장
+  
+  try {
+    e.dataTransfer.setData('text/plain', 'crank-tag');
+    e.dataTransfer.effectAllowed = 'move';
+  } catch(err) {
+    dndLog('setData err: ' + err.message);
+  }
+
   const textSpan = this.querySelector('.tag-title');
   if (textSpan) { textSpan.style.transition='none'; textSpan.style.transform='translateX(0)'; }
   setTimeout(() => this.classList.add('dragging'), 0);
-  dndLog('dragstart day=' + day + ' idx=' + idx);
+  dndLog('dragstart saved day=' + day + ' idx=' + idx);
 }
 function onTagDragEnd(e) {
   this.classList.remove('dragging');
   if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
   dndLog('dragend');
+  // 주의: 여기서 _dragState를 초기화하지 않습니다! 
+  // dragend가 drop보다 먼저 발생하더라도 drop에서 _dragState를 읽을 수 있도록 유지합니다.
+  // 다음 dragstart에서 어차피 덮어씌워집니다.
 }
 
 function initGridDragDrop() {
@@ -1733,15 +1744,15 @@ function initGridDragDrop() {
     const cell = e.target.closest('.cell:not(.empty)');
     if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
 
-    // text/plain에서 직접 읽기
-    const raw = e.dataTransfer.getData('text/plain');
-    dndLog('drop cell=' + (cell ? cell.dataset.cellDay : 'null') + ' raw=' + raw);
+    dndLog('drop cell=' + (cell ? cell.dataset.cellDay : 'null'));
 
     if (!cell) { dndLog('STOP: no cell'); return; }
-    if (!raw) { dndLog('STOP: no data in dataTransfer'); return; }
+    
+    // dataTransfer 대신 무조건 _dragState 사용
+    if (!_dragState) { dndLog('STOP: _dragState is null'); return; }
 
-    let fromInfo;
-    try { fromInfo = JSON.parse(raw); } catch(err) { dndLog('STOP: parse err'); return; }
+    const fromInfo = _dragState;
+    _dragState = null; // 한 번 드롭 후에는 초기화
 
     const toDay   = parseInt(cell.dataset.cellDay);
     const fromDay = fromInfo.day;
