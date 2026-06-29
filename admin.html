@@ -2372,8 +2372,8 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
   if(!title) return;
   
   let finalColor = pickedColor;
-  if(title.includes('스타')) finalColor = '#9900FF'; // 보라색
-  else if(title.includes('롤') || title.includes('리그 오브 레전드')) finalColor = '#33FF00'; // 녹색
+  if(title.includes('스타') || pickedIcon === 'sc2' || pickedIcon === 'sc1') finalColor = '#9900FF'; // 보라색
+  else if(title.includes('롤') || title.includes('리그 오브 레전드') || pickedIcon === 'lol') finalColor = '#33FF00'; // 녹색
   
   const data = cache[storageKey(activeDate)];
   const day = activeDate.getDate();
@@ -2436,8 +2436,8 @@ document.getElementById('customQuickTagBtn').addEventListener('click', () => {
   const val = document.getElementById('customQuickTagInput').value.trim();
   if (val) {
     let finalColor = pickedColor || '#FFFFFF';
-    if(val.includes('스타')) finalColor = '#9900FF';
-    else if(val.includes('롤') || val.includes('리그 오브 레전드')) finalColor = '#33FF00';
+    if(val.includes('스타') || pickedIcon === 'sc2' || pickedIcon === 'sc1') finalColor = '#9900FF';
+    else if(val.includes('롤') || val.includes('리그 오브 레전드') || pickedIcon === 'lol') finalColor = '#33FF00';
     
     addQuickTag(val, finalColor);
     document.getElementById('customQuickTagInput').value = '';
