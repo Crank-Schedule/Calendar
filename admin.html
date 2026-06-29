@@ -1848,7 +1848,7 @@ function buildTagEl(en){
   t.style.borderColor = getDisplayColor(en.color);
   t.style.setProperty('--tag-color', getDisplayColor(en.color));
   t.style.background = getDisplayColor(en.color)+'1A';
-  let html = `<span class="tag-icon" style="color:var(--tag-color)">${parsed.iconHtml}</span><span class="tag-abbr" style="color:var(--tag-color)">${getAbbr(parsed.displayTitle)}</span><span class="title-wrap" style="overflow:hidden; display:flex; flex:1; min-width:0;"><span class="tag-title">${escapeHtml(parsed.displayTitle)}</span></span>`;
+  let html = `<span class="tag-icon" style="color:var(--tag-color)">${parsed.iconHtml}</span><span class="tag-abbr" style="color:var(--tag-color)">${getAbbr(parsed.displayTitle)}</span><span class="title-wrap" style="overflow:hidden; display:block; flex:1; min-width:0; white-space:nowrap; text-overflow:ellipsis;"><span class="tag-title" style="display:inline-block;">${escapeHtml(parsed.displayTitle)}</span></span>`;
   if(en.time) {
       html += `<span class="t-time">${escapeHtml(en.time)}</span>`;
   }
@@ -1857,27 +1857,23 @@ function buildTagEl(en){
   
   const startMarquee = () => {
       const textSpan = t.querySelector('.tag-title');
-      if(!textSpan) return;
-      textSpan.dataset.origDisplay = textSpan.style.display || '';
-      textSpan.dataset.origWhiteSpace = textSpan.style.whiteSpace || '';
-      textSpan.style.display = 'block';
-      textSpan.style.whiteSpace = 'nowrap';
-      if(textSpan.scrollWidth > textSpan.clientWidth) {
-          const diff = textSpan.scrollWidth - textSpan.clientWidth + 10;
+      const wrap = t.querySelector('.title-wrap');
+      if(!textSpan || !wrap) return;
+      
+      if(textSpan.scrollWidth > wrap.clientWidth) {
+          wrap.style.textOverflow = 'clip';
+          const diff = textSpan.scrollWidth - wrap.clientWidth + 10;
           textSpan.style.transition = `transform ${diff * 0.02}s linear`;
           textSpan.style.transform = `translateX(-${diff}px)`;
-      } else {
-          textSpan.style.display = textSpan.dataset.origDisplay;
-          textSpan.style.whiteSpace = textSpan.dataset.origWhiteSpace;
       }
   };
   const stopMarquee = () => {
       const textSpan = t.querySelector('.tag-title');
-      if(textSpan) {
+      const wrap = t.querySelector('.title-wrap');
+      if(textSpan && wrap) {
           textSpan.style.transition = 'none';
           textSpan.style.transform = 'translateX(0)';
-          textSpan.style.display = textSpan.dataset.origDisplay || '';
-          textSpan.style.whiteSpace = textSpan.dataset.origWhiteSpace || '';
+          wrap.style.textOverflow = 'ellipsis';
       }
   };
   t.onmouseenter = startMarquee;
