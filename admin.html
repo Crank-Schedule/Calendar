@@ -1548,6 +1548,7 @@ function seedJune2026(){
 
 async function loadMonth(d){
   const key = storageKey(d);
+  if(cache[key]) return cache[key];
   
   const y = d.getFullYear();
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
@@ -1679,50 +1680,6 @@ async function adminLogin() {
     return false;
   }
 }
-
-async function saveMonth(d){
-  const key = storageKey(d);
-  let session = getSession();
-  if (!session) {
-    const ok = await adminLogin();
-    if (!ok) return;
-    session = getSession();
-    if (!session) return;
-  }
-
-  const y = d.getFullYear();
-  const m = (d.getMonth() + 1).toString().padStart(2, '0');
-
-  const doneBtn = document.getElementById('doneBtn2');
-  if(doneBtn) { doneBtn.textContent = "저장 중..."; doneBtn.disabled = true; }
-
-  try {
-    const res = await fetch(`${WORKER_URL}/api/schedule/${y}-${m}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.token}`,
-      },
-      body: JSON.stringify(cache[key] || {}),
-    });
-    const json = await res.json();
-
-    if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
-
-    if (res.ok) {
-      // alert(`저장 성공! (${y}년 ${m}월)\n약 1~2분 뒤 실제 사이트에 반영됩니다.`);
-    } else if (res.status === 401) {
-      localStorage.removeItem('crank_admin_session');
-      alert(json.error || '로그인이 만료됐어요. 다시 시도해주세요.');
-    } else {
-      alert('저장 실패: ' + (json.error || '알 수 없는 오류'));
-    }
-  } catch(e) {
-    if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
-    alert('오류 발생: ' + e.message);
-  }
-}
-
 
 function getFirstChar(title) {
   if(!title) return '';
