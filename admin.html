@@ -1668,8 +1668,8 @@ function getFirstChar(title) {
   return title.charAt(0);
 }
 
-// ===== 드래그 앤 드롭: 일정 날짜 이동 (데스크탑 전용) =====
-let _dragState = null; // 어떤 태그가 드래그 중인지 저장
+// ===== 드래그 앤 드롭: 일정 날짜 이동 (데스크탑 전용, Custom 구현) =====
+let _dragState = null; // { day, idx, tagEl, cloneEl, startX, startY, isDragging }
 let _dragOverCell = null;
 
 // 디버그 패널 (문제 파악용)
@@ -1682,7 +1682,6 @@ function dndLog(msg) {
     document.body.appendChild(el);
   }
   const t = new Date().toTimeString().slice(0,8);
-  // 전체 로그 누적 (스크롤 가능하게)
   el.textContent = '[' + t + '] ' + msg + '\n' + el.textContent.slice(0, 3000);
   el.scrollTop = 0;
 }
@@ -1691,116 +1690,125 @@ window.addEventListener('error', (e) => {
   dndLog('JS ERR: ' + e.message);
 });
 
-// Document-level drag handlers (위임 방식)
-document.addEventListener('dragstart', (e) => {
-  dndLog('--- dragstart EVENT ---');
-  let target = e.target;
-  if (target && target.nodeType === 3) target = target.parentNode; // text node
-  
-  if (!target || !target.closest) { dndLog('no closest method'); return; }
-  
-  const tag = target.closest('.tag');
-  if (!tag) { dndLog('drag target is not .tag'); return; }
-  if (!tag.dataset.dragDay) { dndLog('tag has no dataset.dragDay'); return; }
-  
-  dndLog('dragstart valid tag day=' + tag.dataset.dragDay);
-  const day = parseInt(tag.dataset.dragDay);
-  const idx = parseInt(tag.dataset.dragIdx);
-  
-  _dragState = { day, idx }; 
-  
-  try {
-    e.dataTransfer.setData('text/plain', 'crank-tag');
-    e.dataTransfer.effectAllowed = 'move';
-  } catch(err) {
-    dndLog('setData err: ' + err.message);
-  }
-
-  const textSpan = tag.querySelector('.tag-title');
-  if (textSpan) { textSpan.style.transition='none'; textSpan.style.transform='translateX(0)'; }
-  setTimeout(() => tag.classList.add('dragging'), 0);
-  dndLog('dragstart saved day=' + day + ' idx=' + idx);
-});
-
-document.addEventListener('dragend', (e) => {
-  dndLog('--- dragend EVENT ---');
-  let target = e.target;
-  if (target && target.nodeType === 3) target = target.parentNode;
-  
-  const tag = target && target.closest ? target.closest('.tag') : null;
-  if (!tag) { dndLog('dragend on non-tag'); return; }
-  
-  tag.classList.remove('dragging');
-  if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
-});
-
-function initGridDragDrop() {
+// Custom 마우스 드래그 이벤트 (HTML5 native D&D 완전 대체)
+document.addEventListener('mousedown', (e) => {
   if (window.innerWidth <= 900) return;
-  const grid = document.getElementById('grid');
-  if (!grid || grid._dndReady) return;
-  grid._dndReady = true;
+  
+  // 왼쪽 버튼 클릭만 허용
+  if (e.button !== 0) return;
+  
+  const tag = e.target.closest('.tag');
+  if (!tag || !tag.dataset.dragDay) return;
+  
+  _dragState = {
+    day: parseInt(tag.dataset.dragDay),
+    idx: parseInt(tag.dataset.dragIdx),
+    tagEl: tag,
+    cloneEl: null,
+    startX: e.clientX,
+    startY: e.clientY,
+    isDragging: false
+  };
+});
 
-  grid.addEventListener('dragover', (e) => {
-    // 셀 위에 있으면 무조건 preventDefault (입력 내용 관계없이)
-    const cell = e.target.closest('.cell:not(.empty)');
-    if (!cell) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+document.addEventListener('mousemove', (e) => {
+  if (!_dragState) return;
+  
+  // 5px 이상 이동 시 실제 드래그 시작으로 판정
+  if (!_dragState.isDragging) {
+    const dx = e.clientX - _dragState.startX;
+    const dy = e.clientY - _dragState.startY;
+    if (dx*dx + dy*dy > 25) {
+      _dragState.isDragging = true;
+      dndLog('Custom drag started');
+      
+      // 고스트 요소 생성
+      const rect = _dragState.tagEl.getBoundingClientRect();
+      const clone = _dragState.tagEl.cloneNode(true);
+      clone.style.position = 'fixed';
+      clone.style.top = '0px';
+      clone.style.left = '0px';
+      clone.style.width = rect.width + 'px';
+      clone.style.height = rect.height + 'px';
+      clone.style.zIndex = '99999';
+      clone.style.opacity = '0.8';
+      clone.style.pointerEvents = 'none'; // 마우스 이벤트 방해 금지
+      clone.style.transform = `translate(${e.clientX - (rect.width/2)}px, ${e.clientY - (rect.height/2)}px)`;
+      document.body.appendChild(clone);
+      _dragState.cloneEl = clone;
+      
+      _dragState.tagEl.style.opacity = '0.3';
+    }
+  }
+  
+  if (_dragState.isDragging) {
+    e.preventDefault(); // 텍스트 선택 등 방지
+    // 고스트 위치 이동
+    const rect = _dragState.cloneEl.getBoundingClientRect();
+    _dragState.cloneEl.style.transform = `translate(${e.clientX - (rect.width/2)}px, ${e.clientY - (rect.height/2)}px)`;
+    
+    // 현재 마우스 아래의 셀 찾기
+    const targetEl = document.elementFromPoint(e.clientX, e.clientY);
+    const cell = targetEl ? targetEl.closest('.cell:not(.empty)') : null;
+    
     if (_dragOverCell !== cell) {
       if (_dragOverCell) _dragOverCell.classList.remove('drag-over');
       _dragOverCell = cell;
-      cell.classList.add('drag-over');
+      if (cell) cell.classList.add('drag-over');
     }
-  });
+  }
+});
 
-  grid.addEventListener('dragleave', (e) => {
-    if (!grid.contains(e.relatedTarget) && _dragOverCell) {
-      _dragOverCell.classList.remove('drag-over');
-      _dragOverCell = null;
-    }
-  });
+document.addEventListener('mouseup', async (e) => {
+  if (!_dragState) return;
+  
+  if (!_dragState.isDragging) {
+    // 드래그가 아니었음 (그냥 클릭) -> 냅둠
+    _dragState = null;
+    return;
+  }
+  
+  dndLog('Custom drop triggered');
+  
+  // 정리
+  if (_dragState.cloneEl) _dragState.cloneEl.remove();
+  if (_dragState.tagEl) _dragState.tagEl.style.opacity = '1';
+  if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); }
+  
+  const targetCell = _dragOverCell;
+  const fromInfo = _dragState;
+  
+  _dragState = null;
+  _dragOverCell = null;
+  
+  if (!targetCell) { dndLog('STOP: No target cell'); return; }
+  
+  const toDay = parseInt(targetCell.dataset.cellDay);
+  const fromDay = fromInfo.day;
+  const fromIdx = fromInfo.idx;
+  
+  if (isNaN(toDay) || isNaN(fromDay)) { dndLog('STOP: NaN'); return; }
+  if (toDay === fromDay) { dndLog('STOP: Same day'); return; }
+  
+  const data = await loadMonth(current);
+  const fromArr = data[fromDay] ? [...data[fromDay]] : [];
+  const toArr   = data[toDay]   ? [...data[toDay]]   : [];
+  
+  if (fromIdx < 0 || fromIdx >= fromArr.length) { dndLog('STOP: Invalid idx'); return; }
+  
+  const [moved] = fromArr.splice(fromIdx, 1);
+  toArr.push(moved);
+  data[fromDay] = fromArr;
+  data[toDay]   = toArr;
+  
+  dndLog(`Moving "${moved.title}" to day ${toDay}`);
+  await saveMonth(current);
+  dndLog('Saved! Rendering...');
+  await render();
+});
 
-  grid.addEventListener('drop', async (e) => {
-    e.preventDefault();
-    const cell = e.target.closest('.cell:not(.empty)');
-    if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
-
-    dndLog('drop cell=' + (cell ? cell.dataset.cellDay : 'null'));
-
-    if (!cell) { dndLog('STOP: no cell'); return; }
-    
-    // dataTransfer 대신 무조건 _dragState 사용
-    if (!_dragState) { dndLog('STOP: _dragState is null'); return; }
-
-    const fromInfo = _dragState;
-    _dragState = null; // 한 번 드롭 후에는 초기화
-
-    const toDay   = parseInt(cell.dataset.cellDay);
-    const fromDay = fromInfo.day;
-    const fromIdx = fromInfo.idx;
-
-    dndLog('toDay=' + toDay + ' fromDay=' + fromDay + ' fromIdx=' + fromIdx);
-    if (isNaN(toDay) || isNaN(fromDay)) { dndLog('STOP: NaN'); return; }
-    if (toDay === fromDay) { dndLog('STOP: same day'); return; }
-
-    const data = await loadMonth(current);
-    const fromArr = data[fromDay] ? [...data[fromDay]] : [];
-    const toArr   = data[toDay]   ? [...data[toDay]]   : [];
-
-    dndLog('fromArr.len=' + fromArr.length);
-    if (fromIdx < 0 || fromIdx >= fromArr.length) { dndLog('STOP: idx out of range'); return; }
-
-    const [moved] = fromArr.splice(fromIdx, 1);
-    toArr.push(moved);
-    data[fromDay] = fromArr;
-    data[toDay]   = toArr;
-
-    dndLog('moving "' + moved.title + '" → day ' + toDay);
-    await saveMonth(current);
-    dndLog('saved! rendering...');
-    await render();
-    dndLog('done!');
-  });
+function initGridDragDrop() {
+  // 더 이상 Native Drag&Drop 리스너가 필요 없음 (Custom 방식 사용)
 }
 
 function buildTagEl(en){
@@ -1848,12 +1856,11 @@ function buildTagEl(en){
   t.ontouchstart = startMarquee;
   t.ontouchend = stopMarquee;
 
-  // 데스크탑에서만 드래그 가능
+  // 데스크탑에서만 커스텀 드래그 사용 (데이터 속성만 남김)
   if (window.innerWidth > 900 && en.__day !== undefined) {
-    t.draggable = true;
     t.dataset.dragDay = en.__day;
     t.dataset.dragIdx = en.__idx;
-    // 리스너는 document 레벨(위임)에서 처리하므로 삭제
+    // t.draggable = true; 제거 (HTML5 D&D 비활성화)
   }
 
   return t;
