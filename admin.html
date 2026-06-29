@@ -1456,17 +1456,34 @@ let editingEntryIndex = -1;
 
 const ICONS = [
   {id:'auto', name:'자동', html:'🤖'},
-  {id:'lol', name:'롤', html:'<img src="lol_icon.png" onerror="this.outerHTML=\'⚔️\'">'},
-  {id:'sc2', name:'스타 II', html:'<img src="sc2_icon.png" onerror="this.outerHTML=\'👾\'">'},
-  {id:'sc1', name:'스타', html:'<img src="sc_icon.png" onerror="this.outerHTML=\'👾\'">'},
-  {id:'er', name:'이리', html:'<img src="er_icon.png" onerror="this.outerHTML=\'🏹\'">'},
-  {id:'mk', name:'마카', html:'<img src="mk_icon.png" onerror="this.outerHTML=\'🎮\'">'},
-  {id:'bb', name:'야구', html:'⚾'},
-  {id:'poke', name:'포켓몬', html:'<img src="poke_icon.png" onerror="this.outerHTML=\'🔴\'">'},
-  {id:'chat', name:'저챗', html:'<img src="chat_icon.png" onerror="this.outerHTML=\'💬\'">'},
-  {id:'watch', name:'같이보기', html:'<img src="watch_icon.png" onerror="this.outerHTML=\'📺\'">'},
+  {id:'lol', name:'롤', html:'<img src="lol_icon.png" onerror="this.outerHTML=\'⚔️\'">', color: '#33FF00'},
+  {id:'sc2', name:'스타 II', html:'<img src="sc2_icon.png" onerror="this.outerHTML=\'👾\'">', color: '#9900FF'},
+  {id:'sc1', name:'스타', html:'<img src="sc_icon.png" onerror="this.outerHTML=\'👾\'">', color: '#00BFFF'},
+  {id:'er', name:'이리', html:'<img src="er_icon.png" onerror="this.outerHTML=\'🏹\'">', color: '#555555'},
+  {id:'mk', name:'마카', html:'<img src="mk_icon.png" onerror="this.outerHTML=\'🎮\'">', color: '#FF0000'},
+  {id:'bb', name:'야구', html:'⚾', color: '#FF9F43'},
+  {id:'poke', name:'포켓몬', html:'<img src="poke_icon.png" onerror="this.outerHTML=\'🔴\'">', color: '#FFFF00'},
+  {id:'chat', name:'저챗', html:'<img src="chat_icon.png" onerror="this.outerHTML=\'💬\'">', color: '#FF66B2'},
+  {id:'watch', name:'같이보기', html:'<img src="watch_icon.png" onerror="this.outerHTML=\'📺\'">', color: '#9AD1FF'},
   {id:'none', name:'없음', html:'❌'}
 ];
+
+function getFixedColor(title, pIcon, defaultColor) {
+  const icObj = ICONS.find(i => i.id === pIcon);
+  if (icObj && icObj.color) return icObj.color;
+  if (title) {
+    if(title.includes('스타 II') || title.includes('스타 2')) return '#9900FF';
+    if(title.includes('스타')) return '#00BFFF';
+    if(title.includes('롤') || title.includes('리그 오브 레전드')) return '#33FF00';
+    if(title.includes('이리') || title.includes('이터널')) return '#555555';
+    if(title.includes('마카') || title.includes('마리오 카트')) return '#FF0000';
+    if(title.includes('야구')) return '#FF9F43';
+    if(title.includes('포켓몬')) return '#FFFF00';
+    if(title.includes('저챗')) return '#FF66B2';
+    if(title.includes('같이보기')) return '#9AD1FF';
+  }
+  return defaultColor;
+}
 let pickedIcon = 'auto';
 
 function buildIconSwatches(){
@@ -2371,9 +2388,7 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
   }
   if(!title) return;
   
-  let finalColor = pickedColor;
-  if(title.includes('스타') || pickedIcon === 'sc2' || pickedIcon === 'sc1') finalColor = '#9900FF'; // 보라색
-  else if(title.includes('롤') || title.includes('리그 오브 레전드') || pickedIcon === 'lol') finalColor = '#33FF00'; // 녹색
+  let finalColor = getFixedColor(title, pickedIcon, pickedColor);
   
   const data = cache[storageKey(activeDate)];
   const day = activeDate.getDate();
@@ -2435,9 +2450,7 @@ document.getElementById('quickTrip').addEventListener('click', () => addQuickTag
 document.getElementById('customQuickTagBtn').addEventListener('click', () => {
   const val = document.getElementById('customQuickTagInput').value.trim();
   if (val) {
-    let finalColor = pickedColor || '#FFFFFF';
-    if(val.includes('스타') || pickedIcon === 'sc2' || pickedIcon === 'sc1') finalColor = '#9900FF';
-    else if(val.includes('롤') || val.includes('리그 오브 레전드') || pickedIcon === 'lol') finalColor = '#33FF00';
+    let finalColor = getFixedColor(val, pickedIcon, pickedColor || '#FFFFFF');
     
     addQuickTag(val, finalColor);
     document.getElementById('customQuickTagInput').value = '';
