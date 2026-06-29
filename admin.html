@@ -1693,18 +1693,9 @@ function getFirstChar(title) {
 let _dragState = null; // { day, idx, tagEl, cloneEl, startX, startY, isDragging }
 let _dragOverCell = null;
 
-// 디버그 패널 (문제 파악용)
+// 디버그 패널 (문제 파악용) - 이제 기능 안정화되어 로깅 비활성화
 function dndLog(msg) {
-  let el = document.getElementById('dnd-debug');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'dnd-debug';
-    el.style.cssText = 'position:fixed;bottom:80px;right:10px;background:rgba(0,0,0,0.85);color:#0ff;font-size:11px;padding:8px 12px;border-radius:8px;z-index:9999;max-width:320px;white-space:pre-wrap;font-family:monospace;line-height:1.5; pointer-events:none;';
-    document.body.appendChild(el);
-  }
-  const t = new Date().toTimeString().slice(0,8);
-  el.textContent = '[' + t + '] ' + msg + '\n' + el.textContent.slice(0, 3000);
-  el.scrollTop = 0;
+  // console.log(msg);
 }
 
 window.addEventListener('error', (e) => {
@@ -1718,7 +1709,7 @@ document.addEventListener('mousedown', (e) => {
   // 왼쪽 버튼 클릭만 허용
   if (e.button !== 0) return;
   
-  const tag = e.target.closest('.tag');
+  const tag = e.target.closest('.draggable-item');
   if (!tag || !tag.dataset.dragDay) return;
   
   _dragState = {
@@ -1835,7 +1826,7 @@ function initGridDragDrop() {
 function buildTagEl(en){
   const parsed = parseTitle(en);
   const t = document.createElement('div');
-  t.className='tag' + (parsed.customIcon ? ' tag-custom-icon' : '');
+  t.className='tag draggable-item' + (parsed.customIcon ? ' tag-custom-icon' : '');
   t.setAttribute('data-first-char', getFirstChar(parsed.displayTitle));
   t.style.borderColor = getDisplayColor(en.color);
   t.style.setProperty('--tag-color', getDisplayColor(en.color));
@@ -1964,7 +1955,7 @@ async function renderCalendarMonth(){
         const color = getDisplayColor(isRest ? '#00FFFF' : (isTrip ? '#FF9900' : '#FF0000'));
         const icon = isRest ? '😴' : (isTrip ? '✈️' : '🚫');
         const s = document.createElement('span');
-        s.className = 'special-badge' + ((isRest || isTrip) ? ' badge-circle' : '');
+        s.className = 'special-badge draggable-item' + ((isRest || isTrip) ? ' badge-circle' : '');
         s.style.color = color;
         s.style.background = isRest ? 'rgba(0,255,255,0.1)' : (isTrip ? 'rgba(255,153,0,0.1)' : 'rgba(255,0,0,0.1)');
         s.title = sp.title;
@@ -1974,6 +1965,13 @@ async function renderCalendarMonth(){
         else if(sp.title.includes('귀국') || sp.title.includes('입국')) innerText = '(올귀)';
 
         s.innerHTML = `<span class="sp-icon">${icon}</span><span class="sp-abbr">${getAbbr(sp.title)}</span><span class="sp-inner-text" style="display:none; font-weight:800;">${innerText}</span><span class="sp-label">${escapeHtml(sp.title)}</span>`;
+        
+        // 드래그 데이터 속성 추가
+        if (window.innerWidth > 900) {
+          s.dataset.dragDay = day;
+          s.dataset.dragIdx = entries.indexOf(sp);
+        }
+        
         spWrap.appendChild(s);
       });
       headerWrap.appendChild(spWrap);
