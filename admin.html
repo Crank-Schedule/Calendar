@@ -1678,7 +1678,7 @@ function dndLog(msg) {
   if (!el) {
     el = document.createElement('div');
     el.id = 'dnd-debug';
-    el.style.cssText = 'position:fixed;bottom:80px;right:10px;background:rgba(0,0,0,0.85);color:#0ff;font-size:11px;padding:8px 12px;border-radius:8px;z-index:9999;max-width:320px;white-space:pre-wrap;font-family:monospace;line-height:1.5;';
+    el.style.cssText = 'position:fixed;bottom:80px;right:10px;background:rgba(0,0,0,0.85);color:#0ff;font-size:11px;padding:8px 12px;border-radius:8px;z-index:9999;max-width:320px;white-space:pre-wrap;font-family:monospace;line-height:1.5; pointer-events:none;';
     document.body.appendChild(el);
   }
   const t = new Date().toTimeString().slice(0,8);
@@ -1687,12 +1687,23 @@ function dndLog(msg) {
   el.scrollTop = 0;
 }
 
+window.addEventListener('error', (e) => {
+  dndLog('JS ERR: ' + e.message);
+});
+
 // Document-level drag handlers (위임 방식)
 document.addEventListener('dragstart', (e) => {
-  const tag = e.target.closest('.tag');
-  if (!tag || !tag.dataset.dragDay) return;
+  dndLog('--- dragstart EVENT ---');
+  let target = e.target;
+  if (target && target.nodeType === 3) target = target.parentNode; // text node
   
-  dndLog('dragstart fired on tag');
+  if (!target || !target.closest) { dndLog('no closest method'); return; }
+  
+  const tag = target.closest('.tag');
+  if (!tag) { dndLog('drag target is not .tag'); return; }
+  if (!tag.dataset.dragDay) { dndLog('tag has no dataset.dragDay'); return; }
+  
+  dndLog('dragstart valid tag day=' + tag.dataset.dragDay);
   const day = parseInt(tag.dataset.dragDay);
   const idx = parseInt(tag.dataset.dragIdx);
   
@@ -1712,12 +1723,15 @@ document.addEventListener('dragstart', (e) => {
 });
 
 document.addEventListener('dragend', (e) => {
-  const tag = e.target.closest('.tag');
-  if (!tag) return;
+  dndLog('--- dragend EVENT ---');
+  let target = e.target;
+  if (target && target.nodeType === 3) target = target.parentNode;
+  
+  const tag = target && target.closest ? target.closest('.tag') : null;
+  if (!tag) { dndLog('dragend on non-tag'); return; }
   
   tag.classList.remove('dragging');
   if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
-  dndLog('dragend');
 });
 
 function initGridDragDrop() {
