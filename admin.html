@@ -1548,7 +1548,6 @@ function seedJune2026(){
 
 async function loadMonth(d){
   const key = storageKey(d);
-  if(cache[key]) return cache[key];
   
   const y = d.getFullYear();
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
@@ -1563,17 +1562,82 @@ async function loadMonth(d){
   } catch(e) {}
   
   let dataFromLocal = null;
+  let localTs = 0;
   try {
     const raw = localStorage.getItem('crank_storage');
     if(raw) {
         const parsed = JSON.parse(raw);
         const entry = parsed.find(item => item.key === key);
-        if(entry) dataFromLocal = JSON.parse(entry.value);
+        if(entry) {
+          dataFromLocal = entry.data || (entry.value ? JSON.parse(entry.value) : null);
+          localTs = entry.ts || 0;
+        }
     }
   } catch(e) {}
   
-  cache[key] = dataFromNetwork || dataFromLocal || ((y===2026 && m==='06' && typeof seedJune2026 === 'function') ? seedJune2026() : {});
+  if (dataFromLocal && (Date.now() - localTs < 5 * 60 * 1000)) {
+    cache[key] = dataFromLocal;
+  } else {
+    cache[key] = dataFromNetwork || dataFromLocal || ((y===2026 && m==='06' && typeof seedJune2026 === 'function') ? seedJune2026() : {});
+  }
+  
   return cache[key];
+}
+
+async function saveMonth(d){
+  const key = storageKey(d);
+  let session = getSession();
+  if (!session) {
+    const ok = await adminLogin();
+    if (!ok) return;
+    session = getSession();
+    if (!session) return;
+  }
+
+  const y = d.getFullYear();
+  const m = (d.getMonth() + 1).toString().padStart(2, '0');
+
+  const doneBtn = document.getElementById('doneBtn2');
+  const grid = document.getElementById('grid');
+  if(doneBtn) { doneBtn.textContent = "저장 중..."; doneBtn.disabled = true; }
+  
+  if(grid) { grid.style.opacity = '0.5'; grid.style.pointerEvents = 'none'; }
+
+  try {
+    const res = await fetch(`${WORKER_URL}/api/schedule/${y}-${m}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.token}`,
+      },
+      body: JSON.stringify(cache[key] || {}),
+    });
+    const json = await res.json();
+
+    if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
+    if(grid) { grid.style.opacity = '1'; grid.style.pointerEvents = 'auto'; }
+
+    if (res.ok) {
+      try {
+        let raw = localStorage.getItem('crank_storage') || '[]';
+        let parsed = JSON.parse(raw);
+        const idx = parsed.findIndex(item => item.key === key);
+        const newEntry = { key, data: cache[key], ts: Date.now() };
+        if(idx >= 0) parsed[idx] = newEntry;
+        else parsed.push(newEntry);
+        localStorage.setItem('crank_storage', JSON.stringify(parsed));
+      } catch(e) {}
+    } else if (res.status === 401) {
+      alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+      localStorage.removeItem('crank_admin_session');
+    } else {
+      alert(`저장 실패: ${json.error}\n${json.details||''}`);
+    }
+  } catch(e) {
+    if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
+    if(grid) { grid.style.opacity = '1'; grid.style.pointerEvents = 'auto'; }
+    alert('네트워크 오류: ' + e.message);
+  }
 }
 
 // ===== Cloudflare Worker 기반 관리자 로그인 / 저장 =====
