@@ -1688,10 +1688,11 @@ function onTagDragStart(e) {
   }, 0);
 }
 function onTagDragEnd(e) {
-  _dragFrom = null;
   this.classList.remove('dragging');
   document.body.classList.remove('drag-active');
   if (_dragOverCell) { _dragOverCell.classList.remove('drag-over'); _dragOverCell = null; }
+  // _dragFrom은 drop 핸들러에서만 지움 (dragend가 dragover보다 먼저 불리는 브라우저 대응)
+  setTimeout(() => { _dragFrom = null; }, 100);
 }
 
 // 한 번만 등록 (document 레벨)
