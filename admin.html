@@ -2834,6 +2834,7 @@ async function fetchLatestVideos(channel, maxResults){
     const isShort = !dur.includes('H') && (!dur.includes('M') || dur === 'PT1M');
     if (!isShort) {
       let title = it.snippet.title;
+      title = title.replace(/\s*-\s*크랭크 생방송 다시보기$/, '');
       if (channel.key === 'replay') {
         const m = title.match(/^(?:20)?(\d{2})[년\s.\-]+0?(\d{1,2})[월\s.\-]+0?(\d{1,2})[일\s.\-]*[|lI\/]*\s*(.*)/);
         if (m) title = `${m[1]}${m[2].padStart(2,'0')}${m[3].padStart(2,'0')}: ${m[4]}`;
