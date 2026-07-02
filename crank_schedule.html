@@ -363,7 +363,7 @@
     display:flex; align-items:center; gap:4px;
     font-weight: 500;
   }
-  .tag .t-time{opacity:0.7; font-size:10px; margin-left:3px;}
+  .tag .t-time{opacity:0.7; font-size:10px; margin-left:3px; flex-shrink:0;}
   .tag a{color:inherit; text-decoration:none; margin-left:auto; flex-shrink:0; opacity:0.75;}
   .tag a:hover{opacity:1;}
   .more{font-size:10px; color:var(--text-dim); padding-left:2px;}
@@ -1509,7 +1509,7 @@ function buildTagEl(en){
   t.style.borderColor = getDisplayColor(en.color);
   t.style.setProperty('--tag-color', getDisplayColor(en.color));
   t.style.background = en.color+'1A';
-  let html = `<span class="tag-icon" style="color:var(--tag-color)">${parsed.iconHtml}</span><span class="tag-abbr" style="color:var(--tag-color)">${getAbbr(parsed.displayTitle)}</span><span class="title-wrap" style="overflow:hidden; display:flex; flex:1; min-width:0;"><span class="tag-title">${escapeHtml(parsed.displayTitle)}</span></span>`;
+  let html = `<span class="tag-icon" style="color:var(--tag-color)">${parsed.iconHtml}</span><span class="tag-abbr" style="color:var(--tag-color)">${getAbbr(parsed.displayTitle)}</span><span class="title-wrap" style="overflow:hidden; display:block; flex:1; min-width:0; white-space:nowrap; text-overflow:ellipsis;"><span class="tag-title" style="display:inline;">${escapeHtml(parsed.displayTitle)}</span></span>`;
   if(en.time) {
       html += `<span class="t-time">${escapeHtml(en.time)}</span>`;
   }
@@ -1518,47 +1518,27 @@ function buildTagEl(en){
   
   const startMarquee = () => {
       const textSpan = t.querySelector('.tag-title');
-      if(!textSpan) return;
+      const wrap = t.querySelector('.title-wrap');
+      if(!textSpan || !wrap) return;
       
-      const avail = t.clientWidth - (textSpan.offsetLeft - t.offsetLeft);
-      const oldFlex = textSpan.style.getPropertyValue('flex-shrink');
-      const oldFlexPriority = textSpan.style.getPropertyPriority('flex-shrink');
-      const oldWhiteSpace = textSpan.style.getPropertyValue('white-space');
-      const oldWhiteSpacePriority = textSpan.style.getPropertyPriority('white-space');
-      
-      textSpan.dataset.origFlex = oldFlex;
-      textSpan.dataset.origFlexPri = oldFlexPriority;
-      textSpan.dataset.origWs = oldWhiteSpace;
-      textSpan.dataset.origWsPri = oldWhiteSpacePriority;
-
-      textSpan.style.setProperty('flex-shrink', '0', 'important');
-      textSpan.style.setProperty('white-space', 'nowrap', 'important');
-      
-      const trueWidth = textSpan.scrollWidth;
-      
-      if(trueWidth > avail) {
-          const diff = trueWidth - avail + 8;
+      textSpan.style.display = 'inline-block';
+      if(textSpan.scrollWidth > wrap.clientWidth) {
+          wrap.style.textOverflow = 'clip';
+          const diff = textSpan.scrollWidth - wrap.clientWidth + 10;
           textSpan.style.transition = `transform ${diff * 0.02}s linear`;
           textSpan.style.transform = `translateX(-${diff}px)`;
       } else {
-          if (oldFlexPriority) textSpan.style.setProperty('flex-shrink', oldFlex, oldFlexPriority);
-          else textSpan.style.flexShrink = oldFlex;
-          
-          if (oldWhiteSpacePriority) textSpan.style.setProperty('white-space', oldWhiteSpace, oldWhiteSpacePriority);
-          else textSpan.style.whiteSpace = oldWhiteSpace;
+          textSpan.style.display = 'inline';
       }
   };
   const stopMarquee = () => {
       const textSpan = t.querySelector('.tag-title');
-      if(textSpan) {
+      const wrap = t.querySelector('.title-wrap');
+      if(textSpan && wrap) {
           textSpan.style.transition = 'none';
           textSpan.style.transform = 'translateX(0)';
-          
-          if (textSpan.dataset.origFlexPri) textSpan.style.setProperty('flex-shrink', textSpan.dataset.origFlex, textSpan.dataset.origFlexPri);
-          else textSpan.style.flexShrink = textSpan.dataset.origFlex || '';
-          
-          if (textSpan.dataset.origWsPri) textSpan.style.setProperty('white-space', textSpan.dataset.origWs, textSpan.dataset.origWsPri);
-          else textSpan.style.whiteSpace = textSpan.dataset.origWs || '';
+          textSpan.style.display = 'inline';
+          wrap.style.textOverflow = 'ellipsis';
       }
   };
 t.onmouseenter = startMarquee;
