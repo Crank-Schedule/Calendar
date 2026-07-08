@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>업로드 플래너</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --bg:#0F1216; --panel:#161A21; --panel2:#1C212B; --line:#252B35;
+  --text:#E8ECF2; --muted:#8A93A3; --faint:#5A6373;
+  --a:#FF6B6B; --a-tint:rgba(255,107,107,.11); --a-line:rgba(255,107,107,.35);
+  --b:#5AA9FF; --b-tint:rgba(90,169,255,.11); --b-line:rgba(90,169,255,.35);
+  --today:#F5C84B;
+  --ok:#4CD98A; --err:#FF7A7A;
+  --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  font-size:14px; line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  height:100dvh; display:flex; flex-direction:column; overflow:hidden;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,textarea{font:inherit}
+
+/* ── 헤더 ─────────────────────────── */
+header{
+  flex:none; z-index:20;
+  background:rgba(15,18,22,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.hd-in{width:100%;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:8px;margin-right:auto}
+#srcBtn{margin-right:auto}
+.brand h1{font-size:17px;font-weight:800;letter-spacing:-.02em}
+.brand .sub{font-size:12px;color:var(--muted)}
+.month-nav{display:flex;align-items:center;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px}
+.month-nav button{width:32px;height:30px;border-radius:8px;color:var(--muted);font-size:15px}
+.month-nav button:hover{background:var(--panel2);color:var(--text)}
+.month-title{min-width:112px;text-align:center;font-weight:700;font-size:15px;letter-spacing:-.01em}
+.btn{height:36px;padding:0 13px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--text);font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--panel2)}
+.btn.icon{width:36px;padding:0;justify-content:center;color:var(--muted)}
+.btn.icon:hover{color:var(--text)}
+.status{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:0 4px}
+.status .dot{width:7px;height:7px;border-radius:50%;background:var(--faint)}
+.status.saving .dot{background:var(--today);animation:pulse 1s infinite}
+.status.ok .dot{background:var(--ok)}
+.status.err .dot{background:var(--err)}
+@keyframes pulse{50%{opacity:.35}}
+
+.btn.on{background:rgba(245,200,75,.14);border-color:rgba(245,200,75,.45);color:#F5C84B}
+#tokenBtn.on{background:rgba(76,217,138,.12);border-color:rgba(76,217,138,.4);color:var(--ok)}
+
+/* ── 달력 ─────────────────────────── */
+.wrap{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;padding:8px 16px 12px}
+.dow{flex:none;display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}
+.dow div{
+  text-align:center;font-size:11.5px;font-weight:800;letter-spacing:.1em;
+  color:var(--muted);background:var(--panel2);border:1px solid var(--line);
+  border-radius:9px;padding:6px 0;
+}
+.dow div:first-child{color:#FF8A8A;background:rgba(255,107,107,.09);border-color:rgba(255,107,107,.28)}
+.dow div:last-child{color:#8AB9FF;background:rgba(90,169,255,.09);border-color:rgba(90,169,255,.28)}
+.grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cell{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  min-height:0;overflow:hidden;padding:7px;display:flex;flex-direction:column;gap:4px;
+  transition:border-color .12s, background .12s;
+}
+.cell.clickable{cursor:pointer}
+.cell.clickable:hover{border-color:#39414F;background:var(--panel2)}
+.cell.blank{background:transparent;border-color:transparent}
+.cell{position:relative;container-type:size}
+.wm{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;line-height:1;letter-spacing:-.03em;
+  font-size:36px;font-size:58cqmin;
+  color:rgba(232,236,242,.055);
+}
+.cell.sun .wm{color:rgba(224,133,133,.085)}
+.cell.sat .wm{color:rgba(127,168,220,.095)}
+.cell.today{border-color:rgba(245,200,75,.6)}
+.cell.today .wm{color:rgba(245,200,75,.16)}
+.cell.past{background:#0C0E12;border-color:#1B2028;opacity:.62}
+.cell.past.clickable:hover{opacity:.85}
+.cell.past .wm{color:rgba(232,236,242,.035)}
+.cnt{
+  position:absolute;top:3px;right:6px;z-index:2;
+  font-size:9.5px;font-weight:700;color:var(--faint);
+}
+.cnt.full{color:var(--ok)}
+.cell > .slot{position:relative;z-index:1}
+
+.slot{
+  flex:1 1 0;min-height:0;overflow:hidden;
+  display:flex;align-items:center;gap:5px;
+  border-radius:7px;padding:2px 6px;
+  font-size:11.5px;line-height:1.25;
+  border:1px solid transparent;
+}
+.slot .ic{flex:none;font-size:10px;width:13px;text-align:center;opacity:.9}
+.slot .ic.chic{
+  width:15px;height:15px;border-radius:4.5px;flex:none;
+  background:linear-gradient(160deg,#FF4B5C,#E01F35);color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;
+  box-shadow:0 1px 2px rgba(0,0,0,.35);opacity:1;
+}
+.slot .ic.chic svg{width:9px;height:9px;display:block}
+.slot.empty .ic.chic{opacity:.75}
+.slot.done .ic.chic{filter:saturate(.4)}
+.lg-ic{
+  display:inline-flex;align-items:center;justify-content:center;margin-right:6px;
+  width:18px;height:18px;border-radius:5.5px;
+  background:linear-gradient(160deg,#FF4B5C,#E01F35);color:#fff;
+  box-shadow:0 1px 2px rgba(0,0,0,.35);
+}
+.lg-ic svg{width:11px;height:11px;display:block}
+.slot .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.slot.a{background:var(--a-tint);border-color:var(--a-line);color:#FFC9C9}
+.slot.b{background:var(--b-tint);border-color:var(--b-line);color:#C4DEFF}
+.slot.empty{background:transparent;border:1px dashed #2A313D;color:var(--faint)}
+.slot.empty .t{opacity:0}
+.slot.done{opacity:.5}
+.slot.done .t::before{content:"✓ ";font-weight:800}
+
+/* ── 남은 소스 플로팅 패널 ─────────── */
+.drawer{
+  position:fixed;left:50%;top:64px;z-index:40;
+  width:min(600px, 94vw);
+  background:#151923;border:1px solid #2B3240;border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.55);
+  opacity:0;pointer-events:none;
+  transform:translateX(-50%) translateY(-10px);
+  transition:opacity .16s ease, transform .16s ease;
+}
+.drawer.open{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.drawer-in{padding:14px;display:flex;flex-direction:column;gap:10px}
+.src-list{overflow-y:auto;max-height:min(52vh, 480px);display:flex;flex-direction:column;gap:6px;padding-bottom:2px}
+.src-tabs{display:flex;gap:8px}
+.src-tab{
+  display:inline-flex;align-items:center;gap:7px;
+  height:36px;padding:0 14px;border-radius:10px;
+  border:1px solid var(--line);background:var(--panel);
+  font-weight:700;font-size:13px;color:var(--muted);
+}
+.src-tab .lg-ic{margin-right:0}
+.src-tab .n{font-size:11px;color:var(--faint);font-weight:800}
+.src-tab.active{background:rgba(229,45,64,.12);border-color:rgba(255,75,92,.45);color:var(--text)}
+.src-tab.active .n{color:#FF8A96}
+.src-addrow{display:flex;gap:8px}
+.src-addrow input{
+  flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  color:var(--text);padding:9px 12px;font-size:13.5px;outline:none;
+}
+.src-addrow input:focus{border-color:#3D74B8}
+.src-addrow input::placeholder{color:var(--faint)}
+.btn.add{background:#2D68B4;border-color:#2D68B4;font-weight:700;flex:none;height:38px}
+.btn.add:hover{background:#3578CB}
+.src-item{
+  display:flex;align-items:center;gap:6px;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:7px 7px 7px 8px;font-size:13px;
+}
+.src-item.dragging{opacity:.4}
+.src-item.dragover{border-color:#3D74B8}
+.src-item .grab{flex:none;cursor:grab;color:var(--faint);font-size:13px;padding:0 3px;user-select:none}
+.src-item .txt{flex:1;min-width:0;word-break:break-all}
+.src-item .sbtn{
+  flex:none;width:25px;height:25px;border-radius:7px;color:var(--faint);font-size:12px;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.src-item .sbtn:hover{background:var(--panel2);color:var(--text)}
+.src-item .sbtn.use:hover{background:rgba(76,217,138,.14);color:var(--ok)}
+.src-item .sbtn.del:hover{background:rgba(255,122,122,.12);color:var(--err)}
+.src-item.used-it{opacity:.6}
+.src-item.used-it .txt{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.4)}
+.src-item.used-it .date{flex:none;font-size:10.5px;color:var(--faint)}
+.used-toggle{
+  align-self:flex-start;font-size:12px;font-weight:700;color:var(--muted);
+  padding:6px 10px;border-radius:8px;border:1px dashed #2E3542;
+}
+.used-toggle:hover{color:var(--text);background:var(--panel)}
+.used-hint{font-size:10.5px;color:var(--faint);padding:0 2px}
+.src-empty{font-size:12.5px;color:var(--faint);padding:6px 2px}
+
+/* ── 모달 공통 ────────────────────── */
+.overlay{position:fixed;inset:0;background:rgba(5,7,10,.66);backdrop-filter:blur(3px);z-index:50;display:none;align-items:flex-end;justify-content:center;padding:0}
+.overlay.open{display:flex}
+.modal{
+  background:#141821;border:1px solid var(--line);border-radius:18px 18px 0 0;
+  width:100%;max-width:560px;max-height:88vh;overflow-y:auto;
+  padding:20px 20px calc(20px + env(safe-area-inset-bottom));
+  animation:up .18s ease-out;
+}
+@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+@media(min-width:640px){
+  .overlay{align-items:center;padding:24px}
+  .modal{border-radius:18px;padding-bottom:20px}
+}
+.m-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.m-head h2{font-size:16px;font-weight:800;letter-spacing:-.01em}
+.m-head .x{margin-left:auto;width:32px;height:32px;border-radius:9px;color:var(--muted);font-size:16px}
+.m-head .x:hover{background:var(--panel2);color:var(--text)}
+.ch-block{border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:12px}
+.ch-block .ch-name{font-size:13px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.ch-block .ch-name .chip-dot{width:10px;height:10px;border-radius:3px}
+.field{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.field:last-child{margin-bottom:0}
+.field .tag{flex:none;width:44px;font-size:11px;font-weight:700;color:var(--muted);text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:5px 0}
+.field input[type=text]{
+  flex:1;background:var(--panel);border:1px solid var(--line);border-radius:9px;
+  color:var(--text);padding:8px 11px;font-size:13.5px;outline:none;min-width:0;
+}
+.field input[type=text]:focus{border-color:#3D74B8}
+.field input[type=text]::placeholder{color:var(--faint)}
+.chk{flex:none;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer;user-select:none;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.chk input{accent-color:var(--ok);width:14px;height:14px;cursor:pointer}
+.chk.on{color:var(--ok);border-color:rgba(76,217,138,.4)}
+.m-foot{display:flex;gap:8px;margin-top:16px}
+.btn.primary{flex:1;justify-content:center;height:42px;background:#2D68B4;border-color:#2D68B4;font-size:14px;font-weight:700}
+.btn.primary:hover{background:#3578CB}
+.btn.ghost{height:42px}
+
+/* ── 설정 모달 ────────────────────── */
+.set-group{margin-bottom:14px}
+.set-group label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px}
+.set-group input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:9px;color:var(--text);padding:9px 11px;font-size:13.5px;outline:none}
+.set-group input:focus{border-color:#3D74B8}
+.set-row{display:flex;gap:8px}
+.set-row .set-group{flex:1}
+.hint{font-size:11.5px;color:var(--faint);margin-top:5px;line-height:1.5}
+.hint a{color:#7FA8DC}
+.set-divider{border:none;border-top:1px solid var(--line);margin:16px 0}
+.set-title{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.05em;margin-bottom:10px}
+
+/* ── 토스트 ───────────────────────── */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);background:#1E2430;border:1px solid var(--line);border-radius:10px;padding:9px 15px;font-size:12.5px;opacity:0;pointer-events:none;transition:.2s;z-index:99;max-width:88vw}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.err{border-color:rgba(255,122,122,.5);color:#FFB8B8}
+
+/* ── 모바일 ───────────────────────── */
+@media(max-width:680px){
+  .hd-in{padding:8px 8px;gap:6px}
+  .brand h1{font-size:15px}
+  .brand .sub{display:none}
+  #statusText{display:none}
+  .btn{height:32px;padding:0 10px;font-size:12px;border-radius:8px}
+  .btn.icon{width:32px}
+  .month-nav button{width:28px;height:26px}
+  .month-title{min-width:88px;font-size:13.5px}
+  .drawer-in{padding:8px 10px;gap:8px}
+  .src-tab{height:32px;padding:0 11px;font-size:12px}
+  .wrap{padding:6px 6px 8px}
+  .grid,.dow{gap:3px}
+  .cell{padding:4px;border-radius:9px;gap:3px}
+  .cnt{font-size:8.5px;top:2px;right:4px}
+  .slot{padding:2px 3px;min-height:17px;border-radius:5px;gap:3px}
+  .slot .ic{font-size:8.5px;width:11px}
+  .slot .ic.chic{width:10px}
+  .slot .ic.chic svg{width:9px;height:9px}
+  .slot .t{font-size:9px}
+  .slot.done .t::before{content:"✓"}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-in">
+    <div class="brand"><h1>📺 업로드 플래너</h1><span class="sub">유튜브 일정 관리</span></div>
+    <button class="btn" id="srcBtn" title="남은 소스 목록">📋 남은 소스</button>
+    <div class="status" id="status"><span class="dot"></span><span id="statusText">불러오는 중…</span></div>
+    <div class="month-nav">
+      <button id="prevBtn" title="이전 달">‹</button>
+      <div class="month-title" id="monthTitle"></div>
+      <button id="nextBtn" title="다음 달">›</button>
+    </div>
+    <button class="btn" id="shortsBtn" title="쇼츠 접기/펼치기">⚡ 쇼츠</button>
+    <button class="btn" id="todayBtn">오늘</button>
+    <button class="btn icon" id="refreshBtn" title="새로고침">⟳</button>
+    <button class="btn" id="tokenBtn" title="GitHub 토큰">🔑 토큰</button>
+    <button class="btn icon" id="setBtn" title="설정">⚙</button>
+  </div>
+</header>
+
+<div class="drawer" id="srcDrawer">
+  <div class="drawer-in">
+    <div class="src-tabs">
+      <button class="src-tab" id="srcTabA"></button>
+      <button class="src-tab" id="srcTabB"></button>
+    </div>
+    <div class="src-addrow">
+      <input type="text" id="srcInput" placeholder="올릴 만한 소스 아이디어 적기…">
+      <button class="btn add" id="srcAdd">＋ 추가</button>
+    </div>
+    <div class="src-list" id="srcList"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="dow"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- 날짜 편집 모달 -->
+<div class="overlay" id="dayOverlay">
+  <div class="modal">
+    <div class="m-head"><h2 id="dayTitle"></h2><button class="x" id="dayClose">✕</button></div>
+    <div id="dayBody"></div>
+    <div class="m-foot">
+      <button class="btn ghost" id="dayCancel">취소</button>
+      <button class="btn primary" id="daySave">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 토큰 입력 모달 -->
+<div class="overlay" id="tokOverlay">
+  <div class="modal">
+    <div class="m-head"><h2>🔑 GitHub 토큰</h2><button class="x" id="tokClose">✕</button></div>
+    <div class="set-group">
+      <label>토큰 (저장 권한)</label>
+      <input id="tokInput" type="password" placeholder="ghp_... 또는 github_pat_...">
+      <div class="hint">이 브라우저에 한 번만 저장하면 이후 다시 입력할 필요 없어요.<br>토큰 없이도 일정 <b>보기</b>는 가능하고, <b>저장</b>할 때만 필요합니다.<br>권한: 저장소의 <b>Contents → Read and write</b></div>
+    </div>
+    <div class="m-foot">
+      <button class="btn primary" id="tokSave">토큰 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 설정 모달 -->
+<div class="overlay" id="setOverlay">
+  <div class="modal">
+    <div class="m-head"><h2>설정</h2><button class="x" id="setClose">✕</button></div>
+
+    <div class="set-title">채널 이름</div>
+    <div class="set-row">
+      <div class="set-group"><label>채널 A</label><input id="chA" placeholder="예: 크랭크"></div>
+      <div class="set-group"><label>채널 B</label><input id="chB" placeholder="예: 크랭크 플러스"></div>
+    </div>
+
+    <hr class="set-divider">
+    <div class="set-title">저장 위치 (GitHub)</div>
+    <div class="set-row">
+      <div class="set-group"><label>소유자(Owner)</label><input id="cfgOwner" placeholder="crank-schedule"></div>
+      <div class="set-group"><label>저장소(Repo)</label><input id="cfgRepo" placeholder="Calendar"></div>
+    </div>
+    <div class="set-row">
+      <div class="set-group"><label>브랜치</label><input id="cfgBranch" placeholder="main"></div>
+      <div class="set-group"><label>데이터 파일명</label><input id="cfgPath" placeholder="youtube-data.json"></div>
+    </div>
+    <div class="set-group">
+      <label>GitHub 토큰 (저장 권한)</label>
+      <input id="cfgToken" type="password" placeholder="ghp_... 또는 github_pat_...">
+      <div class="hint">이 브라우저에 한 번만 저장되며, 이후 다시 입력할 필요 없습니다.<br>토큰 없이도 일정 <b>보기</b>는 가능하고, <b>저장</b>할 때만 필요해요.</div>
+    </div>
+
+    <div class="m-foot">
+      <button class="btn primary" id="setSave">저장하고 시작</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ══════════ 상태 ══════════ */
+const SLOT_DEFS = [
+  {key:'a_video', ch:'a', type:'video', ic:'▶', label:'영상'},
+  {key:'a_short', ch:'a', type:'short', ic:'⚡', label:'쇼츠'},
+  {key:'b_video', ch:'b', type:'video', ic:'▶', label:'영상'},
+  {key:'b_short', ch:'b', type:'short', ic:'⚡', label:'쇼츠'},
+];
+const CH_ICON = {
+  a: `<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="2.5" width="6" height="12" rx="3" fill="currentColor"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="18" x2="12" y2="21.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  b: `<svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4.5" x2="12" y2="19.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><line x1="4.5" y1="12" x2="19.5" y2="12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`,
+};
+let cfg  = JSON.parse(localStorage.getItem('ytp_cfg') || 'null');
+let data = { channels:{a:'크랭크', b:'크랭크 플러스'}, days:{}, sources:{a:[], b:[]} };
+let sha  = null;
+let cur  = new Date(); cur.setDate(1);
+let editingDate = null;
+let showShorts = localStorage.getItem('ytp_shorts') !== '0';
+
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,'0');
+const keyOf = (y,m,d) => `${y}-${pad(m+1)}-${pad(d)}`;
+
+/* ══════════ 유틸 ══════════ */
+function toast(msg, isErr){
+  const t = $('toast');
+  t.textContent = msg; t.className = isErr ? 'show err' : 'show';
+  clearTimeout(t._tm); t._tm = setTimeout(()=>t.className='', 2600);
+}
+function setStatus(mode, text){
+  $('status').className = 'status ' + mode;
+  $('statusText').textContent = text;
+}
+function b64ToUtf8(b64){
+  const bin = atob(b64.replace(/\n/g,''));
+  const bytes = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+function utf8ToB64(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for(let i=0;i<bytes.length;i+=8192) bin += String.fromCharCode(...bytes.subarray(i,i+8192));
+  return btoa(bin);
+}
+
+/* ══════════ GitHub 입출력 ══════════ */
+function apiUrl(){
+  return `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
+}
+function headers(){
+  const h = {'Accept':'application/vnd.github+json'};
+  if(cfg.token) h['Authorization'] = 'Bearer ' + cfg.token;
+  return h;
+}
+async function loadData(silent){
+  if(!cfg) return;
+  if(!silent) setStatus('saving','불러오는 중…');
+  try{
+    const r = await fetch(`${apiUrl()}?ref=${encodeURIComponent(cfg.branch)}&t=${Date.now()}`, {headers: headers(), cache:'no-store'});
+    if(r.status === 404){
+      sha = null;
+      setStatus('ok', cfg.token ? '새 파일 (첫 저장 시 생성)' : '보기 전용');
+      render(); return;
+    }
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    sha = j.sha;
+    const parsed = JSON.parse(b64ToUtf8(j.content));
+    data = Object.assign({channels:{a:'크랭크',b:'크랭크 플러스'}, days:{}}, parsed);
+    data.sources = Object.assign({a:[], b:[]}, parsed.sources || {});
+    setStatus('ok', cfg.token ? '동기화됨' : '보기 전용');
+    render();
+  }catch(e){
+    setStatus('err','불러오기 실패');
+    toast('데이터를 불러오지 못했어요. 설정(⚙)에서 저장소 정보를 확인해 주세요.', true);
+  }
+}
+async function pushData(){
+  if(!cfg.token){ toast('저장하려면 GitHub 토큰이 필요해요. 위 🔑 버튼에서 한 번만 입력해 주세요.', true); openToken(); return; }
+  setStatus('saving','저장 중…');
+  const body = {
+    message: `업로드 일정 수정 (${new Date().toLocaleString('ko-KR')})`,
+    content: utf8ToB64(JSON.stringify(data, null, 2)),
+    branch: cfg.branch,
+  };
+  if(sha) body.sha = sha;
+  try{
+    let r = await fetch(apiUrl(), {method:'PUT', headers: headers(), body: JSON.stringify(body)});
+    if(r.status === 409 || r.status === 422){
+      // 다른 곳에서 먼저 저장됨 → 최신 sha 받아 한 번 재시도
+      const g = await fetch(`${apiUrl()}?ref=${encodeURIComponent(cfg.branch)}&t=${Date.now()}`, {headers: headers(), cache:'no-store'});
+      if(g.ok){ body.sha = (await g.json()).sha; }
+      r = await fetch(apiUrl(), {method:'PUT', headers: headers(), body: JSON.stringify(body)});
+    }
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    sha = j.content.sha;
+    setStatus('ok','저장됨');
+  }catch(e){
+    setStatus('err','저장 실패');
+    toast('저장에 실패했어요. 토큰 권한(Contents: Read and write)을 확인해 주세요.', true);
+  }
+}
+
+/* ══════════ 달력 렌더 ══════════ */
+function render(){
+  const y = cur.getFullYear(), m = cur.getMonth();
+  $('monthTitle').textContent = `${y}년 ${m+1}월`;
+
+  const first = new Date(y, m, 1).getDay();
+  const last  = new Date(y, m+1, 0).getDate();
+  const now = new Date();
+  const todayKey = keyOf(now.getFullYear(), now.getMonth(), now.getDate());
+  let html = '';
+  for(let i=0;i<first;i++) html += `<div class="cell blank"></div>`;
+  for(let d=1; d<=last; d++){
+    const k = keyOf(y,m,d);
+    const dow = (first + d - 1) % 7;
+    const day = data.days[k] || {};
+    const isPast = k < todayKey;
+    let doneN = 0, filledN = 0, slots = '';
+    for(const s of SLOT_DEFS){
+      const v = day[s.key];
+      const title = v && v.t ? v.t : '';
+      const done  = v && v.done;
+      if(title) filledN++;
+      if(title && done) doneN++;
+      if(s.type === 'short' && !showShorts) continue;
+      if(s.type === 'short' && isPast && !title) continue;
+      slots += title
+        ? `<div class="slot ${s.ch}${done?' done':''}"><span class="ic chic">${CH_ICON[s.ch]}</span><span class="ic">${s.ic}</span><span class="t">${esc(title)}</span></div>`
+        : `<div class="slot empty"><span class="ic chic">${CH_ICON[s.ch]}</span><span class="ic">${s.ic}</span><span class="t">.</span></div>`;
+    }
+    const cnt = filledN ? `<span class="cnt${doneN===4?' full':''}">${doneN}/4</span>` : '';
+    html += `<div class="cell clickable${k===todayKey?' today':''}${isPast?' past':''}${dow===0?' sun':''}${dow===6?' sat':''}" data-date="${k}">
+      <span class="wm">${d}</span>${cnt}${slots}</div>`;
+  }
+  $('grid').classList.toggle('shorts-off', !showShorts);
+  $('shortsBtn').classList.toggle('on', showShorts);
+  $('grid').style.gridTemplateRows = `repeat(${Math.ceil((first + last) / 7)}, minmax(0, 1fr))`;
+  $('grid').innerHTML = html;
+  $('grid').querySelectorAll('.cell.clickable').forEach(c=>{
+    c.addEventListener('click', ()=>openDay(c.dataset.date));
+  });
+  renderSources();
+}
+$('shortsBtn').addEventListener('click', ()=>{
+  showShorts = !showShorts;
+  localStorage.setItem('ytp_shorts', showShorts ? '1' : '0');
+  render();
+  toast(showShorts ? '쇼츠 펼침' : '쇼츠 접음 — 달력엔 영상만 표시');
+});
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ══════════ 남은 소스 서랍 ══════════ */
+let srcTab = 'a';
+let showUsed = false;
+const PRUNE_MS = 14*24*3600*1000;
+function normSources(src){
+  const out = {a:[], b:[]};
+  const cut = Date.now() - PRUNE_MS;
+  for(const ch of ['a','b']){
+    for(const it of (src && src[ch]) || []){
+      const o = (typeof it === 'string') ? {t:it, used:null} : {t:it.t||'', used:it.used||null};
+      if(!o.t) continue;
+      if(o.used && o.used < cut) continue; // 2주 지난 쓴 소스 제거
+      out[ch].push(o);
+    }
+  }
+  return out;
+}
+function renderSources(){
+  data.sources = normSources(data.sources);
+  const nA = data.sources.a.filter(x=>!x.used).length;
+  const nB = data.sources.b.filter(x=>!x.used).length;
+  $('srcBtn').textContent = `📋 남은 소스 ${nA+nB ? `(${nA+nB})` : ''}`.trim();
+  $('srcTabA').innerHTML = `<span class="lg-ic">${CH_ICON.a}</span>${esc(data.channels.a)} <span class="n">${nA}</span>`;
+  $('srcTabB').innerHTML = `<span class="lg-ic">${CH_ICON.b}</span>${esc(data.channels.b)} <span class="n">${nB}</span>`;
+  $('srcTabA').classList.toggle('active', srcTab==='a');
+  $('srcTabB').classList.toggle('active', srcTab==='b');
+  $('srcInput').placeholder = `${data.channels[srcTab]}에 올릴 만한 소스 아이디어 적기…`;
+
+  const list = data.sources[srcTab];
+  const act  = list.filter(x=>!x.used);
+  const used = list.filter(x=>x.used);
+  const commit = ()=>{ data.sources[srcTab] = [...act, ...used]; renderSources(); pushData(); };
+
+  let html = act.length
+    ? act.map((x,i)=>`<div class="src-item" draggable="true" data-p="${i}">
+        <span class="grab" title="드래그로 순서 변경">⠿</span><span class="txt">${esc(x.t)}</span>
+        <button class="sbtn mv" data-p="${i}" data-d="-1" title="위로">↑</button>
+        <button class="sbtn mv" data-p="${i}" data-d="1" title="아래로">↓</button>
+        <button class="sbtn use" data-p="${i}" title="사용 완료">✓</button>
+        <button class="sbtn del" data-p="${i}" title="삭제">✕</button>
+      </div>`).join('')
+    : `<div class="src-empty">아직 적어둔 소스가 없어요. 위에 입력하고 추가를 눌러 주세요.</div>`;
+
+  html += `<button class="used-toggle" id="usedToggle">✓ 쓴 소스 (${used.length}) ${showUsed?'▴':'▾'}</button>`;
+  if(showUsed){
+    html += used.length
+      ? used.map((x,i)=>`<div class="src-item used-it">
+          <span class="txt">${esc(x.t)}</span>
+          <span class="date">${new Date(x.used).getMonth()+1}/${new Date(x.used).getDate()} 사용</span>
+          <button class="sbtn re" data-p="${i}" title="복구">↩</button>
+          <button class="sbtn del udel" data-p="${i}" title="삭제">✕</button>
+        </div>`).join('') + `<div class="used-hint">쓴 소스는 2주 뒤 자동 삭제돼요</div>`
+      : `<div class="src-empty">아직 쓴 소스가 없어요.</div>`;
+  }
+  $('srcList').innerHTML = html;
+
+  const move = (p, d)=>{
+    const q = p + d;
+    if(q < 0 || q >= act.length) return;
+    [act[p], act[q]] = [act[q], act[p]];
+    commit();
+  };
+  $('srcList').querySelectorAll('.mv').forEach(b=>b.addEventListener('click', ()=>move(+b.dataset.p, +b.dataset.d)));
+  $('srcList').querySelectorAll('.use').forEach(b=>b.addEventListener('click', ()=>{ act[+b.dataset.p].used = Date.now(); commit(); }));
+  $('srcList').querySelectorAll('.src-item:not(.used-it) .del').forEach(b=>b.addEventListener('click', ()=>{ act.splice(+b.dataset.p,1); commit(); }));
+  $('srcList').querySelectorAll('.re').forEach(b=>b.addEventListener('click', ()=>{ used[+b.dataset.p].used = null; act.push(used.splice(+b.dataset.p,1)[0]); commit(); }));
+  $('srcList').querySelectorAll('.udel').forEach(b=>b.addEventListener('click', ()=>{ used.splice(+b.dataset.p,1); commit(); }));
+  const ut = $('usedToggle');
+  if(ut) ut.addEventListener('click', ()=>{ showUsed = !showUsed; renderSources(); });
+
+  // 드래그 정렬
+  let dragP = null;
+  $('srcList').querySelectorAll('.src-item[draggable]').forEach(el=>{
+    el.addEventListener('dragstart', ()=>{ dragP = +el.dataset.p; el.classList.add('dragging'); });
+    el.addEventListener('dragend', ()=>el.classList.remove('dragging'));
+    el.addEventListener('dragover', e=>{ e.preventDefault(); el.classList.add('dragover'); });
+    el.addEventListener('dragleave', ()=>el.classList.remove('dragover'));
+    el.addEventListener('drop', e=>{
+      e.preventDefault(); el.classList.remove('dragover');
+      const to = +el.dataset.p;
+      if(dragP===null || dragP===to) return;
+      act.splice(to, 0, act.splice(dragP,1)[0]);
+      dragP = null; commit();
+    });
+  });
+}
+function addSource(){
+  const t = $('srcInput').value.trim();
+  if(!t) return;
+  data.sources[srcTab].unshift({t, used:null});
+  $('srcInput').value = '';
+  renderSources(); pushData();
+  $('srcInput').focus();
+}
+$('srcBtn').addEventListener('click', e=>{
+  e.stopPropagation();
+  const open = $('srcDrawer').classList.toggle('open');
+  if(open){
+    $('srcDrawer').style.top = (document.querySelector('header').getBoundingClientRect().bottom + 8) + 'px';
+    renderSources(); setTimeout(()=>$('srcInput').focus(), 180);
+  }
+});
+document.addEventListener('click', e=>{
+  if($('srcDrawer').classList.contains('open') && !$('srcDrawer').contains(e.target)) $('srcDrawer').classList.remove('open');
+});
+$('srcDrawer').addEventListener('click', e=>e.stopPropagation());
+window.addEventListener('resize', ()=>{
+  if($('srcDrawer').classList.contains('open'))
+    $('srcDrawer').style.top = (document.querySelector('header').getBoundingClientRect().bottom + 8) + 'px';
+});
+$('srcTabA').addEventListener('click', ()=>{ srcTab='a'; renderSources(); });
+$('srcTabB').addEventListener('click', ()=>{ srcTab='b'; renderSources(); });
+$('srcAdd').addEventListener('click', addSource);
+$('srcInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addSource(); });
+
+/* ══════════ 날짜 편집 ══════════ */
+function openDay(dateStr){
+  editingDate = dateStr;
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dow = ['일','월','화','수','목','금','토'][new Date(y,m-1,d).getDay()];
+  $('dayTitle').textContent = `${m}월 ${d}일 (${dow})`;
+  const day = data.days[dateStr] || {};
+  let html = '';
+  for(const ch of ['a','b']){
+    html += `<div class="ch-block"><div class="ch-name"><span class="lg-ic">${CH_ICON[ch]}</span>${esc(data.channels[ch])}</div>`;
+    for(const s of SLOT_DEFS.filter(s=>s.ch===ch && (showShorts || s.type!=='short'))){
+      const v = day[s.key] || {};
+      html += `<div class="field">
+        <span class="tag">${s.ic} ${s.label}</span>
+        <input type="text" id="in_${s.key}" value="${esc(v.t||'')}" placeholder="올릴 영상 제목">
+        <label class="chk${v.done?' on':''}" id="lb_${s.key}"><input type="checkbox" id="ck_${s.key}" ${v.done?'checked':''}>완료</label>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  $('dayBody').innerHTML = html;
+  for(const s of SLOT_DEFS){
+    const ck = $('ck_'+s.key);
+    if(!ck) continue;
+    ck.addEventListener('change', e=>{
+      $('lb_'+s.key).classList.toggle('on', e.target.checked);
+    });
+  }
+  $('dayOverlay').classList.add('open');
+}
+function closeDay(){ $('dayOverlay').classList.remove('open'); editingDate = null; }
+$('daySave').addEventListener('click', ()=>{
+  const day = Object.assign({}, data.days[editingDate] || {});
+  for(const s of SLOT_DEFS){
+    if(!$('in_'+s.key)) continue; // 숨긴 칸 데이터 보존
+    const t = $('in_'+s.key).value.trim();
+    const done = $('ck_'+s.key).checked;
+    if(t) day[s.key] = {t, done}; else delete day[s.key];
+  }
+  if(Object.keys(day).length) data.days[editingDate] = day; else delete data.days[editingDate];
+  closeDay(); render(); pushData();
+});
+$('dayClose').addEventListener('click', closeDay);
+$('dayCancel').addEventListener('click', closeDay);
+$('dayOverlay').addEventListener('click', e=>{ if(e.target===$('dayOverlay')) closeDay(); });
+
+/* ══════════ 토큰 ══════════ */
+function updateTokenBtn(){
+  const has = !!(cfg && cfg.token);
+  $('tokenBtn').classList.toggle('on', has);
+  $('tokenBtn').textContent = has ? '🔑 연결됨' : '🔑 토큰';
+}
+function openToken(){
+  $('tokInput').value = (cfg && cfg.token) || '';
+  $('tokOverlay').classList.add('open');
+  setTimeout(()=>$('tokInput').focus(), 60);
+}
+$('tokenBtn').addEventListener('click', openToken);
+$('tokClose').addEventListener('click', ()=>$('tokOverlay').classList.remove('open'));
+$('tokOverlay').addEventListener('click', e=>{ if(e.target===$('tokOverlay')) $('tokOverlay').classList.remove('open'); });
+$('tokSave').addEventListener('click', ()=>{
+  cfg.token = $('tokInput').value.trim();
+  localStorage.setItem('ytp_cfg', JSON.stringify(cfg));
+  $('tokOverlay').classList.remove('open');
+  updateTokenBtn();
+  toast(cfg.token ? '토큰 저장 완료 — 이제 저장할 수 있어요' : '토큰이 비워졌어요 (보기 전용)');
+  loadData(true);
+});
+
+/* ══════════ 설정 ══════════ */
+function openSettings(){
+  const c = cfg || {owner:'crank-schedule', repo:'Calendar', branch:'main', path:'youtube-data.json', token:''};
+  $('cfgOwner').value = c.owner; $('cfgRepo').value = c.repo;
+  $('cfgBranch').value = c.branch; $('cfgPath').value = c.path;
+  $('cfgToken').value = c.token || '';
+  $('chA').value = data.channels.a; $('chB').value = data.channels.b;
+  $('setOverlay').classList.add('open');
+}
+$('setSave').addEventListener('click', ()=>{
+  cfg = {
+    owner: $('cfgOwner').value.trim(),
+    repo:  $('cfgRepo').value.trim(),
+    branch:$('cfgBranch').value.trim() || 'main',
+    path:  $('cfgPath').value.trim() || 'youtube-data.json',
+    token: $('cfgToken').value.trim(),
+  };
+  localStorage.setItem('ytp_cfg', JSON.stringify(cfg));
+  updateTokenBtn();
+  const nA = $('chA').value.trim(), nB = $('chB').value.trim();
+  const changed = (nA && nA !== data.channels.a) || (nB && nB !== data.channels.b);
+  if(nA) data.channels.a = nA;
+  if(nB) data.channels.b = nB;
+  $('setOverlay').classList.remove('open');
+  toast('설정 저장됨');
+  loadData().then(()=>{
+    if(changed && cfg.token){
+      if(nA) data.channels.a = nA;
+      if(nB) data.channels.b = nB;
+      render(); pushData();
+    }
+  });
+});
+$('setBtn').addEventListener('click', openSettings);
+$('setClose').addEventListener('click', ()=>$('setOverlay').classList.remove('open'));
+$('setOverlay').addEventListener('click', e=>{ if(e.target===$('setOverlay')) $('setOverlay').classList.remove('open'); });
+
+/* ══════════ 내비게이션 ══════════ */
+$('prevBtn').addEventListener('click', ()=>{ cur.setMonth(cur.getMonth()-1); render(); });
+$('nextBtn').addEventListener('click', ()=>{ cur.setMonth(cur.getMonth()+1); render(); });
+$('todayBtn').addEventListener('click', ()=>{ cur = new Date(); cur.setDate(1); render(); });
+$('refreshBtn').addEventListener('click', ()=>loadData());
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){ closeDay(); $('setOverlay').classList.remove('open'); $('tokOverlay').classList.remove('open'); $('srcDrawer').classList.remove('open'); }
+});
+
+/* ══════════ 시작 ══════════ */
+if(!cfg){
+  cfg = {owner:'crank-schedule', repo:'Calendar', branch:'main', path:'youtube-data.json', token:''};
+  localStorage.setItem('ytp_cfg', JSON.stringify(cfg));
+}
+updateTokenBtn();
+render();
+loadData();
+</script>
+</body>
+</html>
