@@ -161,6 +161,30 @@ export default {
       }
     }
 
+    // 라우팅: 치지직 채널 비디오 프록시
+    if (request.method === 'GET' && url.pathname.startsWith('/api/chzzk/channel/')) {
+      const match = url.pathname.match(/\/api\/chzzk\/channel\/([^\/]+)\/videos/);
+      if (match) {
+        const channelId = match[1];
+        try {
+          const chzzkUrl = `https://api.chzzk.naver.com/service/v1/channels/${channelId}/videos?videoType=REPLAY&sortType=LATEST&size=50`;
+          const response = await fetch(chzzkUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
+          });
+          const data = await response.json();
+          return new Response(JSON.stringify(data), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } catch (e) {
+          return new Response(JSON.stringify({ error: '치지직 API 호출 실패', details: e.message }), {
+            status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+    }
+
     return new Response('Not Found', { status: 404, headers: corsHeaders });
   },
 };

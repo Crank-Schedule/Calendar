@@ -1554,6 +1554,32 @@ async function renderCalendarMonth(){
   } catch(e) {}
   
   const videoDateMap = {}; 
+  try {
+      const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
+      const chzzkRes = await fetch(`${workerUrl}/api/chzzk/channel/de27c33ee2364c4e5007867bb3b96001/videos`);
+      if(chzzkRes.ok) {
+          const chzzkData = await chzzkRes.json();
+          if(chzzkData?.content?.data) {
+              chzzkData.content.data.forEach(v => {
+                  let vy, vmo, vd;
+                  const rm = v.videoTitle.match(/^(\d{2})(\d{2})(\d{2})/);
+                  if (rm) {
+                      vy = "20" + rm[1]; vmo = parseInt(rm[2],10); vd = parseInt(rm[3],10);
+                  } else if (v.liveOpenDate) {
+                      const dt = new Date(v.liveOpenDate.replace(' ', 'T'));
+                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
+                  }
+                  if (vy && vmo && vd) {
+                      videoDateMap[`${vy}-${vmo}-${vd}`] = {
+                          url: `https://chzzk.naver.com/video/${v.videoNo}`,
+                          thumb: v.thumbnailImageUrl,
+                          isChzzk: true
+                      };
+                  }
+              });
+          }
+      }
+  } catch(e) {}
   replayVideos.forEach(v => {
     const rm = v.title.match(/^(\d{2})(\d{2})(\d{2})/);
     if(rm) {
@@ -1789,6 +1815,32 @@ async function renderListMonth(){
   } catch(e) {}
   
   const videoDateMap = {}; 
+  try {
+      const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
+      const chzzkRes = await fetch(`${workerUrl}/api/chzzk/channel/de27c33ee2364c4e5007867bb3b96001/videos`);
+      if(chzzkRes.ok) {
+          const chzzkData = await chzzkRes.json();
+          if(chzzkData?.content?.data) {
+              chzzkData.content.data.forEach(v => {
+                  let vy, vmo, vd;
+                  const rm = v.videoTitle.match(/^(\d{2})(\d{2})(\d{2})/);
+                  if (rm) {
+                      vy = "20" + rm[1]; vmo = parseInt(rm[2],10); vd = parseInt(rm[3],10);
+                  } else if (v.liveOpenDate) {
+                      const dt = new Date(v.liveOpenDate.replace(' ', 'T'));
+                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
+                  }
+                  if (vy && vmo && vd) {
+                      videoDateMap[`${vy}-${vmo}-${vd}`] = {
+                          url: `https://chzzk.naver.com/video/${v.videoNo}`,
+                          thumb: v.thumbnailImageUrl,
+                          isChzzk: true
+                      };
+                  }
+              });
+          }
+      }
+  } catch(e) {}
   replayVideos.forEach(v => {
     const rm = v.title.match(/^(\d{2})(\d{2})(\d{2})/);
     if(rm) {
