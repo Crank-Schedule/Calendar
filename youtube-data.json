@@ -16,6 +16,10 @@
       "b_short": {
         "t": "조상님 죄송합니다",
         "done": false
+      },
+      "a_short": {
+        "t": "안터져도 이득 맹독충",
+        "done": false
       }
     }
   },
