@@ -2063,16 +2063,21 @@ async function renderCalendarMonth(){
         ytCol.onclick = (e) => e.stopPropagation();
         
         if (vid.isChzzk) {
-            ytCol.innerHTML = `<span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-            cellBody.appendChild(ytCol);
-            const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
-            fetch(`${workerUrl}/api/chzzk/video/${vid.chzzkId}`)
-              .then(r => r.json())
-              .then(data => {
-                  if(data?.content?.thumbnailImageUrl) {
-                      ytCol.innerHTML = `<img src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                  }
-              }).catch(e=>console.error(e));
+            if (vid.thumb) {
+                ytCol.innerHTML = `<img src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
+                cellBody.appendChild(ytCol);
+            } else if (vid.chzzkId) {
+                ytCol.innerHTML = `<span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
+                cellBody.appendChild(ytCol);
+                const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
+                fetch(`${workerUrl}/api/chzzk/video/${vid.chzzkId}`)
+                  .then(r => r.json())
+                  .then(data => {
+                      if(data?.content?.thumbnailImageUrl) {
+                          ytCol.innerHTML = `<img src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
+                      }
+                  }).catch(e=>console.error(e));
+            }
         } else {
             ytCol.innerHTML = `<img src="${safeUrl(vid.thumb || (vid.thumbnails && vid.thumbnails.default ? vid.thumbnails.default.url : ''))}" alt="replay"><span class="yt-play-icon"></span>`;
             cellBody.appendChild(ytCol);
@@ -2314,16 +2319,21 @@ async function renderListMonth(){
             ytCol.onclick = (e) => e.stopPropagation();
             
             if (vid.isChzzk) {
-                ytCol.innerHTML = `<span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                item.appendChild(ytCol);
-                const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
-                fetch(`${workerUrl}/api/chzzk/video/${vid.chzzkId}`)
-                  .then(r => r.json())
-                  .then(data => {
-                      if(data?.content?.thumbnailImageUrl) {
-                          ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                      }
-                  }).catch(e=>console.error(e));
+                if (vid.thumb) {
+                    ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
+                    item.appendChild(ytCol);
+                } else if (vid.chzzkId) {
+                    ytCol.innerHTML = `<span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
+                    item.appendChild(ytCol);
+                    const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
+                    fetch(`${workerUrl}/api/chzzk/video/${vid.chzzkId}`)
+                      .then(r => r.json())
+                      .then(data => {
+                          if(data?.content?.thumbnailImageUrl) {
+                              ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
+                          }
+                      }).catch(e=>console.error(e));
+                }
             } else {
                 ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon"></span>`;
                 item.appendChild(ytCol);
