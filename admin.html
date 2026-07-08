@@ -2021,6 +2021,11 @@ async function renderCalendarMonth(){
                     };
                     break;
                 }
+                const czMatch = en.link.match(/chzzk\.naver\.com\/video\/(\d+)/i);
+                if (czMatch) {
+                    vid = { url: en.link, isChzzk: true, chzzkId: czMatch[1] };
+                    break;
+                }
             }
         }
     }
@@ -2030,8 +2035,22 @@ async function renderCalendarMonth(){
         if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
         ytCol.target = '_blank';
         ytCol.onclick = (e) => e.stopPropagation();
-        ytCol.innerHTML = `<img src="${safeUrl(vid.thumb || (vid.thumbnails && vid.thumbnails.default ? vid.thumbnails.default.url : ''))}" alt="replay"><span class="yt-play-icon"></span>`;
-        cellBody.appendChild(ytCol);
+        
+        if (vid.isChzzk) {
+            ytCol.innerHTML = `<span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
+            cellBody.appendChild(ytCol);
+            const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
+            fetch(`${workerUrl}/api/chzzk/video/${vid.chzzkId}`)
+              .then(r => r.json())
+              .then(data => {
+                  if(data?.content?.thumbnailImageUrl) {
+                      ytCol.innerHTML = `<img src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
+                  }
+              }).catch(e=>console.error(e));
+        } else {
+            ytCol.innerHTML = `<img src="${safeUrl(vid.thumb || (vid.thumbnails && vid.thumbnails.default ? vid.thumbnails.default.url : ''))}" alt="replay"><span class="yt-play-icon"></span>`;
+            cellBody.appendChild(ytCol);
+        }
     }
 
     c.appendChild(cellBody);
@@ -2226,6 +2245,11 @@ async function renderListMonth(){
                         };
                         break;
                     }
+                    const czMatch = en.link.match(/chzzk\.naver\.com\/video\/(\d+)/i);
+                    if (czMatch) {
+                        vid = { url: en.link, isChzzk: true, chzzkId: czMatch[1] };
+                        break;
+                    }
                 }
             }
         }
@@ -2236,8 +2260,22 @@ async function renderListMonth(){
             if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
             ytCol.target = '_blank';
             ytCol.onclick = (e) => e.stopPropagation();
-            ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon"></span>`;
-            item.appendChild(ytCol);
+            
+            if (vid.isChzzk) {
+                ytCol.innerHTML = `<span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
+                item.appendChild(ytCol);
+                const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
+                fetch(`${workerUrl}/api/chzzk/video/${vid.chzzkId}`)
+                  .then(r => r.json())
+                  .then(data => {
+                      if(data?.content?.thumbnailImageUrl) {
+                          ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
+                      }
+                  }).catch(e=>console.error(e));
+            } else {
+                ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon"></span>`;
+                item.appendChild(ytCol);
+            }
         } else if (entries.length > 0 && !entries[0].title.includes("휴방")) {
             const emptyCol = document.createElement('div');
             emptyCol.className = 'timeline-yt-empty';
