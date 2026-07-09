@@ -1666,6 +1666,7 @@ async function renderCalendarMonth(){
     
     const tagsWrap = document.createElement('div');
     tagsWrap.className='tags cell-tags-col';
+    tagsWrap.classList.add('items-' + Math.min(regulars.length, 4));
     regulars.slice(0,4).forEach(en=> tagsWrap.appendChild(buildTagEl(en)));
     if(regulars.length>4){
       const more = document.createElement('div');

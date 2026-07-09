@@ -2022,6 +2022,7 @@ async function renderCalendarMonth(){
     
     const tagsWrap = document.createElement('div');
     tagsWrap.className='tags cell-tags-col';
+    tagsWrap.classList.add('items-' + Math.min(regulars.length, 4));
     // __day, __idx 주입 (드래그 용)
     regulars.slice(0,4).forEach((en, i) => {
       en.__day = day;
