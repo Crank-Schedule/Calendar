@@ -2394,18 +2394,56 @@ function buildSwatches(){
 
 function buildPresets(){
   presetsEl.innerHTML='';
-  PRESETS.forEach(p=>{
+  let presets = PRESETS;
+  try {
+    const stored = localStorage.getItem('crank_recent_presets');
+    if(stored) {
+      const parsed = JSON.parse(stored);
+      if(Array.isArray(parsed) && parsed.length > 0) {
+        presets = parsed;
+      }
+    }
+  } catch(e) {}
+
+  presets.forEach(p=>{
     const chip = document.createElement('button');
     chip.className='preset-chip';
     chip.style.color = getDisplayColor(p.color);
-    chip.innerHTML = withIcon(p.title);
+    chip.innerHTML = withIcon(p);
     chip.addEventListener('click', ()=>{
       titleInput.value = p.title;
       pickedColor = p.color;
+      if (p.icon !== undefined) pickedIcon = p.icon;
+      else pickedIcon = 'auto';
       buildSwatches(); buildIconSwatches();
     });
     presetsEl.appendChild(chip);
   });
+}
+
+function updateRecentPresets(title, color, icon) {
+  let presets = PRESETS;
+  try {
+    const stored = localStorage.getItem('crank_recent_presets');
+    if(stored) {
+      const parsed = JSON.parse(stored);
+      if(Array.isArray(parsed)) {
+        presets = parsed;
+      }
+    }
+  } catch(e) {}
+  
+  if(presets === PRESETS) presets = [...PRESETS];
+  
+  presets = presets.filter(p => p.title !== title);
+  presets.unshift({title, color, icon});
+  presets = presets.slice(0, 10);
+  
+  try {
+    localStorage.setItem('crank_recent_presets', JSON.stringify(presets));
+  } catch(e) {}
+  
+  buildPresets();
 }
 
 function renderEntries(dateObj){
@@ -2538,6 +2576,9 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
     });
   }
   
+  updateRecentPresets(title, finalColor, pickedIcon === 'auto' ? undefined : pickedIcon);
+  
+
   titleInput.value=''; timeInput.value=''; linkInput.value='';
   pickedIcon = 'auto';
   if (typeof buildIconSwatches === 'function') buildIconSwatches();
