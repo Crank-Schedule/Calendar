@@ -11,7 +11,7 @@
       },
       "b_video": {
         "t": "군심 로그라이크 15",
-        "done": false
+        "done": true
       },
       "b_short": {
         "t": "조상님 죄송합니다",
@@ -19,7 +19,7 @@
       },
       "a_short": {
         "t": "안터져도 이득 맹독충",
-        "done": false
+        "done": true
       }
     },
     "2026-07-10": {
