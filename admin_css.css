@@ -812,7 +812,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: stretch;
+    align-items: center; /* Revert to center for natural height */
     flex: 1;
 }
 
@@ -828,12 +828,12 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     align-self: flex-end;
 }
 
-.cell-tags-col .tag { flex: 1; }
+/* Remove .tag { flex: 1; } so they don't stretch vertically like empty boxes */
 
 .cell-tags-col.items-1 .title-wrap {
     white-space: normal !important;
     display: -webkit-box !important;
-    -webkit-line-clamp: 6 !important;
+    -webkit-line-clamp: 3 !important; /* Max 3 lines so it still looks like a tag */
     -webkit-box-orient: vertical;
     word-break: keep-all;
 }
@@ -841,7 +841,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 .cell-tags-col.items-2 .title-wrap {
     white-space: normal !important;
     display: -webkit-box !important;
-    -webkit-line-clamp: 3 !important;
+    -webkit-line-clamp: 2 !important;
     -webkit-box-orient: vertical;
     word-break: keep-all;
 }
@@ -855,9 +855,6 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 }
 
 .cell-tags-col.items-4 .title-wrap {
-    white-space: normal !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 1 !important;
-    -webkit-box-orient: vertical;
-    word-break: keep-all;
+    white-space: nowrap !important; /* 4 items -> single line */
+    text-overflow: ellipsis;
 }
