@@ -20,20 +20,37 @@
     align-self: flex-end;
 }
 
-.cell-tags-col.items-1 .tag { flex: 1; max-height: 100%; }
+.cell-tags-col .tag { flex: 1; }
+
 .cell-tags-col.items-1 .title-wrap {
     white-space: normal !important;
     display: -webkit-box !important;
-    -webkit-line-clamp: 4 !important;
+    -webkit-line-clamp: 6 !important;
     -webkit-box-orient: vertical;
     word-break: keep-all;
 }
 
-.cell-tags-col.items-2 .tag { flex: 1; max-height: 50%; }
 .cell-tags-col.items-2 .title-wrap {
     white-space: normal !important;
     display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical;
+    word-break: keep-all;
+}
+
+.cell-tags-col.items-3 .title-wrap {
+    white-space: normal !important;
+    display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical;
+    word-break: keep-all;
+}
+
+.cell-tags-col.items-4 .title-wrap {
+    /* 4 items usually only have space for 1 line, let it wrap to 2 if needed but clamp to 1 is safer, actually clamp to 2 in case of small text? Let's use clamp 1.5 basically -> just clamp 1 */
+    white-space: normal !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
     -webkit-box-orient: vertical;
     word-break: keep-all;
 }
