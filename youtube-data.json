@@ -29,7 +29,7 @@
       },
       "b_video": {
         "t": "편의성 모드",
-        "done": false
+        "done": true
       },
       "b_short": {
         "t": "찹쌀 탕수육엔 ㅇㅇ이 없다",
@@ -37,7 +37,7 @@
       },
       "a_short": {
         "t": "컨트롤 함 보여주나...",
-        "done": false
+        "done": true
       }
     },
     "2026-07-11": {
