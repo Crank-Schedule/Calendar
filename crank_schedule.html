@@ -1569,6 +1569,12 @@ async function renderCalendarMonth(){
                   } else if (v.liveOpenDate) {
                       const dt = new Date(v.liveOpenDate.replace(' ', 'T'));
                       vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
+                  } else if (v.publishDateAt && v.duration) {
+                      const dt = new Date(v.publishDateAt - v.duration * 1000);
+                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
+                  } else if (v.publishDate) {
+                      const dt = new Date(v.publishDate.replace(' ', 'T'));
+                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
                   }
                   if (vy && vmo && vd) {
                       videoDateMap[`${vy}-${vmo}-${vd}`] = {
@@ -1835,6 +1841,12 @@ async function renderListMonth(){
                       vy = "20" + rm[1]; vmo = parseInt(rm[2],10); vd = parseInt(rm[3],10);
                   } else if (v.liveOpenDate) {
                       const dt = new Date(v.liveOpenDate.replace(' ', 'T'));
+                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
+                  } else if (v.publishDateAt && v.duration) {
+                      const dt = new Date(v.publishDateAt - v.duration * 1000);
+                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
+                  } else if (v.publishDate) {
+                      const dt = new Date(v.publishDate.replace(' ', 'T'));
                       vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
                   }
                   if (vy && vmo && vd) {
