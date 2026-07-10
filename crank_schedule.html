@@ -1682,25 +1682,26 @@ async function renderCalendarMonth(){
     cellBody.appendChild(tagsWrap);
 
     const dStr = `${cellDate.getFullYear()}-${cellDate.getMonth()+1}-${cellDate.getDate()}`;
-    let vid = videoDateMap[dStr];
-    if (!vid) {
-        for (const en of entries) {
-            if (en.link && typeof en.link === 'string') {
-                const match = en.link.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-                if (match) {
-                    vid = {
-                        url: en.link,
-                        thumb: `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`
-                    };
-                    break;
-                }
-                const czMatch = en.link.match(/chzzk\.naver\.com\/video\/(\d+)/i);
-                if (czMatch) {
-                    vid = { url: en.link, isChzzk: true, chzzkId: czMatch[1] };
-                    break;
-                }
+    let vid = null;
+    for (const en of entries) {
+        if (en.link && typeof en.link === 'string') {
+            const match = en.link.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+            if (match) {
+                vid = {
+                    url: en.link,
+                    thumb: `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`
+                };
+                break;
+            }
+            const czMatch = en.link.match(/chzzk\.naver\.com\/video\/(\d+)/i);
+            if (czMatch) {
+                vid = { url: en.link, isChzzk: true, chzzkId: czMatch[1] };
+                break;
             }
         }
+    }
+    if (!vid) {
+        vid = videoDateMap[dStr];
     }
     if (vid) {
         const ytCol = document.createElement('a');
@@ -1937,25 +1938,26 @@ async function renderListMonth(){
 
     if (isPast) {
         const dStr = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
-        let vid = videoDateMap[dStr];
-        if (!vid) {
-            for (const en of entries) {
-                if (en.link && typeof en.link === 'string') {
-                    const match = en.link.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-                    if (match) {
-                        vid = {
-                            url: en.link,
-                            thumb: `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`
-                        };
-                        break;
-                    }
-                    const czMatch = en.link.match(/chzzk\.naver\.com\/video\/(\d+)/i);
-                    if (czMatch) {
-                        vid = { url: en.link, isChzzk: true, chzzkId: czMatch[1] };
-                        break;
-                    }
+        let vid = null;
+        for (const en of entries) {
+            if (en.link && typeof en.link === 'string') {
+                const match = en.link.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+                if (match) {
+                    vid = {
+                        url: en.link,
+                        thumb: `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`
+                    };
+                    break;
+                }
+                const czMatch = en.link.match(/chzzk\.naver\.com\/video\/(\d+)/i);
+                if (czMatch) {
+                    vid = { url: en.link, isChzzk: true, chzzkId: czMatch[1] };
+                    break;
                 }
             }
+        }
+        if (!vid) {
+            vid = videoDateMap[dStr];
         }
         
         if (vid) {
