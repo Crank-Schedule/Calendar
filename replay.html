@@ -198,7 +198,11 @@
     .col-section{gap:6px;}
     .section-title{font-size:11px !important; gap:4px !important; letter-spacing:-0.03em;}
     .video-card{border-radius: 2px;}
-    .video-card .vc-title{display:none !important;}
+    .video-card .vc-title-wrap{height:44px !important; padding:0 5px !important;}
+    .video-card .vc-title{
+      display:-webkit-box !important; font-size:10px; line-height:1.3;
+      -webkit-line-clamp:2; -webkit-box-orient:vertical;
+    }
   }
   /* 갤럭시 폴드 커버 화면 등 초협소 폭: 한 단계 더 축소 */
   @media (max-width:400px){
@@ -207,6 +211,8 @@
     .qlink{font-size:11px !important; padding:8px !important;}
     .section-title{font-size:9.5px !important; gap:3px !important;}
     .columns-wrap{gap:4px !important;}
+    .video-card .vc-title-wrap{height:40px !important; padding:0 4px !important;}
+    .video-card .vc-title{font-size:9px !important;}
   }
   .col-section{
     display:flex; flex-direction:column; gap:12px;

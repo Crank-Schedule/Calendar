@@ -425,7 +425,7 @@
     margin:0 0 14px; font-size:19px;
     display:flex; align-items:center; justify-content:space-between;
   }
-  .modal h2 .close{cursor:pointer;color:var(--text-dim);font-size:18px;}
+  .modal h2 .close{cursor:pointer;color:var(--text-dim);font-size:18px;background:none;border:0;padding:4px;line-height:1;}
   .modal h2 .close:hover{color:var(--neon-red);}
 
   .entry-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
@@ -836,17 +836,17 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   .tag-abbr, .sp-abbr { display: none; }
 
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1050px) {
 
     .special-badge.badge-circle {
-        width: 18px !important; height: 18px !important; border-radius: 50% !important;
+        width: auto !important; min-width: 30px !important; height: 18px !important; border-radius: 3px !important;
         border: 1.5px solid currentColor !important;
         display: inline-flex !important; align-items: center !important; justify-content: center !important;
-        padding: 0 !important; flex: 0 0 auto !important;
+        padding: 0 4px !important; flex: 0 0 auto !important;
         background-color: transparent; /* allows JS inline rgba to shine through */
     }
     .special-badge.badge-circle .sp-abbr {
-        display: inline-block !important; font-size: 10px !important; font-weight: 900 !important; line-height: 1 !important; letter-spacing: 0 !important;
+        display: inline-block !important; font-size: 9px !important; font-weight: 900 !important; line-height: 1 !important; letter-spacing: -0.04em !important;
     }
     .special-badge.badge-circle .sp-label,
     .special-badge.badge-circle .sp-icon,
@@ -976,7 +976,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script>
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=62637">
+  <link rel="stylesheet" href="schedule_css.css?v=20260711-4">
 </head>
 <body>
 <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
@@ -1023,6 +1023,9 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     <div class="agenda" id="agenda"></div>
   </div>
   <div id="scheduleListSection" style="max-width: 1000px; margin: 0 auto; padding-bottom:100px;">
+    <div class="list-tools">
+      <button class="empty-filter-btn" id="emptyFilterBtn" type="button" aria-pressed="false">빈 날짜 숨기기</button>
+    </div>
     <div class="list-timeline" id="listTimeline"></div>
   </div>
 
@@ -1067,9 +1070,9 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   <button class="bn-item" id="navCafe"><span class="bn-icon">📋</span>카페</button>
 </nav>
 
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <h2><span id="modalDate">6월 1일</span><span class="close" id="closeModal">✕</span></h2>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalDate">
+    <h2><span id="modalDate">6월 1일</span><button type="button" class="close" id="closeModal" aria-label="일정 상세 닫기">✕</button></h2>
 
     <div class="entry-list" id="entryList"></div>
 
@@ -1162,15 +1165,14 @@ function safeUrl(url){
 function getAbbr(title) {
   if (!title) return '';
   const up = title.toUpperCase();
-  if (up.includes('귀국') || up.includes('입국')) return '귀';
-  if (up.includes('출국')) return '출';
-  if (up.includes('출장')) return '출장';
+  if (up.includes('귀국') || up.includes('입국')) return '올귀';
+  if (up.includes('출국') || up.includes('출장')) return '올출';
   if (up.includes('스타2') || up.includes('스타 II') || up.includes('스타II') || up.includes('SC2')) return '스II';
   if (up.includes('스타크래프트') || up.includes('스타1') || up.includes('스타')) return '스타';
   if (up.includes('마리오 카트') || up.includes('마카')) return '마카';
   if (up.includes('롤') || up.includes('리그 오브 레전드') || up.includes('리그오브레전드')) return '롤';
   if (up.includes('이터널') || up.includes('이리')) return '이리';
-  if (up.includes('휴방')) return '휴';
+  if (up.includes('휴방')) return '휴방';
   if (up.includes('야구')) return '야구';
   if (up.includes('월드컵') || up.includes('축구')) return '축구';
   if (up.includes('모험가') || up.includes('앨리엇')) return '앨리';
@@ -1350,17 +1352,10 @@ function withIcon(en){
 }
 
 
-let isWeekView = false;
-const mql = window.matchMedia('(max-width: 480px)');
-if (mql.matches) isWeekView = true;
-mql.addEventListener('change', (e) => {
-  if (isWeekView === e.matches) return;
-  isWeekView = e.matches;
-  if (typeof render === 'function') render();
-});
 let savedDate = sessionStorage.getItem('viewingDate');
 let current = savedDate ? new Date(savedDate) : new Date(); // 오늘 날짜를 기본 기준으로 사용
 let activeDate = null; // 모달에서 다루는 날짜 (Date 객체)
+let lastModalFocus = null;
 let cache = {};
 
 const grid = document.getElementById('grid');
@@ -1560,6 +1555,14 @@ function manualReplayFromEntries(entries){
 }
 
 let replayDateMapPromise = null;
+let chzzkThumbnailById = {};
+function attachKnownChzzkThumbnail(video){
+  if(video?.isChzzk && video.chzzkId && !video.thumb){
+    const thumb = chzzkThumbnailById[String(video.chzzkId)];
+    if(thumb) return { ...video, thumb };
+  }
+  return video;
+}
 async function loadReplayDateMap(){
   if(replayDateMapPromise) return replayDateMapPromise;
   replayDateMapPromise = (async()=>{
@@ -1574,7 +1577,11 @@ async function loadReplayDateMap(){
 
     const chzzkMap = {};
     const chzzkVideos = chzzkData?.content?.data || [];
+    chzzkThumbnailById = {};
     chzzkVideos.forEach(video=>{
+      if(video?.videoNo && video?.thumbnailImageUrl){
+        chzzkThumbnailById[String(video.videoNo)] = video.thumbnailImageUrl;
+      }
       const key = replayDateKeyFromChzzk(video);
       if(key && !chzzkMap[key]){
         chzzkMap[key] = {
@@ -1635,7 +1642,7 @@ async function renderCalendarMonth(){
     num.className='date-num'; num.textContent=day;
     headerWrap.appendChild(num);
 
-    const specialKeywords = ['휴방', '출국', '귀국', '입국', '결방'];
+    const specialKeywords = ['휴방', '출국', '출장', '귀국', '입국', '결방'];
     const specials = entries.filter(e => specialKeywords.some(k => e.title.includes(k)));
     const regulars = entries.filter(e => !specialKeywords.some(k => e.title.includes(k)));
 
@@ -1649,7 +1656,7 @@ async function renderCalendarMonth(){
       let hasTrip = false;
       specials.forEach(sp => {
         const isRest = sp.title.includes('휴방');
-        const isTrip = sp.title.includes('귀국') || sp.title.includes('출국') || sp.title.includes('입국');
+        const isTrip = sp.title.includes('귀국') || sp.title.includes('출국') || sp.title.includes('출장') || sp.title.includes('입국');
         if (isRest) hasRest = true;
         if (isTrip) hasTrip = true;
         const color = getDisplayColor(isRest ? '#00FFFF' : (isTrip ? '#FF9900' : '#FF0000'));
@@ -1661,7 +1668,7 @@ async function renderCalendarMonth(){
         s.title = sp.title;
         let innerText = sp.title;
         if(isRest) innerText = '(휴방)';
-        else if(sp.title.includes('출국')) innerText = '(올출)';
+        else if(sp.title.includes('출국') || sp.title.includes('출장')) innerText = '(올출)';
         else if(sp.title.includes('귀국') || sp.title.includes('입국')) innerText = '(올귀)';
 
         s.innerHTML = `<span class="sp-icon">${icon}</span><span class="sp-abbr">${getAbbr(sp.title)}</span><span class="sp-inner-text" style="display:none; font-weight:800;">${innerText}</span><span class="sp-label">${escapeHtml(sp.title)}</span>`;
@@ -1689,10 +1696,12 @@ async function renderCalendarMonth(){
 
     const dStr = `${cellDate.getFullYear()}-${cellDate.getMonth()+1}-${cellDate.getDate()}`;
     // 최종 우선순위: 수동 입력 > 날짜가 맞는 YouTube > 치지직
-    const vid = manualReplayFromEntries(entries) || videoDateMap[dStr];
+    const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(entries) || videoDateMap[dStr]);
     if (vid) {
         const ytCol = document.createElement('a');
         ytCol.className = 'cell-thumb-yt';
+        ytCol.dataset.source = vid.isChzzk ? 'chzzk' : 'youtube';
+        ytCol.dataset.sourceLabel = vid.isChzzk ? 'CHZZK' : 'YT';
         if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
         ytCol.target = '_blank';
         ytCol.rel = 'noopener';
@@ -1775,8 +1784,39 @@ async function renderCalendarMonth(){
 }
 
 
-// --- OVERRIDE RENDER FUNCTION FOR LIST LAYOUT ---
-let currentView = window.matchMedia('(max-width: 480px)').matches ? 'list' : 'calendar';
+// 화면이 좁을 때 7열 달력을 억지로 줄이지 않고 리스트를 기본으로 사용합니다.
+const mobileViewMql = window.matchMedia('(max-width: 680px)');
+const compactViewMql = window.matchMedia('(max-width: 1050px)');
+function currentViewBucket(){
+  if(mobileViewMql.matches) return 'mobile';
+  if(compactViewMql.matches) return 'compact';
+  return 'wide';
+}
+function currentViewPreferenceKey(){
+  return `crank_view_mode_${currentViewBucket()}`;
+}
+function preferredViewForWidth(){
+  const saved = localStorage.getItem(currentViewPreferenceKey());
+  if(saved === 'calendar' || saved === 'list') return saved;
+  return currentViewBucket() === 'wide' ? 'calendar' : 'list';
+}
+let currentView = preferredViewForWidth();
+let hideEmptyDays = localStorage.getItem('crank_hide_empty_days') === '1';
+
+function applyResponsiveViewPreference(){
+  currentView = preferredViewForWidth();
+  sessionStorage.removeItem('hasAutoScrolled');
+  render();
+}
+mobileViewMql.addEventListener('change', applyResponsiveViewPreference);
+compactViewMql.addEventListener('change', applyResponsiveViewPreference);
+
+function updateEmptyFilterButton(){
+  const button = document.getElementById('emptyFilterBtn');
+  if(!button) return;
+  button.setAttribute('aria-pressed', String(hideEmptyDays));
+  button.textContent = hideEmptyDays ? '빈 날짜 표시' : '빈 날짜 숨기기';
+}
 
 async function render(){
   const y = current.getFullYear();
@@ -1804,6 +1844,7 @@ async function render(){
 }
 
 async function renderListMonth(){
+  updateEmptyFilterButton();
   const today = new Date();
   const dowNames = ['일','월','화','수','목','금','토'];
   
@@ -1832,6 +1873,7 @@ async function renderListMonth(){
     const todayZero = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const isPast = dtZero < todayZero;
     const isToday = dtZero.getTime() === todayZero.getTime();
+    if(hideEmptyDays && entries.length === 0 && !isToday) continue;
     
     const daysDiff = Math.floor((todayZero - dtZero) / (1000 * 60 * 60 * 24));
 
@@ -1898,11 +1940,13 @@ async function renderListMonth(){
     if (isPast) {
         const dStr = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
         // 최종 우선순위: 수동 입력 > 날짜가 맞는 YouTube > 치지직
-        const vid = manualReplayFromEntries(entries) || videoDateMap[dStr];
+        const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(entries) || videoDateMap[dStr]);
         
         if (vid) {
             const ytCol = document.createElement('a');
             ytCol.className = 'timeline-yt';
+            ytCol.dataset.source = vid.isChzzk ? 'chzzk' : 'youtube';
+            ytCol.dataset.sourceLabel = vid.isChzzk ? 'CHZZK' : 'YT';
             if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
             ytCol.target = '_blank';
             ytCol.rel = 'noopener';
@@ -1996,16 +2040,27 @@ function renderEntries(dateObj){
 }
 
 async function openModal(dateObj){
+  lastModalFocus = document.activeElement;
   activeDate = dateObj;
   await loadMonth(dateObj); // 해당 월 데이터가 캐시에 있는지 보장
   modalDate.textContent = (dateObj.getMonth()+1)+'월 '+dateObj.getDate()+'일';
   renderEntries(dateObj);
   overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden', 'false');
+  document.getElementById('closeModal').focus();
 }
 
-document.getElementById('closeModal').addEventListener('click', ()=>overlay.classList.remove('show'));
-document.getElementById('doneBtn2').addEventListener('click', ()=>overlay.classList.remove('show'));
-overlay.addEventListener('click', (e)=>{ if(e.target===overlay) overlay.classList.remove('show'); });
+function closeScheduleModal(){
+  overlay.classList.remove('show');
+  overlay.setAttribute('aria-hidden', 'true');
+  if(lastModalFocus && typeof lastModalFocus.focus === 'function') lastModalFocus.focus();
+}
+document.getElementById('closeModal').addEventListener('click', closeScheduleModal);
+document.getElementById('doneBtn2').addEventListener('click', closeScheduleModal);
+overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeScheduleModal(); });
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape' && overlay.classList.contains('show')) closeScheduleModal();
+});
 
 document.getElementById('prevBtn').addEventListener('click', ()=>{
   current = new Date(current.getFullYear(), current.getMonth()-1, 1);
@@ -2023,8 +2078,21 @@ document.getElementById('todayBtn').addEventListener('click', ()=>{
   render();
 });
 
-if(monthViewBtn) monthViewBtn.addEventListener('click', ()=>{ currentView='calendar'; render(); });
-if(weekViewBtn) weekViewBtn.addEventListener('click', ()=>{ currentView='list'; render(); });
+function selectScheduleView(view){
+  currentView = view;
+  localStorage.setItem(currentViewPreferenceKey(), view);
+  if(view === 'list') sessionStorage.removeItem('hasAutoScrolled');
+  render();
+}
+if(monthViewBtn) monthViewBtn.addEventListener('click', ()=>selectScheduleView('calendar'));
+if(weekViewBtn) weekViewBtn.addEventListener('click', ()=>selectScheduleView('list'));
+const emptyFilterBtn = document.getElementById('emptyFilterBtn');
+if(emptyFilterBtn) emptyFilterBtn.addEventListener('click', ()=>{
+  hideEmptyDays = !hideEmptyDays;
+  localStorage.setItem('crank_hide_empty_days', hideEmptyDays ? '1' : '0');
+  render();
+});
+updateEmptyFilterButton();
 
 // Admin UI events removed
 
