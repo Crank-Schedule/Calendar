@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>다시보기 · 크랭크 방송 스케줄</title>
-<link rel="icon" type="image/jpeg" href="favicon.jpg">
+<link rel="icon" type="image/jpeg" href="assets/images/favicon.jpg">
 <style>
   @font-face {
     font-family: 'Cafe24Surround';
@@ -567,7 +567,7 @@ function youtubeCacheKey(channel, maxResults){
 
 async function fetchLatestVideos(channel, maxResults){
   const CACHE_KEY = youtubeCacheKey(channel, maxResults);
-  const CACHE_TTL = 10 * 60 * 1000;
+  const CACHE_TTL = (channel.key === 'replay' ? 2 : 10) * 60 * 1000;
   try {
     const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
     if (cached && Date.now() - cached.time < CACHE_TTL) return cached.data;

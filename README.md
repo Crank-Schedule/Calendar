@@ -46,6 +46,9 @@ YouTube API 키는 공개 HTML에서 사용합니다. Google Cloud Console에서
 - `admin.html`: 관리자 편집 화면
 - `worker.js`: 인증, GitHub 저장, 치지직 프록시
 - `data/`: 월별 일정과 대회 데이터
+- `assets/images/`: 사이트 아이콘과 파비콘
 - `schedule_css.css`: 공통 보조 스타일
 
-`auto_clicker.py`와 `button.png`는 자동화에 필요한 파일이므로 삭제하지 않습니다.
+`auto_clicker.py`와 `assets/images/button.png`는 자동화에 필요한 파일이므로 삭제하지 않습니다.
+
+관리자 로그인은 이 브라우저에 30일간 유지됩니다. 공용 PC에서는 자물쇠 버튼을 눌러 로그아웃하세요.

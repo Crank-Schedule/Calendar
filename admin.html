@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>크랭크 방송 스케줄</title>
-<link rel="icon" type="image/jpeg" href="favicon.jpg">
+<link rel="icon" type="image/jpeg" href="assets/images/favicon.jpg">
 <style>
   @import url('https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css');
   @font-face {
@@ -1262,15 +1262,15 @@ function parseTitle(en) {
     let customIcon = false;
     let iconHtml = '';
     
-    if(explicitIcon === 'lol') { iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'sc2') { iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'sc1') { iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'er') { iconHtml = `<img src="er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'mk') { iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    if(explicitIcon === 'lol') { iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'sc2') { iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'sc1') { iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'er') { iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'mk') { iconHtml = `<img src="assets/images/mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'bb') { iconHtml = `⚾`; customIcon=true;}
-    else if(explicitIcon === 'poke') { iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'poke') { iconHtml = `<img src="assets/images/poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'chat') { iconHtml = `💬`; customIcon=true;}
-    else if(explicitIcon === 'watch') { iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'watch') { iconHtml = `<img src="assets/images/watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     
     return {
         displayTitle: displayTitle,
@@ -1366,31 +1366,31 @@ function parseTitle(en) {
   let customIcon = false;
   
   if(isLol) {
-      iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isSc2) {
-      iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isSc1) {
-      iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isMk) {
-      iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isBaseball) {
       iconHtml = `⚾`;
       customIcon = true;
   } else if(isWatch) {
-      iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isChat) {
       iconHtml = `💬`;
       customIcon = true;
   } else if(isPoke) {
-      iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isEr) {
-      iconHtml = `<img src="er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   }
   
@@ -1438,15 +1438,15 @@ let editingEntryIndex = -1;
 
 const ICONS = [
   {id:'auto', name:'자동', html:'🤖'},
-  {id:'lol', name:'롤', html:'<img src="lol_icon.png" onerror="this.outerHTML=\'⚔️\'">', color: '#33FF00'},
-  {id:'sc2', name:'스타 II', html:'<img src="sc2_icon.png" onerror="this.outerHTML=\'👾\'">', color: '#9900FF'},
-  {id:'sc1', name:'스타', html:'<img src="sc_icon.png" onerror="this.outerHTML=\'👾\'">', color: '#00BFFF'},
-  {id:'er', name:'이리', html:'<img src="er_icon.png" onerror="this.outerHTML=\'🏹\'">', color: '#555555'},
-  {id:'mk', name:'마카', html:'<img src="mk_icon.png" onerror="this.outerHTML=\'🎮\'">', color: '#FF0000'},
+  {id:'lol', name:'롤', html:'<img src="assets/images/lol_icon.png" onerror="this.outerHTML=\'⚔️\'">', color: '#33FF00'},
+  {id:'sc2', name:'스타 II', html:'<img src="assets/images/sc2_icon.png" onerror="this.outerHTML=\'👾\'">', color: '#9900FF'},
+  {id:'sc1', name:'스타', html:'<img src="assets/images/sc_icon.png" onerror="this.outerHTML=\'👾\'">', color: '#00BFFF'},
+  {id:'er', name:'이리', html:'<img src="assets/images/er_icon.png" onerror="this.outerHTML=\'🏹\'">', color: '#555555'},
+  {id:'mk', name:'마카', html:'<img src="assets/images/mk_icon.png" onerror="this.outerHTML=\'🎮\'">', color: '#FF0000'},
   {id:'bb', name:'야구', html:'⚾', color: '#FF9F43'},
-  {id:'poke', name:'포켓몬', html:'<img src="poke_icon.png" onerror="this.outerHTML=\'🔴\'">', color: '#FFFF00'},
+  {id:'poke', name:'포켓몬', html:'<img src="assets/images/poke_icon.png" onerror="this.outerHTML=\'🔴\'">', color: '#FFFF00'},
   {id:'chat', name:'저챗', html:'💬', color: '#FF66B2'},
-  {id:'watch', name:'같이보기', html:'<img src="watch_icon.png" onerror="this.outerHTML=\'📺\'">', color: '#9AD1FF'},
+  {id:'watch', name:'같이보기', html:'<img src="assets/images/watch_icon.png" onerror="this.outerHTML=\'📺\'">', color: '#9AD1FF'},
   {id:'none', name:'없음', html:'❌'}
 ];
 
@@ -1629,7 +1629,7 @@ async function saveMonth(d){
       } catch(e) {}
     } else if (res.status === 401) {
       alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-      sessionStorage.removeItem('crank_admin_session');
+      localStorage.removeItem('crank_admin_session');
     } else {
       alert(`저장 실패: ${json.error}\n${json.details||''}`);
     }
@@ -1651,7 +1651,7 @@ async function fetchLatestVideos(){ return []; }
 
 function getSession() {
   try {
-    const raw = sessionStorage.getItem('crank_admin_session');
+    const raw = localStorage.getItem('crank_admin_session');
     if (!raw) return null;
     const session = JSON.parse(raw);
     if (!session.token || !session.exp || session.exp < Date.now()) return null;
@@ -1673,7 +1673,7 @@ async function adminLogin() {
       alert(json.error || '로그인에 실패했어요.');
       return false;
     }
-    sessionStorage.setItem('crank_admin_session', JSON.stringify({
+    localStorage.setItem('crank_admin_session', JSON.stringify({
       token: json.token,
       exp: Date.now() + json.expiresIn * 1000,
     }));
@@ -2726,7 +2726,7 @@ async function saveTournaments(){
     if (res.ok) {
       // alert('대진표가 저장됐어요!\n약 1~2분 뒤 실제 사이트에 반영됩니다.');
     } else if (res.status === 401) {
-      sessionStorage.removeItem('crank_admin_session');
+      localStorage.removeItem('crank_admin_session');
       alert(json.error || '로그인이 만료됐어요. 다시 시도해주세요.');
     } else {
       alert('대회 정보 저장 실패: ' + (json.error || '알 수 없는 오류') + (json.details ? ('\n\n상세: ' + json.details) : ''));
@@ -2999,7 +2999,7 @@ document.getElementById('ghSettingsBtn').addEventListener('click', async ()=>{
     const session = getSession();
     if (session) {
       if (confirm('이미 로그인되어 있어요. 로그아웃할까요?')) {
-        sessionStorage.removeItem('crank_admin_session');
+        localStorage.removeItem('crank_admin_session');
         alert('로그아웃했어요.');
       }
       updateLockIcon();

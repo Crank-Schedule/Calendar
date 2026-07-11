@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>크랭크 방송 스케줄</title>
-<link rel="icon" type="image/jpeg" href="favicon.jpg">
+<link rel="icon" type="image/jpeg" href="assets/images/favicon.jpg">
 <style>
   @import url('https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css');
   @font-face {
@@ -1209,15 +1209,15 @@ function parseTitle(en) {
     let customIcon = false;
     let iconHtml = '';
     
-    if(explicitIcon === 'lol') { iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'sc2') { iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'sc1') { iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'er') { iconHtml = `<img src="er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'mk') { iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    if(explicitIcon === 'lol') { iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'sc2') { iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'sc1') { iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'er') { iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'mk') { iconHtml = `<img src="assets/images/mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'bb') { iconHtml = `⚾`; customIcon=true;}
-    else if(explicitIcon === 'poke') { iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'poke') { iconHtml = `<img src="assets/images/poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'chat') { iconHtml = `💬`; customIcon=true;}
-    else if(explicitIcon === 'watch') { iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'watch') { iconHtml = `<img src="assets/images/watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     
     return {
         displayTitle: displayTitle,
@@ -1313,31 +1313,31 @@ function parseTitle(en) {
   let customIcon = false;
   
   if(isLol) {
-      iconHtml = `<img src="lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isSc2) {
-      iconHtml = `<img src="sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isSc1) {
-      iconHtml = `<img src="sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isMk) {
-      iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isBaseball) {
       iconHtml = `⚾`;
       customIcon = true;
   } else if(isWatch) {
-      iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isChat) {
       iconHtml = `💬`;
       customIcon = true;
   } else if(isPoke) {
-      iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isEr) {
-      iconHtml = `<img src="er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   }
   
@@ -1531,62 +1531,102 @@ t.onmouseenter = startMarquee;
   return t;
 }
 
+function replayDateKey(year, month, day){
+  const date = new Date(year, month - 1, day);
+  if(date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return '';
+  return `${year}-${month}-${day}`;
+}
+
+function replayDateKeyFromTitle(title){
+  const value = String(title || '').trim();
+  let match = value.match(/^(?:20)?(\d{2})(\d{2})(\d{2})(?=\D|$)/);
+  if(!match){
+    match = value.match(/^(?:20)?(\d{2})[년.\-/\s]+0?(\d{1,2})[월.\-/\s]+0?(\d{1,2})(?:일)?(?=\D|$)/);
+  }
+  if(!match) return '';
+  return replayDateKey(2000 + Number(match[1]), Number(match[2]), Number(match[3]));
+}
+
+function replayDateKeyFromChzzk(video){
+  const titleKey = replayDateKeyFromTitle(video?.videoTitle);
+  if(titleKey) return titleKey;
+
+  let date = null;
+  if(video?.liveOpenDate){
+    date = new Date(String(video.liveOpenDate).replace(' ', 'T'));
+  } else if(video?.publishDateAt){
+    const raw = video.publishDateAt;
+    let publishedAt = typeof raw === 'number' ? raw : Date.parse(raw);
+    if(Number.isFinite(publishedAt) && publishedAt < 1e12) publishedAt *= 1000;
+    if(Number.isFinite(publishedAt)){
+      const durationMs = Number(video.duration || 0) * 1000;
+      date = new Date(publishedAt - durationMs);
+    }
+  } else if(video?.publishDate){
+    date = new Date(String(video.publishDate).replace(' ', 'T'));
+  }
+  return date && !Number.isNaN(date.getTime())
+    ? replayDateKey(date.getFullYear(), date.getMonth() + 1, date.getDate())
+    : '';
+}
+
+function manualReplayFromEntries(entries){
+  for(const entry of entries){
+    const link = String(entry?.link || '').trim();
+    if(!/^https?:\/\//i.test(link)) continue;
+    const youtube = link.match(/(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i);
+    if(youtube){
+      return { url: link, thumb: `https://img.youtube.com/vi/${youtube[1]}/mqdefault.jpg`, source: 'manual' };
+    }
+    const chzzk = link.match(/chzzk\.naver\.com\/video\/(\d+)/i);
+    if(chzzk) return { url: link, isChzzk: true, chzzkId: chzzk[1], source: 'manual' };
+  }
+  return null;
+}
+
+let replayDateMapPromise = null;
+async function loadReplayDateMap(){
+  if(replayDateMapPromise) return replayDateMapPromise;
+  replayDateMapPromise = (async()=>{
+    const replayChannel = YT_CHANNELS.find(channel=>channel.key === 'replay');
+    const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
+    const [youtubeVideos, chzzkData] = await Promise.all([
+      fetchLatestVideos(replayChannel, 50).catch(()=>[]),
+      fetch(`${workerUrl}/api/chzzk/channel/de27c33ee2364c4e5007867bb3b96001/videos`)
+        .then(response=>response.ok ? response.json() : null)
+        .catch(()=>null),
+    ]);
+
+    const chzzkMap = {};
+    const chzzkVideos = chzzkData?.content?.data || [];
+    chzzkVideos.forEach(video=>{
+      const key = replayDateKeyFromChzzk(video);
+      if(key && !chzzkMap[key]){
+        chzzkMap[key] = {
+          url: `https://chzzk.naver.com/video/${video.videoNo}`,
+          thumb: video.thumbnailImageUrl,
+          isChzzk: true,
+          source: 'chzzk',
+        };
+      }
+    });
+
+    const youtubeMap = {};
+    youtubeVideos.forEach(video=>{
+      const key = replayDateKeyFromTitle(video.title);
+      if(key && !youtubeMap[key]) youtubeMap[key] = { ...video, source: 'youtube' };
+    });
+
+    // 자동 링크 우선순위: YouTube가 있으면 같은 날짜의 치지직 링크를 덮어씁니다.
+    return { ...chzzkMap, ...youtubeMap };
+  })();
+  return replayDateMapPromise;
+}
+
 async function renderCalendarMonth(){
   const data = await loadMonth(current);
 
-  // Fetch replay videos for calendar thumbnails
-  const replayChannel = YT_CHANNELS.find(c=>c.key==='replay');
-  let replayVideos = (window.ALL_REPLAYS || []).slice();
-  try {
-    const fetched = await fetchLatestVideos(replayChannel, 50);
-    const existingIds = new Set(replayVideos.map(v => v.videoId));
-    fetched.reverse().forEach(v => {
-      if(!existingIds.has(v.videoId)) replayVideos.unshift(v);
-    });
-  } catch(e) {}
-  
-  const videoDateMap = {}; 
-  try {
-      const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
-      const chzzkRes = await fetch(`${workerUrl}/api/chzzk/channel/de27c33ee2364c4e5007867bb3b96001/videos`);
-      if(chzzkRes.ok) {
-          const chzzkData = await chzzkRes.json();
-          if(chzzkData?.content?.data) {
-              chzzkData.content.data.forEach(v => {
-                  let vy, vmo, vd;
-                  const rm = v.videoTitle.match(/^(\d{2})(\d{2})(\d{2})/);
-                  if (rm) {
-                      vy = "20" + rm[1]; vmo = parseInt(rm[2],10); vd = parseInt(rm[3],10);
-                  } else if (v.liveOpenDate) {
-                      const dt = new Date(v.liveOpenDate.replace(' ', 'T'));
-                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
-                  } else if (v.publishDateAt && v.duration) {
-                      const dt = new Date(v.publishDateAt - v.duration * 1000);
-                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
-                  } else if (v.publishDate) {
-                      const dt = new Date(v.publishDate.replace(' ', 'T'));
-                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
-                  }
-                  if (vy && vmo && vd) {
-                      videoDateMap[`${vy}-${vmo}-${vd}`] = {
-                          url: `https://chzzk.naver.com/video/${v.videoNo}`,
-                          thumb: v.thumbnailImageUrl,
-                          isChzzk: true
-                      };
-                  }
-              });
-          }
-      }
-  } catch(e) {}
-  replayVideos.forEach(v => {
-    const rm = v.title.match(/^(\d{2})(\d{2})(\d{2})/);
-    if(rm) {
-      const vy = "20" + rm[1];
-      const vmo = parseInt(rm[2],10);
-      const vd = parseInt(rm[3],10);
-      videoDateMap[`${vy}-${vmo}-${vd}`] = v;
-    }
-  });
+  const videoDateMap = await loadReplayDateMap();
   const grid = document.getElementById('grid');
   const agenda = document.getElementById('agenda');
   if(grid) grid.innerHTML = '';
@@ -1673,27 +1713,8 @@ async function renderCalendarMonth(){
     cellBody.appendChild(tagsWrap);
 
     const dStr = `${cellDate.getFullYear()}-${cellDate.getMonth()+1}-${cellDate.getDate()}`;
-    let vid = null;
-    for (const en of entries) {
-        if (en.link && typeof en.link === 'string') {
-            const match = en.link.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-            if (match) {
-                vid = {
-                    url: en.link,
-                    thumb: `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`
-                };
-                break;
-            }
-            const czMatch = en.link.match(/chzzk\.naver\.com\/video\/(\d+)/i);
-            if (czMatch) {
-                vid = { url: en.link, isChzzk: true, chzzkId: czMatch[1] };
-                break;
-            }
-        }
-    }
-    if (!vid) {
-        vid = videoDateMap[dStr];
-    }
+    // 최종 우선순위: 수동 입력 > 날짜가 맞는 YouTube > 치지직
+    const vid = manualReplayFromEntries(entries) || videoDateMap[dStr];
     if (vid) {
         const ytCol = document.createElement('a');
         ytCol.className = 'cell-thumb-yt';
@@ -1809,59 +1830,7 @@ async function renderListMonth(){
   if(!listTimeline) return;
   listTimeline.innerHTML = '';
 
-  const replayChannel = YT_CHANNELS.find(c=>c.key==='replay');
-  let replayVideos = (window.ALL_REPLAYS || []).slice();
-  try {
-    const fetched = await fetchLatestVideos(replayChannel, 50);
-    const existingIds = new Set(replayVideos.map(v => v.videoId));
-    fetched.reverse().forEach(v => {
-      if(!existingIds.has(v.videoId)) replayVideos.unshift(v);
-    });
-  } catch(e) {}
-  
-  const videoDateMap = {}; 
-  try {
-      const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
-      const chzzkRes = await fetch(`${workerUrl}/api/chzzk/channel/de27c33ee2364c4e5007867bb3b96001/videos`);
-      if(chzzkRes.ok) {
-          const chzzkData = await chzzkRes.json();
-          if(chzzkData?.content?.data) {
-              chzzkData.content.data.forEach(v => {
-                  let vy, vmo, vd;
-                  const rm = v.videoTitle.match(/^(\d{2})(\d{2})(\d{2})/);
-                  if (rm) {
-                      vy = "20" + rm[1]; vmo = parseInt(rm[2],10); vd = parseInt(rm[3],10);
-                  } else if (v.liveOpenDate) {
-                      const dt = new Date(v.liveOpenDate.replace(' ', 'T'));
-                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
-                  } else if (v.publishDateAt && v.duration) {
-                      const dt = new Date(v.publishDateAt - v.duration * 1000);
-                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
-                  } else if (v.publishDate) {
-                      const dt = new Date(v.publishDate.replace(' ', 'T'));
-                      vy = dt.getFullYear(); vmo = dt.getMonth()+1; vd = dt.getDate();
-                  }
-                  if (vy && vmo && vd) {
-                      videoDateMap[`${vy}-${vmo}-${vd}`] = {
-                          url: `https://chzzk.naver.com/video/${v.videoNo}`,
-                          thumb: v.thumbnailImageUrl,
-                          isChzzk: true
-                      };
-                  }
-              });
-          }
-      }
-  } catch(e) {}
-  replayVideos.forEach(v => {
-    const rm = v.title.match(/^(\d{2})(\d{2})(\d{2})/);
-    if(rm) {
-      const vy = "20" + rm[1];
-      const vmo = parseInt(rm[2],10);
-      const vd = parseInt(rm[3],10);
-      videoDateMap[`${vy}-${vmo}-${vd}`] = v;
-    }
-  });
-
+  const videoDateMap = await loadReplayDateMap();
   for(const dt of allDates){
     const sk = storageKey(dt);
     if(!cache[sk]) {
@@ -1929,27 +1898,8 @@ async function renderListMonth(){
 
     if (isPast) {
         const dStr = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
-        let vid = null;
-        for (const en of entries) {
-            if (en.link && typeof en.link === 'string') {
-                const match = en.link.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-                if (match) {
-                    vid = {
-                        url: en.link,
-                        thumb: `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`
-                    };
-                    break;
-                }
-                const czMatch = en.link.match(/chzzk\.naver\.com\/video\/(\d+)/i);
-                if (czMatch) {
-                    vid = { url: en.link, isChzzk: true, chzzkId: czMatch[1] };
-                    break;
-                }
-            }
-        }
-        if (!vid) {
-            vid = videoDateMap[dStr];
-        }
+        // 최종 우선순위: 수동 입력 > 날짜가 맞는 YouTube > 치지직
+        const vid = manualReplayFromEntries(entries) || videoDateMap[dStr];
         
         if (vid) {
             const ytCol = document.createElement('a');
@@ -2259,7 +2209,7 @@ function youtubeCacheKey(channel, maxResults){
 
 async function fetchLatestVideos(channel, maxResults){
   const CACHE_KEY = youtubeCacheKey(channel, maxResults);
-  const CACHE_TTL = 10 * 60 * 1000;
+  const CACHE_TTL = (channel.key === 'replay' ? 2 : 10) * 60 * 1000;
   try {
     const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
     if (cached && Date.now() - cached.time < CACHE_TTL) return cached.data;
