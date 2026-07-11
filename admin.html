@@ -547,11 +547,11 @@
     h1{font-size:16px !important;}
     .brand-text{font-size:10px !important;}
     .nav{gap:2px !important;}
-    .nav button{width:24px !important; height:24px !important; font-size:12px !important;}
-    .view-toggle{height:24px !important;}
+    .nav button{width:32px !important; height:32px !important; font-size:13px !important;}
+    .view-toggle{height:32px !important;}
     .view-toggle button{padding:0 7px !important; font-size:13px !important;}
-    .nav .today-btn{height:24px !important; padding:0 6px !important; font-size:11px !important;}
-    #themeToggleBtn{width:24px !important; height:24px !important; font-size:11px !important;}
+    .nav .today-btn{height:32px !important; padding:0 7px !important; font-size:11px !important;}
+    #themeToggleBtn{width:32px !important; height:32px !important; font-size:12px !important;}
     .timeline-date{width:36px !important;}
     .timeline-date .m-d{font-size:10.5px !important;}
     .timeline-date .dow{font-size:8px !important; margin-top:1px;}
@@ -800,8 +800,8 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 .timeline-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   #themeToggleBtn {
-    width: 28px !important;
-    height: 28px !important;
+    width: 32px !important;
+    height: 32px !important;
     border-radius: 6px !important;
     background: var(--bg-panel) !important;
     border: 1px solid var(--border-strong) !important;
@@ -955,12 +955,11 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script>
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-    <script src="data/replays.js"></script>
   <link rel="stylesheet" href="schedule_css.css?v=62637">
 </head>
 <body>
 <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
-  <img id="lbThumb" src="" alt="">
+  <img id="lbThumb" alt="" hidden>
   <span class="lb-badge"><span class="lb-dot"></span>LIVE</span>
   <div class="lb-info">
     <div class="lb-title" id="lbTitle"></div>
@@ -987,11 +986,11 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         <button id="monthViewBtn" class="active" title="달력 보기" aria-label="달력 보기">🗓️</button>
         <button id="weekViewBtn" title="리스트 보기" aria-label="리스트 보기">☰</button>
       </div>
-      <button id="prevBtn">‹</button>
+      <button id="prevBtn" aria-label="이전 달" title="이전 달">‹</button>
       <div class="month-label" id="monthLabel"><span class="ml-full">2026년 6월</span><span class="ml-short">6월</span></div>
-      <button id="nextBtn">›</button>
-      <button class="today-btn" id="todayBtn">오늘</button>
-      <button id="themeToggleBtn" class="theme-toggle-inline" style="margin-left:4px;">☀️</button>
+      <button id="nextBtn" aria-label="다음 달" title="다음 달">›</button>
+      <button class="today-btn" id="todayBtn" aria-label="오늘로 이동">오늘</button>
+      <button id="themeToggleBtn" class="theme-toggle-inline" style="margin-left:4px;" aria-label="라이트 모드로 전환" title="테마 전환">☀️</button>
     </div>
     </div>
   </div>
@@ -1011,7 +1010,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   </div>
 </div>
 
-<div class="popover" id="tournamentPopover">
+<div class="popover" id="tournamentPopover" role="dialog" aria-label="대회 대진표" aria-hidden="true">
   <div class="pop-title" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
     <div style="display:flex; align-items:center; gap:8px;">
       <span style="font-size:18px;">⚠️</span>
@@ -1022,7 +1021,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   <div class="tournament-grid" id="tournamentGrid"></div>
 </div>
 
-<div class="popover" id="socialPopover">
+<div class="popover" id="socialPopover" role="dialog" aria-label="소셜미디어" aria-hidden="true">
   <div class="pop-title">소셜미디어</div>
   <div class="social-row">
     <a class="social-icon" href="https://x.com/ONSYDE_Crank" target="_blank" rel="noopener">
@@ -1047,8 +1046,8 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <nav class="bottom-nav">
   <button class="bn-item active" id="navSchedule"><span class="bn-icon">📅</span>일정</button>
   <button class="bn-item" id="navReplay"><span class="bn-icon">▶️</span>다시보기</button>
-  <button class="bn-item" id="navTournament"><span class="bn-icon">🏆</span>대회 대진표</button>
-  <button class="bn-item" id="navSocial"><span class="bn-icon">🔗</span>소셜</button>
+  <button class="bn-item" id="navTournament" aria-controls="tournamentPopover" aria-expanded="false"><span class="bn-icon">🏆</span>대회 대진표</button>
+  <button class="bn-item" id="navSocial" aria-controls="socialPopover" aria-expanded="false"><span class="bn-icon">🔗</span>소셜</button>
   <button class="bn-item" id="navCafe"><span class="bn-icon">📋</span>카페</button>
 </nav>
 
@@ -1133,8 +1132,6 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 </div>
 
 <script>
-const ADMIN_PIN = '2026'; // 이 값을 원하는 PIN으로 바꿔서 쓰세요
-
 // ===== 라이트모드에서도 잘 보이도록 색상의 명도를 자동 조절 =====
 function hexToHsl(hex){
   let r=0,g=0,b=0;
@@ -1272,7 +1269,7 @@ function parseTitle(en) {
     else if(explicitIcon === 'mk') { iconHtml = `<img src="mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'bb') { iconHtml = `⚾`; customIcon=true;}
     else if(explicitIcon === 'poke') { iconHtml = `<img src="poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'chat') { iconHtml = `<img src="chat_icon.png" onerror="this.outerHTML='💬'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'chat') { iconHtml = `💬`; customIcon=true;}
     else if(explicitIcon === 'watch') { iconHtml = `<img src="watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     
     return {
@@ -1428,18 +1425,9 @@ let isWeekView = false;
 const mql = window.matchMedia('(max-width: 480px)');
 if (mql.matches) isWeekView = true;
 mql.addEventListener('change', (e) => {
-  currentView = e.matches ? 'list' : 'calendar';
-  if (e.matches) {
-    if (!isWeekView) {
-      isWeekView = true;
-      if (typeof render === 'function') render();
-    }
-  } else {
-    if (isWeekView) {
-      isWeekView = false;
-      if (typeof render === 'function') render();
-    }
-  }
+  if (isWeekView === e.matches) return;
+  isWeekView = e.matches;
+  if (typeof render === 'function') render();
 });
 let savedDate = sessionStorage.getItem('viewingDate');
 let current = savedDate ? new Date(savedDate) : new Date(); // 오늘 날짜를 기본 기준으로 사용
@@ -1457,7 +1445,7 @@ const ICONS = [
   {id:'mk', name:'마카', html:'<img src="mk_icon.png" onerror="this.outerHTML=\'🎮\'">', color: '#FF0000'},
   {id:'bb', name:'야구', html:'⚾', color: '#FF9F43'},
   {id:'poke', name:'포켓몬', html:'<img src="poke_icon.png" onerror="this.outerHTML=\'🔴\'">', color: '#FFFF00'},
-  {id:'chat', name:'저챗', html:'<img src="chat_icon.png" onerror="this.outerHTML=\'💬\'">', color: '#FF66B2'},
+  {id:'chat', name:'저챗', html:'💬', color: '#FF66B2'},
   {id:'watch', name:'같이보기', html:'<img src="watch_icon.png" onerror="this.outerHTML=\'📺\'">', color: '#9AD1FF'},
   {id:'none', name:'없음', html:'❌'}
 ];
@@ -1641,7 +1629,7 @@ async function saveMonth(d){
       } catch(e) {}
     } else if (res.status === 401) {
       alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-      localStorage.removeItem('crank_admin_session');
+      sessionStorage.removeItem('crank_admin_session');
     } else {
       alert(`저장 실패: ${json.error}\n${json.details||''}`);
     }
@@ -1658,7 +1646,7 @@ const WORKER_URL = 'https://crank-admin.axcrank.workers.dev';
 
 function getSession() {
   try {
-    const raw = localStorage.getItem('crank_admin_session');
+    const raw = sessionStorage.getItem('crank_admin_session');
     if (!raw) return null;
     const session = JSON.parse(raw);
     if (!session.token || !session.exp || session.exp < Date.now()) return null;
@@ -1680,7 +1668,7 @@ async function adminLogin() {
       alert(json.error || '로그인에 실패했어요.');
       return false;
     }
-    localStorage.setItem('crank_admin_session', JSON.stringify({
+    sessionStorage.setItem('crank_admin_session', JSON.stringify({
       token: json.token,
       exp: Date.now() + json.expiresIn * 1000,
     }));
@@ -2277,7 +2265,7 @@ async function renderListMonth(){
             t.style.borderColor = getDisplayColor(en.color);
             t.innerHTML = `<span class="marquee-text" style="display:inline-block; white-space:nowrap; flex-shrink:0;">${withIcon(en)} ${en.time ? '· '+escapeHtml(en.time) : ''}</span>`;
             if(en.link && safeUrl(en.link)) {
-                t.innerHTML += ` <a href="${safeUrl(en.link)}" target="_blank" style="margin-left:4px; flex-shrink:0;" onclick="event.stopPropagation()">🔗</a>`;
+                t.innerHTML += ` <a href="${safeUrl(en.link)}" target="_blank" rel="noopener" style="margin-left:4px; flex-shrink:0;" onclick="event.stopPropagation()">🔗</a>`;
             }
             const startMarquee = () => {
                 const textSpan = t.querySelector('.marquee-text');
@@ -2733,7 +2721,7 @@ async function saveTournaments(){
     if (res.ok) {
       // alert('대진표가 저장됐어요!\n약 1~2분 뒤 실제 사이트에 반영됩니다.');
     } else if (res.status === 401) {
-      localStorage.removeItem('crank_admin_session');
+      sessionStorage.removeItem('crank_admin_session');
       alert(json.error || '로그인이 만료됐어요. 다시 시도해주세요.');
     } else {
       alert('대회 정보 저장 실패: ' + (json.error || '알 수 없는 오류') + (json.details ? ('\n\n상세: ' + json.details) : ''));
@@ -2879,7 +2867,7 @@ const navSocial = document.getElementById('navSocial');
 const navCafe = document.getElementById('navCafe');
 const tournamentPopover = document.getElementById('tournamentPopover');
 const socialPopover = document.getElementById('socialPopover');
-const scheduleSection = document.getElementById('scheduleSection');
+const scheduleSection = document.querySelector('.top-sticky');
 const navButtons = [navSchedule, navReplay, navTournament, navSocial];
 
 function setActiveNav(btn){
@@ -2889,6 +2877,10 @@ function setActiveNav(btn){
 function closePopovers(){
   tournamentPopover.classList.remove('show');
   socialPopover.classList.remove('show');
+  tournamentPopover.setAttribute('aria-hidden', 'true');
+  socialPopover.setAttribute('aria-hidden', 'true');
+  navTournament.setAttribute('aria-expanded', 'false');
+  navSocial.setAttribute('aria-expanded', 'false');
 }
 navSchedule.addEventListener('click', ()=>{
   closePopovers();
@@ -2901,17 +2893,39 @@ navReplay.addEventListener('click', ()=>{
 navTournament.addEventListener('click', ()=>{
   const willShow = !tournamentPopover.classList.contains('show');
   closePopovers();
-  if(willShow){ tournamentPopover.classList.add('show'); setActiveNav(navTournament); }
+  if(willShow){
+    tournamentPopover.classList.add('show');
+    tournamentPopover.setAttribute('aria-hidden', 'false');
+    navTournament.setAttribute('aria-expanded', 'true');
+    setActiveNav(navTournament);
+  }
   else { setActiveNav(navSchedule); }
 });
 navSocial.addEventListener('click', ()=>{
   const willShow = !socialPopover.classList.contains('show');
   closePopovers();
-  if(willShow){ socialPopover.classList.add('show'); setActiveNav(navSocial); }
+  if(willShow){
+    socialPopover.classList.add('show');
+    socialPopover.setAttribute('aria-hidden', 'false');
+    navSocial.setAttribute('aria-expanded', 'true');
+    setActiveNav(navSocial);
+  }
   else { setActiveNav(navSchedule); }
 });
 navCafe.addEventListener('click', ()=>{
   window.open('https://cafe.naver.com/f-e/cafes/31105085/menus/0?viewType=L', '_blank', 'noopener');
+});
+document.addEventListener('keydown', (event)=>{
+  if(event.key === 'Escape'){
+    closePopovers();
+    setActiveNav(navSchedule);
+  }
+});
+document.addEventListener('click', (event)=>{
+  if(!tournamentPopover.contains(event.target) && !navTournament.contains(event.target) &&
+     !socialPopover.contains(event.target) && !navSocial.contains(event.target)){
+    closePopovers();
+  }
 });
 
 // ===== 치지직 라이브 배너 =====
@@ -2923,192 +2937,46 @@ const lbMeta = document.getElementById('lbMeta');
 
 async function checkChzzkLive(){
   try{
-    const res = await fetch(`https://api.chzzk.naver.com/service/v2/channels/${CHZZK_CHANNEL_ID}/live-detail`);
+    const res = await fetch(`${WORKER_URL}/api/chzzk/live/${CHZZK_CHANNEL_ID}`);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     const live = json && json.content;
     if(live && live.status === 'OPEN'){
       lbTitle.textContent = live.liveTitle || '방송 중';
       lbMeta.textContent = `${live.liveCategoryValue || ''} · 시청자 ${ (live.concurrentUserCount||0).toLocaleString() }명`;
       lbThumb.src = (live.liveImageUrl || '').replace('{type}', '480');
+      lbThumb.hidden = !lbThumb.src;
       liveBanner.classList.add('show');
     } else {
       liveBanner.classList.remove('show');
+      lbThumb.hidden = true;
     }
   }catch(e){
-    console.error('치지직 라이브 상태 확인 실패', e);
+    console.warn('치지직 라이브 상태를 확인하지 못했습니다.', e.message);
   }
 }
 checkChzzkLive();
 setInterval(checkChzzkLive, 60000);
 
-// ===== 유튜브 최신 영상 =====
-const YT_API_KEY = 'AIzaSyCipMzgxeA7Ty6AUct6y2UszlwOWHEJqgU';
-const YT_CHANNELS = [
-  { key:'game',   label:'게임 유튜브', handle:'@crankplus', channelUrl:'https://www.youtube.com/@crankplus' },
-  { key:'cast',   label:'중계 유튜브', id:'UCS2OAdHoLt-9T6cG9A2H49Q', channelUrl:'https://www.youtube.com/channel/UCS2OAdHoLt-9T6cG9A2H49Q' },
-  { key:'replay', label:'다시보기 유튜브', handle:'@crankdasibogi', channelUrl:'https://www.youtube.com/@crankdasibogi' },
-];
-
-async function fetchLatestVideos(channel, maxResults){
-  const CACHE_KEY = 'yt_cache_schedule_v5_' + channel.key + '_' + maxResults;
-  const CACHE_TTL = 10 * 60 * 1000;
-  try {
-    const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
-    if (cached && Date.now() - cached.time < CACHE_TTL) return cached.data;
-  } catch(e){}
-
-  let playlistId = '';
-  if (channel.key === 'game') playlistId = 'UURWDHteRKunVC1Kt-GVQcGw';
-  else if (channel.key === 'cast') playlistId = 'UUS2OAdHoLt-9T6cG9A2H49Q';
-  else if (channel.key === 'replay') playlistId = 'UUuub1wmXjxMde_SqZwIgICQ';
-
-  if (!playlistId) return [];
-
-  let items = [];
-  let nextPageToken = '';
-  let fetchedCount = 0;
-  const maxToFetch = maxResults + 10; // little buffer
-
-  while (fetchedCount < maxToFetch) {
-    const fetchLimit = Math.min(50, maxToFetch - fetchedCount);
-    let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=${fetchLimit}&key=${YT_API_KEY}`;
-    if (nextPageToken) url += `&pageToken=${nextPageToken}`;
-    
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (!data.items || data.items.length === 0) break;
-      items = items.concat(data.items);
-      fetchedCount += data.items.length;
-      nextPageToken = data.nextPageToken;
-      if (!nextPageToken) break;
-    } catch(e) {
-      break;
-    }
-  }
-
-  if(items.length === 0) return [];
-
-  const durationMap = {};
-  
-  // Fetch durations in batches of 50
-  for (let i = 0; i < items.length; i += 50) {
-    const batch = items.slice(i, i + 50);
-    const videoIds = batch.map(it => it.snippet.resourceId.videoId).join(',');
-    const durationUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${YT_API_KEY}`;
-    try {
-      const dRes = await fetch(durationUrl);
-      const dData = await dRes.json();
-      if (dData.items) {
-        dData.items.forEach(v => {
-          durationMap[v.id] = v.contentDetails.duration;
-        });
-      }
-    } catch(e) {}
-  }
-
-  const result = [];
-  for (const it of items) {
-    const vid = it.snippet.resourceId.videoId;
-    const dur = durationMap[vid] || '';
-    const isShort = !dur.includes('H') && (!dur.includes('M') || dur === 'PT1M');
-    if (!isShort) {
-      let title = it.snippet.title;
-      title = title.replace(/\s*-\s*크랭크 생방송 다시보기$/, '');
-      if (channel.key === 'replay') {
-        const m = title.match(/^(?:20)?(\d{2})[년\s.\-]+0?(\d{1,2})[월\s.\-]+0?(\d{1,2})[일\s.\-]*[|lI\/]*\s*(.*)/);
-        if (m) title = `${m[1]}${m[2].padStart(2,'0')}${m[3].padStart(2,'0')}: ${m[4]}`;
-      }
-      result.push({
-        title: title,
-        videoId: vid,
-        thumb: (it.snippet.thumbnails && it.snippet.thumbnails.medium) ? it.snippet.thumbnails.medium.url : `https://i.ytimg.com/vi/${vid}/mqdefault.jpg`,
-        url: `https://www.youtube.com/watch?v=${vid}`
-      });
-    }
-    if (result.length >= maxResults) break;
-  }
-  
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), data: result }));
-  } catch(e){}
-
-  return result;
-}
-
-function renderVideoCardsSync() {
-  return; // Disabled in admin page
-  const grid = document.getElementById('videoCards');
-  let html = '';
-  for(const c of YT_CHANNELS){
-    const CACHE_KEY = 'yt_cache_schedule_v4_' + c.key;
-    let cachedData = null;
-    try {
-      const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
-      if (cached && Date.now() - cached.time < 10 * 60 * 1000 && cached.data.length > 0) {
-        cachedData = cached.data[0];
-      }
-    } catch(e){}
-
-    if(cachedData){
-      html += `
-        <a class="video-card" id="vc-${c.key}" href="${cachedData.url}" target="_blank" rel="noopener">
-          <img class="vc-thumb" src="${cachedData.thumb}" alt="">
-          <span class="vc-label">${c.label}</span>
-          <span class="vc-title">${cachedData.title}</span>
-        </a>`;
-    } else {
-      html += `
-        <a class="video-card" id="vc-${c.key}" href="${c.channelUrl}" target="_blank" rel="noopener">
-          <div class="vc-thumb" style="background:#161A24;"></div>
-          <span class="vc-label">${c.label}</span>
-          <span class="vc-title"></span>
-        </a>`;
-    }
-  }
-  grid.innerHTML = html;
-}
-
-async function loadVideoCards(){
-  renderVideoCardsSync();
-
-  await Promise.all(YT_CHANNELS.map(async (c) => {
-    try{
-      const videos = await fetchLatestVideos(c, 1);
-      const v = videos[0];
-      const card = document.getElementById(`vc-${c.key}`);
-      if(!card || !v) return;
-      card.innerHTML = `
-        <img class="vc-thumb" src="${safeUrl(v.thumb)}" alt="">
-        <span class="vc-label">${c.label}</span>
-        <span class="vc-title">${escapeHtml(v.title)}</span>
-      `;
-      if (/^https?:\/\//i.test(String(v.url||''))) { card.href = v.url; }
-      card.style.pointerEvents = 'auto';
-      card.style.borderColor = '';
-    }catch(e){
-      console.error('최신 영상 불러오기 실패', c.key, e);
-    }
-  }));
-}
-
-loadVideoCards();
-
 render();
   const themeToggleBtn = document.getElementById('themeToggleBtn');
   if (themeToggleBtn) {
-    themeToggleBtn.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '🌙' : '☀️';
+    const updateThemeButton = () => {
+      const light = document.documentElement.getAttribute('data-theme') === 'light';
+      themeToggleBtn.textContent = light ? '🌙' : '☀️';
+      themeToggleBtn.setAttribute('aria-label', light ? '다크 모드로 전환' : '라이트 모드로 전환');
+    };
+    updateThemeButton();
     themeToggleBtn.addEventListener('click', () => {
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       if (isLight) {
         document.documentElement.removeAttribute('data-theme');
         localStorage.setItem('crank_theme', 'dark');
-        themeToggleBtn.textContent = '☀️';
       } else {
         document.documentElement.setAttribute('data-theme', 'light');
         localStorage.setItem('crank_theme', 'light');
-        themeToggleBtn.textContent = '🌙';
       }
+      updateThemeButton();
       render();
     });
   }
@@ -3126,7 +2994,7 @@ document.getElementById('ghSettingsBtn').addEventListener('click', async ()=>{
     const session = getSession();
     if (session) {
       if (confirm('이미 로그인되어 있어요. 로그아웃할까요?')) {
-        localStorage.removeItem('crank_admin_session');
+        sessionStorage.removeItem('crank_admin_session');
         alert('로그아웃했어요.');
       }
       updateLockIcon();
