@@ -1715,7 +1715,7 @@ async function renderCalendarMonth(){
                       if(data?.content?.thumbnailImageUrl) {
                           ytCol.innerHTML = `<img src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
                       }
-                  }).catch(e=>console.error(e));
+                  }).catch(()=>{});
             }
         } else {
             ytCol.innerHTML = `<img src="${safeUrl(vid.thumb || (vid.thumbnails && vid.thumbnails.default ? vid.thumbnails.default.url : ''))}" alt="replay"><span class="yt-play-icon"></span>`;
@@ -1972,7 +1972,7 @@ async function renderListMonth(){
                           if(data?.content?.thumbnailImageUrl) {
                               ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
                           }
-                      }).catch(e=>console.error(e));
+                      }).catch(()=>{});
                 }
             } else {
                 ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon"></span>`;

@@ -1644,6 +1644,11 @@ async function saveMonth(d){
 // 배포한 Worker 주소로 바꿔주세요 (예: https://crank-admin.내서브도메인.workers.dev)
 const WORKER_URL = 'https://crank-admin.axcrank.workers.dev';
 
+// 관리자 화면은 YouTube API를 호출하지 않지만 달력 렌더러가 다시보기 채널을 조회합니다.
+// 빈 결과를 반환해 일정은 정상 렌더링하고 공개 페이지에서만 영상 데이터를 불러옵니다.
+const YT_CHANNELS = [{ key: 'replay' }];
+async function fetchLatestVideos(){ return []; }
+
 function getSession() {
   try {
     const raw = sessionStorage.getItem('crank_admin_session');
@@ -2073,7 +2078,7 @@ async function renderCalendarMonth(){
                       if(data?.content?.thumbnailImageUrl) {
                           ytCol.innerHTML = `<img src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
                       }
-                  }).catch(e=>console.error(e));
+                  }).catch(()=>{});
             }
         } else {
             ytCol.innerHTML = `<img src="${safeUrl(vid.thumb || (vid.thumbnails && vid.thumbnails.default ? vid.thumbnails.default.url : ''))}" alt="replay"><span class="yt-play-icon"></span>`;
@@ -2336,7 +2341,7 @@ async function renderListMonth(){
                           if(data?.content?.thumbnailImageUrl) {
                               ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
                           }
-                      }).catch(e=>console.error(e));
+                      }).catch(()=>{});
                 }
             } else {
                 ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon"></span>`;
