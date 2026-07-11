@@ -263,7 +263,7 @@ export default {
           return jsonResponse(request, env, { error: '비밀번호가 올바르지 않습니다.' }, 401);
         }
         await clearFailedLogins(request);
-        const expiresIn = 2 * 60 * 60;
+        const expiresIn = 30 * 24 * 60 * 60; // 개인 기기 자동 로그인: 30일
         const now = Date.now();
         const token = await signToken({ auth: true, iat: now, exp: now + expiresIn * 1000 }, env.SIGNING_SECRET);
         return jsonResponse(request, env, { token, expiresIn });

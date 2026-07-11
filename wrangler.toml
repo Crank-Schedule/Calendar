@@ -1,0 +1,19 @@
+name = "crank-admin"
+main = "worker.js"
+compatibility_date = "2026-07-11"
+
+[observability]
+enabled = true
+
+# Cloudflare 환경변수(Secrets) 안내
+# 아래 세 가지 변수는 소스코드에 평문으로 남기지 않고,
+# 배포 전 Cloudflare Dashboard의 Worker Settings > Variables 항목이나
+# `wrangler secret put <NAME>` 명령어로 암호화되어 저장되어야 합니다.
+#
+# 1. GITHUB_TOKEN : GitHub 저장소(Calendar) Contents 권한이 있는 토큰
+# 2. ADMIN_PASSWORD : admin.html 에서 로그인할 때 사용할 비밀번호
+# 3. SIGNING_SECRET : 세션 토큰을 암호화/복호화할 임의의 길고 복잡한 문자열
+[vars]
+GITHUB_OWNER = "crank-schedule"
+GITHUB_REPO = "Calendar"
+ALLOWED_ORIGINS = "https://crank-schedule.github.io,http://localhost:8080,http://127.0.0.1:8080"

@@ -98,11 +98,81 @@
     border-color: var(--neon-cyan);
 }
 
-/* Hide thumbnail on mobile list view equivalent */
-@media (max-width: 1300px) {
+/* 좁은 달력에서는 감추고 모바일 리스트의 전용 썸네일을 사용합니다. */
+@media (max-width: 1050px) {
     .cell-thumb-yt {
         display: none !important;
     }
+}
+
+/* 노트북/일반 데스크톱의 세로로 여유 있는 달력:
+   일정은 위쪽, 다시보기는 칸 하단의 16:5 가로 썸네일로 고정합니다. */
+@media (min-width: 1051px) and (max-width: 1599px) and (min-height: 700px) {
+  .cell-body {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cell-tags-col {
+    width: 100%;
+    justify-content: center;
+  }
+  .cell-thumb-yt {
+    display: block !important;
+    width: 100%;
+    height: clamp(30px, 5vh, 44px);
+    aspect-ratio: auto;
+    align-self: stretch;
+    margin: auto 0 0;
+    border-radius: 3px;
+  }
+  .cell-thumb-yt img {
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* 다시보기 출처를 눈으로 확인할 수 있게 해 우선순위 오동작을 빠르게 발견합니다. */
+.cell-thumb-yt::before,
+.timeline-yt::before {
+  content: attr(data-source-label);
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  z-index: 2;
+  padding: 2px 4px;
+  border: 1px solid rgba(255,255,255,.7);
+  background: rgba(0,0,0,.78);
+  color: #fff;
+  font: 700 8px/1 'Paperozi', sans-serif;
+  letter-spacing: .02em;
+}
+.cell-thumb-yt[data-source='chzzk']::before,
+.timeline-yt[data-source='chzzk']::before { background: rgba(0,130,86,.92); }
+.cell-thumb-yt[data-source='youtube']::before,
+.timeline-yt[data-source='youtube']::before { background: rgba(190,0,35,.92); }
+.cell-thumb-yt .yt-play-icon,
+.timeline-yt .yt-play-icon { right:auto !important; left:2px; }
+.timeline-yt::after { right:auto !important; left:4px; }
+
+/* 리스트 화면의 빈 날짜 표시 토글 */
+.list-tools {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 30px;
+  margin: 0 0 6px;
+}
+.empty-filter-btn {
+  border: 1px solid var(--border-strong);
+  background: var(--bg-panel);
+  color: var(--text-dim);
+  padding: 5px 9px;
+  cursor: pointer;
+  font: 700 10px/1.2 'Paperozi', sans-serif;
+}
+.empty-filter-btn[aria-pressed='true'] {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
 }
 
 
