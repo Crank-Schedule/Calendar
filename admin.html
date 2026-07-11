@@ -950,6 +950,9 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   }
 }
 
+  button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
+    outline:2px solid var(--neon-cyan); outline-offset:2px;
+  }
 </style>
 
 <script>
@@ -2156,6 +2159,9 @@ async function renderCalendarMonth(){
         ytCol.className = 'cell-thumb-yt';
         if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
         ytCol.target = '_blank';
+        ytCol.rel = 'noopener';
+        ytCol.title = vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기');
+        ytCol.setAttribute('aria-label', ytCol.title);
         ytCol.onclick = (e) => e.stopPropagation();
         
         if (vid.isChzzk) {
@@ -2182,6 +2188,12 @@ async function renderCalendarMonth(){
 
     c.appendChild(cellBody);
     c.addEventListener('click', ()=>openModal(cellDate));
+    c.tabIndex = 0;
+    c.setAttribute('role', 'button');
+    c.setAttribute('aria-label', `${cellDate.getMonth()+1}월 ${day}일 일정 보기`);
+    c.addEventListener('keydown', (event)=>{
+      if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); openModal(cellDate); }
+    });
     if (window.innerWidth > 900) {
       c.dataset.cellDay = day; // 드롭 대상 식별용
     }
@@ -2219,6 +2231,12 @@ async function renderCalendarMonth(){
       row.appendChild(tagsBlock);
     }
     row.addEventListener('click', ()=>openModal(cellDate));
+    row.tabIndex = 0;
+    row.setAttribute('role', 'button');
+    row.setAttribute('aria-label', `${cellDate.getMonth()+1}월 ${day}일 일정 보기`);
+    row.addEventListener('keydown', (event)=>{
+      if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); openModal(cellDate); }
+    });
     if(agenda) agenda.appendChild(row);
   }
 
@@ -2290,10 +2308,19 @@ async function renderListMonth(){
     const item = document.createElement('div');
     item.className = 'timeline-item';
     item.id = 'item-day-' + dt.getDate();
+    item.tabIndex = 0;
+    item.setAttribute('role', 'button');
+    item.setAttribute('aria-label', `${dt.getMonth()+1}월 ${dt.getDate()}일 일정 보기`);
     if(isToday) item.classList.add('is-today');
     item.addEventListener('click', ()=> {
         if(typeof openModal === 'function') openModal(dt);
-    }); 
+    });
+    item.addEventListener('keydown', (e)=> {
+        if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            if(typeof openModal === 'function') openModal(dt);
+        }
+    });
     
     const dateCol = document.createElement('div');
     dateCol.className = 'timeline-date';
@@ -2348,6 +2375,9 @@ async function renderListMonth(){
             ytCol.className = 'timeline-yt';
             if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
             ytCol.target = '_blank';
+            ytCol.rel = 'noopener';
+            ytCol.title = vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기');
+            ytCol.setAttribute('aria-label', ytCol.title);
             ytCol.onclick = (e) => e.stopPropagation();
             
             if (vid.isChzzk) {
