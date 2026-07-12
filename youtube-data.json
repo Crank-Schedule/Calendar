@@ -61,15 +61,15 @@
     "2026-07-12": {
       "a_video": {
         "t": "MOG 조성주 vs 클렘",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "군심 로그라이크 17",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "오랜만에 핵",
-        "done": false
+        "done": true
       }
     }
   },
