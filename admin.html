@@ -575,7 +575,7 @@
 
   /* 치지직 라이브 배너 */
   .live-banner{
-    position:sticky; top:0; left:0; right:0; z-index:60;
+    position:sticky; top:0; left:0; right:0; z-index:110;
     display:none; align-items:center; gap:12px;
     background: var(--bg-panel);
     border-bottom:1px solid var(--neon-red);
@@ -980,7 +980,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script>
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20260711-4">
+  <link rel="stylesheet" href="schedule_css.css?v=20260712-3">
 </head>
 <body>
 <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
@@ -1022,6 +1022,15 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 
   <div class="admin-utility-bar">
     <span id="saveStatus" data-state="clean" role="status" aria-live="polite">변경 없음</span>
+  </div>
+
+  <div class="schedule-search-wrap" id="scheduleSearchWrap">
+    <div class="schedule-search-box">
+      <span class="schedule-search-icon" aria-hidden="true">⌕</span>
+      <input class="schedule-search-input" id="scheduleSearchInput" type="search" autocomplete="off" aria-label="현재 달 일정 검색" aria-controls="scheduleSearchResults" aria-expanded="false" placeholder="현재 달 일정 검색">
+      <button class="schedule-search-clear" id="scheduleSearchClear" type="button" aria-label="검색어 지우기" hidden>✕</button>
+    </div>
+    <div class="schedule-search-results" id="scheduleSearchResults" role="region" aria-label="일정 검색 결과" hidden></div>
   </div>
 
   
@@ -2360,6 +2369,104 @@ function updateEmptyFilterButton(){
   button.textContent = hideEmptyDays ? '빈 날짜 표시' : '빈 날짜 숨기기';
 }
 
+const scheduleSearchWrap = document.getElementById('scheduleSearchWrap');
+const scheduleSearchInput = document.getElementById('scheduleSearchInput');
+const scheduleSearchClear = document.getElementById('scheduleSearchClear');
+const scheduleSearchResults = document.getElementById('scheduleSearchResults');
+const stickyHeaderElement = document.querySelector('.top-sticky');
+
+function syncScheduleHeaderHeight(){
+  const height = stickyHeaderElement ? Math.ceil(stickyHeaderElement.getBoundingClientRect().height) : 0;
+  document.documentElement.style.setProperty('--schedule-header-height', `${height}px`);
+}
+if(stickyHeaderElement && typeof ResizeObserver !== 'undefined') new ResizeObserver(syncScheduleHeaderHeight).observe(stickyHeaderElement);
+window.addEventListener('resize', syncScheduleHeaderHeight);
+requestAnimationFrame(syncScheduleHeaderHeight);
+
+function closeScheduleSearchResults(){
+  if(!scheduleSearchResults || !scheduleSearchInput) return;
+  scheduleSearchResults.hidden = true;
+  scheduleSearchInput.setAttribute('aria-expanded', 'false');
+}
+
+function renderScheduleSearchResults(){
+  if(!scheduleSearchInput || !scheduleSearchResults || !scheduleSearchClear) return;
+  const query = scheduleSearchInput.value.trim().toLocaleLowerCase('ko-KR');
+  scheduleSearchClear.hidden = !query;
+  scheduleSearchResults.replaceChildren();
+  if(!query){ closeScheduleSearchResults(); return; }
+
+  const monthData = cache[storageKey(current)] || {};
+  const matches = [];
+  Object.keys(monthData).map(Number).filter(Number.isInteger).sort((a,b)=>a-b).forEach(day=>{
+    const entries = Array.isArray(monthData[day]) ? monthData[day] : [];
+    entries.forEach(entry=>{
+      const title = String(entry?.title || '').trim();
+      const time = String(entry?.time || '').trim();
+      if(`${title} ${time}`.toLocaleLowerCase('ko-KR').includes(query)) matches.push({ day, title, time });
+    });
+  });
+
+  if(!matches.length){
+    const empty = document.createElement('div');
+    empty.className = 'schedule-search-empty';
+    empty.textContent = '이번 달에 일치하는 일정이 없습니다.';
+    scheduleSearchResults.appendChild(empty);
+  } else {
+    matches.slice(0, 12).forEach(match=>{
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'schedule-search-result';
+      const date = document.createElement('span');
+      date.className = 'schedule-search-date';
+      date.textContent = `${current.getMonth()+1}/${match.day}`;
+      const title = document.createElement('span');
+      title.className = 'schedule-search-title';
+      title.textContent = match.title + (match.time ? ` · ${match.time}` : '');
+      button.append(date, title);
+      button.addEventListener('click', ()=>{
+        scheduleSearchInput.value = '';
+        scheduleSearchClear.hidden = true;
+        closeScheduleSearchResults();
+        openModal(new Date(current.getFullYear(), current.getMonth(), match.day));
+      });
+      scheduleSearchResults.appendChild(button);
+    });
+    if(matches.length > 12){
+      const more = document.createElement('div');
+      more.className = 'schedule-search-more';
+      more.textContent = `외 ${matches.length - 12}개 결과`;
+      scheduleSearchResults.appendChild(more);
+    }
+  }
+  scheduleSearchResults.hidden = false;
+  scheduleSearchInput.setAttribute('aria-expanded', 'true');
+}
+
+if(scheduleSearchInput){
+  scheduleSearchInput.addEventListener('input', renderScheduleSearchResults);
+  scheduleSearchInput.addEventListener('search', renderScheduleSearchResults);
+  scheduleSearchInput.addEventListener('focus', ()=>{
+    if(scheduleSearchInput.value.trim()) renderScheduleSearchResults();
+  });
+  scheduleSearchInput.addEventListener('keydown', event=>{
+    if(event.key === 'Escape'){
+      scheduleSearchInput.value = '';
+      if(scheduleSearchClear) scheduleSearchClear.hidden = true;
+      closeScheduleSearchResults();
+    }
+  });
+}
+if(scheduleSearchClear) scheduleSearchClear.addEventListener('click', ()=>{
+  scheduleSearchInput.value = '';
+  scheduleSearchClear.hidden = true;
+  closeScheduleSearchResults();
+  scheduleSearchInput.focus();
+});
+document.addEventListener('click', event=>{
+  if(scheduleSearchWrap && !scheduleSearchWrap.contains(event.target)) closeScheduleSearchResults();
+});
+
 async function render(){
   const y = current.getFullYear();
   const m = current.getMonth();
@@ -2383,6 +2490,7 @@ async function render(){
     if(listSec) listSec.style.display = 'block';
     await renderListMonth();
   }
+  renderScheduleSearchResults();
 }
 
 async function renderListMonth(){
@@ -2544,7 +2652,9 @@ async function renderListMonth(){
       const targetElem = document.getElementById('item-day-' + targetDay);
       if(targetElem) {
         const stickyHeader = document.querySelector('.top-sticky');
-        const headerOffset = stickyHeader ? stickyHeader.offsetHeight : 200;
+        const liveOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--live-banner-height')) || 0;
+        const searchOffset = scheduleSearchWrap ? scheduleSearchWrap.offsetHeight : 0;
+        const headerOffset = (stickyHeader ? stickyHeader.offsetHeight : 200) + liveOffset + searchOffset;
         const elementPosition = targetElem.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 20;
         sessionStorage.setItem('hasAutoScrolled', 'true');
@@ -3152,6 +3262,13 @@ const lbThumb = document.getElementById('lbThumb');
 const lbTitle = document.getElementById('lbTitle');
 const lbMeta = document.getElementById('lbMeta');
 
+function syncLiveBannerOffset(){
+  const height = liveBanner.classList.contains('show') ? Math.ceil(liveBanner.getBoundingClientRect().height) : 0;
+  document.documentElement.style.setProperty('--live-banner-height', `${height}px`);
+}
+if(typeof ResizeObserver !== 'undefined') new ResizeObserver(syncLiveBannerOffset).observe(liveBanner);
+window.addEventListener('resize', syncLiveBannerOffset);
+
 async function checkChzzkLive(){
   try{
     const res = await fetch(`${WORKER_URL}/api/chzzk/live/${CHZZK_CHANNEL_ID}`);
@@ -3160,13 +3277,17 @@ async function checkChzzkLive(){
     const live = json && json.content;
     if(live && live.status === 'OPEN'){
       lbTitle.textContent = live.liveTitle || '방송 중';
-      lbMeta.textContent = `${live.liveCategoryValue || ''} · 시청자 ${ (live.concurrentUserCount||0).toLocaleString() }명`;
+      const liveCategory = String(live.liveCategoryValue || '').trim();
+      lbMeta.textContent = liveCategory;
+      lbMeta.hidden = !liveCategory;
       lbThumb.src = (live.liveImageUrl || '').replace('{type}', '480');
       lbThumb.hidden = !lbThumb.src;
       liveBanner.classList.add('show');
+      requestAnimationFrame(syncLiveBannerOffset);
     } else {
       liveBanner.classList.remove('show');
       lbThumb.hidden = true;
+      syncLiveBannerOffset();
     }
   }catch(e){
     console.warn('치지직 라이브 상태를 확인하지 못했습니다.', e.message);

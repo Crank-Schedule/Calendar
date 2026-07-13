@@ -1,5 +1,101 @@
 /* Custom styles for calendar layout and thumbnails */
 
+/* 라이브 배너가 보일 때 두 번째 sticky 헤더가 배너 아래에 붙도록 합니다. */
+.top-sticky {
+    top: var(--live-banner-height, 0px) !important;
+}
+
+/* 현재 달 일정 검색 */
+.schedule-search-wrap {
+    position: sticky;
+    top: calc(var(--live-banner-height, 0px) + var(--schedule-header-height, 0px));
+    width: min(520px, 100%);
+    margin: 0 auto 6px;
+    padding: 4px 0;
+    z-index: 90;
+    background: var(--bg-main);
+}
+.schedule-search-box {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 34px;
+    padding: 0 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-panel);
+}
+.schedule-search-icon { color: var(--text-dim); font-size: 12px; flex-shrink: 0; }
+.schedule-search-input {
+    flex: 1;
+    min-width: 0;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--text-primary);
+    font: 600 11px/1 'Paperozi', sans-serif;
+}
+.schedule-search-input::placeholder { color: var(--text-dim); opacity: .8; }
+.schedule-search-clear {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 13px;
+}
+.schedule-search-clear:hover { color: var(--neon-red); }
+.schedule-search-results {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 160;
+    max-height: min(52vh, 360px);
+    overflow-y: auto;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-panel-solid);
+    box-shadow: 4px 4px 0 rgba(0,0,0,.45) !important;
+}
+.schedule-search-result {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-primary);
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Paperozi', sans-serif;
+}
+.schedule-search-result:last-child { border-bottom: 0; }
+.schedule-search-result:hover,
+.schedule-search-result:focus-visible { background: var(--bg-cell-hover); }
+.schedule-search-date { color: var(--neon-cyan); font-size: 10px; font-weight: 800; }
+.schedule-search-title {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 11px;
+    font-weight: 650;
+}
+.schedule-search-empty,
+.schedule-search-more { padding: 10px; color: var(--text-dim); font-size: 10px; text-align: center; }
+@media (max-width: 680px) {
+  .schedule-search-wrap { margin-bottom: 6px; }
+  .schedule-search-box { min-height: 32px; }
+  .schedule-search-input { height: 30px; font-size: 10px; }
+  .schedule-search-result { grid-template-columns: 42px 1fr; padding: 7px 8px; }
+}
+
 .cell-body {
     display: flex;
     flex-direction: row;
@@ -134,7 +230,7 @@
 /* 다시보기 출처를 눈으로 확인할 수 있게 해 우선순위 오동작을 빠르게 발견합니다. */
 .cell-thumb-yt::before,
 .timeline-yt::before {
-  content: attr(data-source-label);
+  content: '▶ ' attr(data-source-label);
   position: absolute;
   right: 3px;
   bottom: 3px;
@@ -151,8 +247,8 @@
 .cell-thumb-yt[data-source='youtube']::before,
 .timeline-yt[data-source='youtube']::before { background: rgba(190,0,35,.92); }
 .cell-thumb-yt .yt-play-icon,
-.timeline-yt .yt-play-icon { right:auto !important; left:2px; }
-.timeline-yt::after { right:auto !important; left:4px; }
+.timeline-yt .yt-play-icon { display:none !important; }
+.timeline-yt::after { display:none !important; }
 
 /* 리스트 화면의 빈 날짜 표시 토글 */
 .list-tools {
