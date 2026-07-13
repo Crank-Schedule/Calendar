@@ -82,7 +82,11 @@
         "done": false
       },
       "b_short": {
-        "t": "오랜친구",
+        "t": "회장님 들어오십니다",
+        "done": false
+      },
+      "a_short": {
+        "t": "공격하는 의료선",
         "done": false
       }
     }
