@@ -976,7 +976,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script>
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20260712-3">
+  <link rel="stylesheet" href="schedule_css.css?v=20260714-1">
 </head>
 <body>
 <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
@@ -1004,6 +1004,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
           <button id="monthViewBtn" class="active" title="달력 보기" aria-label="달력 보기">🗓️</button>
           <button id="weekViewBtn" title="리스트 보기" aria-label="리스트 보기">☰</button>
         </div>
+        <button id="scheduleSearchToggle" title="연간 일정 검색" aria-label="연간 일정 검색" aria-expanded="false">🔍</button>
         <button id="prevBtn" aria-label="이전 달" title="이전 달">‹</button>
         <div class="month-label" id="monthLabel"><span class="ml-full">2026년 6월</span><span class="ml-short">6월</span></div>
         <button id="nextBtn" aria-label="다음 달" title="다음 달">›</button>
@@ -1014,13 +1015,19 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     <div class="video-cards" id="videoCards"></div>
   </div>
 
-  <div class="schedule-search-wrap" id="scheduleSearchWrap">
-    <div class="schedule-search-box">
-      <span class="schedule-search-icon" aria-hidden="true">⌕</span>
-      <input class="schedule-search-input" id="scheduleSearchInput" type="search" autocomplete="off" aria-label="현재 달 일정 검색" aria-controls="scheduleSearchResults" aria-expanded="false" placeholder="현재 달 일정 검색">
-      <button class="schedule-search-clear" id="scheduleSearchClear" type="button" aria-label="검색어 지우기" hidden>✕</button>
-    </div>
-    <div class="schedule-search-results" id="scheduleSearchResults" role="region" aria-label="일정 검색 결과" hidden></div>
+  <div class="schedule-search-backdrop" id="scheduleSearchBackdrop" hidden>
+    <section class="schedule-search-dialog" id="scheduleSearchWrap" role="dialog" aria-modal="true" aria-labelledby="scheduleSearchTitle">
+      <div class="schedule-search-heading">
+        <div><strong id="scheduleSearchTitle">연간 일정 검색</strong><span id="scheduleSearchScope"></span></div>
+        <button class="schedule-search-close" id="scheduleSearchClose" type="button" aria-label="검색 닫기">✕</button>
+      </div>
+      <div class="schedule-search-box">
+        <span class="schedule-search-icon" aria-hidden="true">⌕</span>
+        <input class="schedule-search-input" id="scheduleSearchInput" type="search" autocomplete="off" aria-label="연간 일정 검색" aria-controls="scheduleSearchResults" placeholder="일정명 또는 시간 검색">
+        <button class="schedule-search-clear" id="scheduleSearchClear" type="button" aria-label="검색어 지우기" hidden>✕</button>
+      </div>
+      <div class="schedule-search-results" id="scheduleSearchResults" role="region" aria-label="일정 검색 결과"></div>
+    </section>
   </div>
 
   
@@ -1828,10 +1835,19 @@ function updateEmptyFilterButton(){
 }
 
 const scheduleSearchWrap = document.getElementById('scheduleSearchWrap');
+const scheduleSearchBackdrop = document.getElementById('scheduleSearchBackdrop');
+const scheduleSearchToggle = document.getElementById('scheduleSearchToggle');
+const scheduleSearchClose = document.getElementById('scheduleSearchClose');
+const scheduleSearchScope = document.getElementById('scheduleSearchScope');
 const scheduleSearchInput = document.getElementById('scheduleSearchInput');
 const scheduleSearchClear = document.getElementById('scheduleSearchClear');
 const scheduleSearchResults = document.getElementById('scheduleSearchResults');
 const stickyHeaderElement = document.querySelector('.top-sticky');
+let scheduleSearchLimit = 12;
+let scheduleSearchMatches = [];
+let scheduleSearchRequest = 0;
+let scheduleSearchLastFocus = null;
+let scheduleSearchTimer = 0;
 
 function syncScheduleHeaderHeight(){
   const height = stickyHeaderElement ? Math.ceil(stickyHeaderElement.getBoundingClientRect().height) : 0;
@@ -1841,88 +1857,125 @@ if(stickyHeaderElement && typeof ResizeObserver !== 'undefined') new ResizeObser
 window.addEventListener('resize', syncScheduleHeaderHeight);
 requestAnimationFrame(syncScheduleHeaderHeight);
 
-function closeScheduleSearchResults(){
-  if(!scheduleSearchResults || !scheduleSearchInput) return;
-  scheduleSearchResults.hidden = true;
-  scheduleSearchInput.setAttribute('aria-expanded', 'false');
+function closeScheduleSearch(){
+  if(!scheduleSearchBackdrop || !scheduleSearchToggle) return;
+  scheduleSearchBackdrop.hidden = true;
+  scheduleSearchToggle.setAttribute('aria-expanded', 'false');
+  document.body.style.removeProperty('overflow');
+  if(scheduleSearchLastFocus) scheduleSearchLastFocus.focus();
 }
 
-function renderScheduleSearchResults(){
+function openScheduleSearch(){
+  if(!scheduleSearchBackdrop || !scheduleSearchInput || !scheduleSearchScope) return;
+  scheduleSearchLastFocus = document.activeElement;
+  scheduleSearchBackdrop.hidden = false;
+  scheduleSearchToggle.setAttribute('aria-expanded', 'true');
+  scheduleSearchScope.textContent = `${current.getFullYear()}년 1월 ~ 12월`;
+  document.body.style.overflow = 'hidden';
+  scheduleSearchInput.focus();
+  renderScheduleSearchResults();
+}
+
+function paintScheduleSearchMatches(){
+  if(!scheduleSearchResults) return;
+  scheduleSearchResults.replaceChildren();
+  if(!scheduleSearchMatches.length){
+    const empty = document.createElement('div');
+    empty.className = 'schedule-search-empty';
+    empty.textContent = '일치하는 일정이 없습니다.';
+    scheduleSearchResults.appendChild(empty);
+    return;
+  }
+  scheduleSearchMatches.slice(0, scheduleSearchLimit).forEach(match=>{
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'schedule-search-result';
+    const date = document.createElement('span');
+    date.className = 'schedule-search-date';
+    date.textContent = `${match.month}/${match.day}`;
+    const title = document.createElement('span');
+    title.className = 'schedule-search-title';
+    title.textContent = match.title + (match.time ? ` · ${match.time}` : '');
+    button.append(date, title);
+    button.addEventListener('click', async ()=>{
+      const targetDate = new Date(match.year, match.month - 1, match.day);
+      closeScheduleSearch();
+      current = targetDate;
+      sessionStorage.setItem('viewingDate', current.toISOString());
+      await render();
+      openModal(targetDate);
+    });
+    scheduleSearchResults.appendChild(button);
+  });
+  if(scheduleSearchMatches.length > scheduleSearchLimit){
+    const more = document.createElement('button');
+    more.type = 'button';
+    more.className = 'schedule-search-more';
+    more.textContent = `더보기 (${scheduleSearchMatches.length - scheduleSearchLimit}개 남음)`;
+    more.addEventListener('click', ()=>{ scheduleSearchLimit += 12; paintScheduleSearchMatches(); });
+    scheduleSearchResults.appendChild(more);
+  }
+}
+
+async function renderScheduleSearchResults(){
   if(!scheduleSearchInput || !scheduleSearchResults || !scheduleSearchClear) return;
+  if(scheduleSearchBackdrop?.hidden) return;
   const query = scheduleSearchInput.value.trim().toLocaleLowerCase('ko-KR');
   scheduleSearchClear.hidden = !query;
   scheduleSearchResults.replaceChildren();
-  if(!query){ closeScheduleSearchResults(); return; }
-
-  const monthData = cache[storageKey(current)] || {};
-  const matches = [];
-  Object.keys(monthData).map(Number).filter(Number.isInteger).sort((a,b)=>a-b).forEach(day=>{
-    const entries = Array.isArray(monthData[day]) ? monthData[day] : [];
-    entries.forEach(entry=>{
-      const title = String(entry?.title || '').trim();
-      const time = String(entry?.time || '').trim();
-      if(`${title} ${time}`.toLocaleLowerCase('ko-KR').includes(query)) matches.push({ day, title, time });
+  scheduleSearchLimit = 12;
+  scheduleSearchMatches = [];
+  if(!query){
+    const hint = document.createElement('div');
+    hint.className = 'schedule-search-empty';
+    hint.textContent = '이 연도의 일정명이나 시간을 입력하세요.';
+    scheduleSearchResults.appendChild(hint);
+    return;
+  }
+  const request = ++scheduleSearchRequest;
+  const loading = document.createElement('div');
+  loading.className = 'schedule-search-loading';
+  loading.textContent = '연간 일정을 검색하는 중…';
+  scheduleSearchResults.appendChild(loading);
+  const year = current.getFullYear();
+  const months = await Promise.all(Array.from({length:12}, (_, index)=>loadMonth(new Date(year, index, 1))));
+  if(request !== scheduleSearchRequest || scheduleSearchInput.value.trim().toLocaleLowerCase('ko-KR') !== query) return;
+  months.forEach((monthData, monthIndex)=>{
+    Object.keys(monthData).map(Number).filter(Number.isInteger).sort((a,b)=>a-b).forEach(day=>{
+      const entries = Array.isArray(monthData[day]) ? monthData[day] : [];
+      entries.forEach(entry=>{
+        const title = String(entry?.title || '').trim();
+        const time = String(entry?.time || '').trim();
+        if(`${title} ${time}`.toLocaleLowerCase('ko-KR').includes(query)) scheduleSearchMatches.push({ year, month:monthIndex+1, day, title, time });
+      });
     });
   });
-
-  if(!matches.length){
-    const empty = document.createElement('div');
-    empty.className = 'schedule-search-empty';
-    empty.textContent = '이번 달에 일치하는 일정이 없습니다.';
-    scheduleSearchResults.appendChild(empty);
-  } else {
-    matches.slice(0, 12).forEach(match=>{
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'schedule-search-result';
-      const date = document.createElement('span');
-      date.className = 'schedule-search-date';
-      date.textContent = `${current.getMonth()+1}/${match.day}`;
-      const title = document.createElement('span');
-      title.className = 'schedule-search-title';
-      title.textContent = match.title + (match.time ? ` · ${match.time}` : '');
-      button.append(date, title);
-      button.addEventListener('click', ()=>{
-        scheduleSearchInput.value = '';
-        scheduleSearchClear.hidden = true;
-        closeScheduleSearchResults();
-        openModal(new Date(current.getFullYear(), current.getMonth(), match.day));
-      });
-      scheduleSearchResults.appendChild(button);
-    });
-    if(matches.length > 12){
-      const more = document.createElement('div');
-      more.className = 'schedule-search-more';
-      more.textContent = `외 ${matches.length - 12}개 결과`;
-      scheduleSearchResults.appendChild(more);
-    }
-  }
-  scheduleSearchResults.hidden = false;
-  scheduleSearchInput.setAttribute('aria-expanded', 'true');
+  paintScheduleSearchMatches();
 }
 
 if(scheduleSearchInput){
-  scheduleSearchInput.addEventListener('input', renderScheduleSearchResults);
-  scheduleSearchInput.addEventListener('search', renderScheduleSearchResults);
-  scheduleSearchInput.addEventListener('focus', ()=>{
-    if(scheduleSearchInput.value.trim()) renderScheduleSearchResults();
+  scheduleSearchInput.addEventListener('input', ()=>{
+    clearTimeout(scheduleSearchTimer);
+    scheduleSearchTimer = setTimeout(renderScheduleSearchResults, 180);
   });
+  scheduleSearchInput.addEventListener('search', renderScheduleSearchResults);
   scheduleSearchInput.addEventListener('keydown', event=>{
     if(event.key === 'Escape'){
-      scheduleSearchInput.value = '';
-      if(scheduleSearchClear) scheduleSearchClear.hidden = true;
-      closeScheduleSearchResults();
+      event.preventDefault();
+      closeScheduleSearch();
     }
   });
 }
 if(scheduleSearchClear) scheduleSearchClear.addEventListener('click', ()=>{
   scheduleSearchInput.value = '';
   scheduleSearchClear.hidden = true;
-  closeScheduleSearchResults();
+  renderScheduleSearchResults();
   scheduleSearchInput.focus();
 });
-document.addEventListener('click', event=>{
-  if(scheduleSearchWrap && !scheduleSearchWrap.contains(event.target)) closeScheduleSearchResults();
+if(scheduleSearchToggle) scheduleSearchToggle.addEventListener('click', openScheduleSearch);
+if(scheduleSearchClose) scheduleSearchClose.addEventListener('click', closeScheduleSearch);
+if(scheduleSearchBackdrop) scheduleSearchBackdrop.addEventListener('click', event=>{
+  if(event.target === scheduleSearchBackdrop) closeScheduleSearch();
 });
 
 async function render(){
@@ -2111,8 +2164,7 @@ async function renderListMonth(){
       if(targetElem) {
         const stickyHeader = document.querySelector('.top-sticky');
         const liveOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--live-banner-height')) || 0;
-        const searchOffset = scheduleSearchWrap ? scheduleSearchWrap.offsetHeight : 0;
-        const headerOffset = (stickyHeader ? stickyHeader.offsetHeight : 200) + liveOffset + searchOffset;
+        const headerOffset = (stickyHeader ? stickyHeader.offsetHeight : 200) + liveOffset;
         const elementPosition = targetElem.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 20;
         window.scrollTo({ top: offsetPosition, behavior: 'auto' });

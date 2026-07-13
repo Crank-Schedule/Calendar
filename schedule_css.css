@@ -5,15 +5,46 @@
     top: var(--live-banner-height, 0px) !important;
 }
 
-/* 현재 달 일정 검색 */
-.schedule-search-wrap {
-    position: sticky;
-    top: calc(var(--live-banner-height, 0px) + var(--schedule-header-height, 0px));
-    width: min(520px, 100%);
-    margin: 0 auto 6px;
-    padding: 4px 0;
-    z-index: 90;
-    background: var(--bg-main);
+/* 상단 레이아웃을 차지하지 않는 연간 일정 검색 팝업 */
+.schedule-search-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10020;
+    display: grid;
+    place-items: start center;
+    padding: min(18vh, 140px) 14px 24px;
+    background: rgba(0,0,0,.58);
+    backdrop-filter: blur(2px);
+}
+.schedule-search-backdrop[hidden] { display: none; }
+.schedule-search-dialog {
+    width: min(560px, 100%);
+    max-height: min(72vh, 620px);
+    overflow: hidden;
+    padding: 12px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-panel-solid);
+    box-shadow: 7px 7px 0 rgba(0,0,0,.5);
+}
+.schedule-search-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+    font-size: 13px;
+}
+.schedule-search-heading strong { display: block; }
+.schedule-search-heading span { display: block; margin-top: 3px; color: var(--text-dim); font-size: 10px; }
+.schedule-search-close {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid var(--border);
+    background: var(--bg-cell);
+    color: var(--text-primary);
+    cursor: pointer;
 }
 .schedule-search-box {
     display: flex;
@@ -49,16 +80,11 @@
 }
 .schedule-search-clear:hover { color: var(--neon-red); }
 .schedule-search-results {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    z-index: 160;
-    max-height: min(52vh, 360px);
+    max-height: min(52vh, 440px);
     overflow-y: auto;
-    border: 1px solid var(--border-strong);
-    background: var(--bg-panel-solid);
-    box-shadow: 4px 4px 0 rgba(0,0,0,.45) !important;
+    margin-top: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-panel);
 }
 .schedule-search-result {
     width: 100%;
@@ -78,7 +104,7 @@
 .schedule-search-result:last-child { border-bottom: 0; }
 .schedule-search-result:hover,
 .schedule-search-result:focus-visible { background: var(--bg-cell-hover); }
-.schedule-search-date { color: var(--neon-cyan); font-size: 10px; font-weight: 800; }
+.schedule-search-date { color: var(--neon-cyan); font-size: 10px; font-weight: 800; white-space: nowrap; }
 .schedule-search-title {
     min-width: 0;
     overflow: hidden;
@@ -88,12 +114,24 @@
     font-weight: 650;
 }
 .schedule-search-empty,
-.schedule-search-more { padding: 10px; color: var(--text-dim); font-size: 10px; text-align: center; }
+.schedule-search-loading { padding: 18px 10px; color: var(--text-dim); font-size: 10px; text-align: center; }
+.schedule-search-more {
+    width: 100%;
+    padding: 10px;
+    border: 0;
+    border-top: 1px solid var(--border);
+    background: var(--bg-cell);
+    color: var(--neon-cyan);
+    font: 700 10px/1 'Paperozi', sans-serif;
+    cursor: pointer;
+}
+.schedule-search-more:hover { background: var(--bg-cell-hover); }
 @media (max-width: 680px) {
-  .schedule-search-wrap { margin-bottom: 6px; }
+  .schedule-search-backdrop { padding: 74px 8px 12px; }
+  .schedule-search-dialog { padding: 10px; max-height: calc(100vh - 86px); }
   .schedule-search-box { min-height: 32px; }
   .schedule-search-input { height: 30px; font-size: 10px; }
-  .schedule-search-result { grid-template-columns: 42px 1fr; padding: 7px 8px; }
+  .schedule-search-result { grid-template-columns: 58px 1fr; padding: 8px; }
 }
 
 .cell-body {
