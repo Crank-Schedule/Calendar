@@ -71,6 +71,20 @@
         "t": "오랜만에 핵",
         "done": true
       }
+    },
+    "2026-07-13": {
+      "a_video": {
+        "t": "버그",
+        "done": false
+      },
+      "b_video": {
+        "t": "군심 로그라이크 18",
+        "done": false
+      },
+      "b_short": {
+        "t": "오랜친구",
+        "done": false
+      }
     }
   },
   "sources": {
