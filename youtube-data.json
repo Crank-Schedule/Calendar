@@ -98,6 +98,14 @@
       "b_short": {
         "t": "군인은 돈내고 컴퓨터 해요?",
         "done": false
+      },
+      "a_short": {
+        "t": "프로토스 탱커",
+        "done": false
+      },
+      "b_video": {
+        "t": "RTS데모 브론즈에이지",
+        "done": false
       }
     },
     "2026-07-15": {
