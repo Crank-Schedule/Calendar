@@ -111,15 +111,19 @@
     "2026-07-15": {
       "a_video": {
         "t": "[MOG2]김준호vs클렘",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "군심로그라이크19",
-        "done": false
+        "done": true
       },
       "b_short": {
         "t": "속옷 도둑",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "누가 더 이득?",
+        "done": true
       }
     },
     "2026-07-16": {
