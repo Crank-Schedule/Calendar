@@ -129,11 +129,19 @@
     "2026-07-16": {
       "a_video": {
         "t": "[MOG2]김준호vs세랄 결승",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "군심로그라이크20",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "부쉬 플레이",
+        "done": true
+      },
+      "b_short": {
+        "t": "개발자 사칭 주의",
+        "done": true
       }
     },
     "2026-07-17": {
