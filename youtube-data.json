@@ -162,6 +162,18 @@
       "a_video": {
         "t": "크총모4일차",
         "done": false
+      },
+      "a_short": {
+        "t": "왜 이러는거야",
+        "done": false
+      },
+      "b_video": {
+        "t": "군심로그라이크21",
+        "done": false
+      },
+      "b_short": {
+        "t": "시벙vs저글링",
+        "done": false
       }
     }
   },
