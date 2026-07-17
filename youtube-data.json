@@ -147,11 +147,15 @@
     "2026-07-17": {
       "a_video": {
         "t": "크총모3일차",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "투기장",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "우리 팀 아니지만",
+        "done": true
       }
     },
     "2026-07-18": {
