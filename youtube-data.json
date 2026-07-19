@@ -184,6 +184,10 @@
       "a_short": {
         "t": "인간 알파스타",
         "done": true
+      },
+      "b_short": {
+        "t": "시방VS프로토스",
+        "done": true
       }
     }
   },
