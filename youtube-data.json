@@ -189,6 +189,16 @@
         "t": "시방VS프로토스",
         "done": true
       }
+    },
+    "2026-07-20": {
+      "a_video": {
+        "t": "[도유컵]이신형vs스칼렛",
+        "done": false
+      },
+      "b_video": {
+        "t": "군심 로그라이크 엔딩",
+        "done": false
+      }
     }
   },
   "sources": {
