@@ -193,11 +193,19 @@
     "2026-07-20": {
       "a_video": {
         "t": "[도유컵]이신형vs스칼렛",
-        "done": false
+        "done": true
       },
       "b_video": {
-        "t": "군심 로그라이크 엔딩",
-        "done": false
+        "t": "제로스페이스",
+        "done": true
+      },
+      "a_short": {
+        "t": "웨이팅 테란",
+        "done": true
+      },
+      "b_short": {
+        "t": "반응속도",
+        "done": true
       }
     }
   },
