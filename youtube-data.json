@@ -216,6 +216,10 @@
       "b_video": {
         "t": "군심 로그라이크엔딩",
         "done": false
+      },
+      "b_short": {
+        "t": "이게사네",
+        "done": false
       }
     }
   },
