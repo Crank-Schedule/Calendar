@@ -229,7 +229,19 @@
     "2026-07-22": {
       "a_video": {
         "t": "[와디먼데이]김준호 정재영",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "뮤탈",
+        "done": true
+      },
+      "b_video": {
+        "t": "더스트프론트",
+        "done": true
+      },
+      "b_short": {
+        "t": "멀피귀여워",
+        "done": true
       }
     }
   },
