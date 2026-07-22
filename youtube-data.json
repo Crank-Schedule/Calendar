@@ -211,15 +211,19 @@
     "2026-07-21": {
       "a_video": {
         "t": "[홈스토리]람보 클렘",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "군심 로그라이크엔딩",
-        "done": false
+        "done": true
       },
       "b_short": {
         "t": "이게사네",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "열받는 DNA",
+        "done": true
       }
     },
     "2026-07-22": {
