@@ -253,6 +253,16 @@
         "t": "자날로그라이크3회차",
         "done": false
       }
+    },
+    "2026-07-24": {
+      "a_video": {
+        "t": "크총모6일차",
+        "done": false
+      },
+      "b_video": {
+        "t": "투기장",
+        "done": false
+      }
     }
   },
   "sources": {
