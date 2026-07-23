@@ -247,11 +247,19 @@
     "2026-07-23": {
       "a_video": {
         "t": "[와디먼데이]클렘 김도욱",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날로그라이크3회차",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "생존왕 하템",
+        "done": true
+      },
+      "b_short": {
+        "t": "움직이는 벙커",
+        "done": true
       }
     },
     "2026-07-24": {
