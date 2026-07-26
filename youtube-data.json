@@ -278,12 +278,16 @@
     },
     "2026-07-25": {
       "a_video": {
-        "t": "지우개 베슬",
-        "done": false
+        "t": "크총모 7일차",
+        "done": true
       },
       "b_video": {
-        "t": "스2 매니저",
-        "done": false
+        "t": "자날 3회차 -2",
+        "done": true
+      },
+      "a_short": {
+        "t": "스1 모름이",
+        "done": true
       }
     }
   },
