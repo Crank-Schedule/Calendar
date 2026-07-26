@@ -289,6 +289,16 @@
         "t": "스1 모름이",
         "done": true
       }
+    },
+    "2026-07-26": {
+      "a_video": {
+        "t": "지우개 베슬",
+        "done": false
+      },
+      "b_video": {
+        "t": "스2매니저",
+        "done": false
+      }
     }
   },
   "sources": {
