@@ -275,6 +275,16 @@
         "t": "스1 모름청년",
         "done": false
       }
+    },
+    "2026-07-25": {
+      "a_video": {
+        "t": "지우개 베슬",
+        "done": false
+      },
+      "b_video": {
+        "t": "스2 매니저",
+        "done": false
+      }
     }
   },
   "sources": {
