@@ -265,15 +265,15 @@
     "2026-07-24": {
       "a_video": {
         "t": "크총모6일차",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "투기장",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "스1 모름청년",
-        "done": false
+        "done": true
       }
     },
     "2026-07-25": {
