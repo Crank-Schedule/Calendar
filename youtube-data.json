@@ -316,6 +316,10 @@
       "b_short": {
         "t": "강냉이 맞음?",
         "done": false
+      },
+      "a_short": {
+        "t": "지뢰 버프",
+        "done": false
       }
     }
   },
