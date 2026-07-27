@@ -312,6 +312,10 @@
       "b_video": {
         "t": "자날 3회차 - 3",
         "done": false
+      },
+      "b_short": {
+        "t": "강냉이 맞음?",
+        "done": false
       }
     }
   },
