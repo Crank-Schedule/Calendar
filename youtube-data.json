@@ -307,19 +307,19 @@
     "2026-07-27": {
       "a_video": {
         "t": "와디먼데이 이병렬 변현우",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 - 3",
-        "done": false
+        "done": true
       },
       "b_short": {
         "t": "강냉이 맞음?",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "지뢰 버프",
-        "done": false
+        "done": true
       }
     },
     "2026-07-28": {
