@@ -321,6 +321,20 @@
         "t": "지뢰 버프",
         "done": false
       }
+    },
+    "2026-07-28": {
+      "a_video": {
+        "t": "[sel3]강민수 맥팩",
+        "done": false
+      },
+      "b_video": {
+        "t": "리듬천국",
+        "done": false
+      },
+      "b_short": {
+        "t": "행성탱크",
+        "done": false
+      }
     }
   },
   "sources": {
