@@ -293,15 +293,15 @@
     "2026-07-26": {
       "a_video": {
         "t": "[SEL3]신희범 김도욱",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "스2매니저",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "못지나간다",
-        "done": false
+        "done": true
       }
     },
     "2026-07-27": {
