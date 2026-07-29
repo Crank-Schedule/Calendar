@@ -339,6 +339,24 @@
         "t": "온김에 잡고가기",
         "done": true
       }
+    },
+    "2026-07-29": {
+      "a_video": {
+        "t": "rsl 6 김준호 강민수",
+        "done": true
+      },
+      "a_short": {
+        "t": "클렘 컨트롤",
+        "done": true
+      },
+      "b_video": {
+        "t": "자날 3회차 - 4",
+        "done": true
+      },
+      "b_short": {
+        "t": "움직이는 행요",
+        "done": true
+      }
     }
   },
   "sources": {
