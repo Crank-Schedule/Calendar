@@ -357,6 +357,20 @@
         "t": "움직이는 행요",
         "done": true
       }
+    },
+    "2026-07-30": {
+      "a_video": {
+        "t": "[와디먼데이]이병렬 클렘",
+        "done": true
+      },
+      "a_short": {
+        "t": "잠복 맹독충",
+        "done": true
+      },
+      "b_video": {
+        "t": "자날 3회차 - 5",
+        "done": true
+      }
     }
   },
   "sources": {
