@@ -371,6 +371,24 @@
         "t": "자날 3회차 - 5",
         "done": true
       }
+    },
+    "2026-07-31": {
+      "a_video": {
+        "t": "크총모8일차",
+        "done": true
+      },
+      "a_short": {
+        "t": "세랄 컨트롤",
+        "done": true
+      },
+      "b_video": {
+        "t": "스파이더맨 감상회",
+        "done": true
+      },
+      "b_short": {
+        "t": "스파이더맨 뉴욕 어떻게 삶",
+        "done": true
+      }
     }
   },
   "sources": {
