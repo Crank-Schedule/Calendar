@@ -4,7 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>다시보기 · 크랭크 방송 스케줄</title>
+<meta name="description" content="크랭크 유튜브·치지직 다시보기를 한곳에서 확인하세요.">
 <link rel="icon" type="image/jpeg" href="assets/images/favicon.jpg">
+<link rel="apple-touch-icon" href="assets/images/favicon.jpg">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1A1A1A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="크랭크 일정">
 <style>
   @font-face {
     font-family: 'Cafe24Surround';
@@ -237,7 +244,7 @@
     word-break: keep-all; overflow-wrap: break-word; text-align:center; margin:0; padding:0; height:auto;
   }
   
-  .top-sticky { position: sticky; top: 0; z-index: 100; background: var(--bg-main); padding-top: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border-strong); transform:translateZ(0); -webkit-transform:translateZ(0); will-change:transform; }
+  .top-sticky { position: sticky; top: var(--live-banner-height, 0px); z-index: 100; background: var(--bg-main); padding-top: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border-strong); transform:translateZ(0); -webkit-transform:translateZ(0); will-change:transform; }
 
   .empty-section{font-size:12px; color:var(--text-dim); padding:14px 0;}
 
@@ -721,6 +728,13 @@ if (themeToggleBtn) {
       localStorage.setItem('crank_theme', 'light');
     }
     updateThemeButton();
+  });
+}
+
+// ===== PWA: 서비스 워커 등록 =====
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js?v=20260801-1').catch(() => {});
   });
 }
 </script>

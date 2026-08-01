@@ -10,9 +10,9 @@ python -m http.server 8080 --directory "C:\Crank\Recording files\Schedule-improv
 
 브라우저에서 `http://127.0.0.1:8080/crank_schedule.html`을 엽니다. `file://`로 직접 열면 브라우저 보안 정책 때문에 일부 API와 JSON 로딩이 제한될 수 있습니다.
 
-## Cloudflare Worker 배포
+## Cloudflare Worker 배포 (worker.js를 수정했을 때만)
 
-기존 `crank-admin` Worker와 기존 Secret을 그대로 사용합니다. 평소 업데이트는 다음 두 명령이면 끝납니다.
+화면이나 아이콘만 수정했다면 Worker 배포는 필요 없습니다. `worker.js`를 실제로 수정했을 때만 기존 `crank-admin` Worker에 다음 명령을 실행합니다.
 
 ```powershell
 npx wrangler deploy
@@ -34,21 +34,22 @@ YouTube API 키는 공개 HTML에서 사용합니다. Google Cloud Console에서
 
 ## 배포 순서
 
-1. 기존 Worker에 `npx wrangler deploy`를 실행합니다.
-2. `/api/health`가 `{ "ok": true }`를 반환하는지 확인합니다.
-3. 정적 파일을 GitHub Pages 저장소에 반영합니다.
-4. 일정, 다시보기, 관리자 로그인과 저장을 확인합니다.
+1. 변경된 정적 파일을 GitHub Pages 저장소에 덮어씁니다.
+2. 일정, 다시보기, 관리자 로그인과 저장을 확인합니다.
+3. `worker.js`도 수정한 경우에만 `npx wrangler deploy` 후 `/api/health`를 확인합니다.
 
 ## 구조
 
 - `crank_schedule.html`: 공개 일정 화면
 - `replay.html`: 다시보기 화면
 - `admin.html`: 관리자 편집 화면
+- `schedule_core.js`: 일정/관리자 화면이 공유하는 유틸(색상·이스케이프·제목 파싱). 한 곳만 고치면 양쪽에 반영됩니다.
 - `worker.js`: 인증, GitHub 저장, 치지직 프록시
+- `manifest.json` / `sw.js`: PWA(홈 화면 추가 · 오프라인). 스케줄/다시보기 페이지에서만 서비스 워커를 등록하며, `admin.html`과 API 호출은 캐시하지 않습니다.
 - `data/`: 월별 일정과 대회 데이터
 - `assets/images/`: 사이트 아이콘과 파비콘
 - `schedule_css.css`: 공통 보조 스타일
 
 `auto_clicker.py`와 `assets/images/button.png`는 자동화에 필요한 파일이므로 삭제하지 않습니다.
 
-관리자 로그인은 이 브라우저에 30일간 유지됩니다. 공용 PC에서는 자물쇠 버튼을 눌러 로그아웃하세요.
+관리자 로그인 토큰은 이 브라우저에 30일간 유지되고, 만료되면 저장된 비밀번호로 자동 재로그인합니다. 공용 PC에서는 자물쇠 버튼을 눌러 로그아웃하세요.

@@ -1,0 +1,20 @@
+{
+  "name": "크랭크 방송 스케줄",
+  "short_name": "크랭크 일정",
+  "description": "크랭크 방송 일정, 다시보기, 대회 정보를 한눈에.",
+  "lang": "ko",
+  "start_url": "./crank_schedule.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1A1A1A",
+  "theme_color": "#1A1A1A",
+  "icons": [
+    {
+      "src": "assets/images/favicon.jpg",
+      "sizes": "any",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

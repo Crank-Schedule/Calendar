@@ -4,7 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>크랭크 방송 스케줄</title>
+<meta name="description" content="크랭크 방송 일정, 다시보기, 대회 정보를 한눈에 확인하세요.">
 <link rel="icon" type="image/jpeg" href="assets/images/favicon.jpg">
+<link rel="apple-touch-icon" href="assets/images/favicon.jpg">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1A1A1A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="크랭크 일정">
 <style>
   @import url('https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css');
   @font-face {
@@ -1098,274 +1105,10 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   </div>
 </div>
 
+<script src="schedule_core.js?v=20260801-1"></script>
 <script>
 
-// ===== 보안: 일정 제목/링크는 외부(저장소 JSON) 데이터이므로 항상 이스케이프해서 출력 =====
-// ===== 라이트모드에서도 잘 보이도록 색상의 명도를 자동 조절 =====
 const WORKER_URL = 'https://crank-admin.axcrank.workers.dev';
-function hexToHsl(hex){
-  let r=0,g=0,b=0;
-  hex = String(hex||'').replace('#','');
-  if(hex.length===3){ r=parseInt(hex[0]+hex[0],16); g=parseInt(hex[1]+hex[1],16); b=parseInt(hex[2]+hex[2],16); }
-  else { r=parseInt(hex.substring(0,2),16); g=parseInt(hex.substring(2,4),16); b=parseInt(hex.substring(4,6),16); }
-  r/=255; g/=255; b/=255;
-  const max=Math.max(r,g,b), min=Math.min(r,g,b);
-  let h=0,s=0,l=(max+min)/2;
-  if(max!==min){
-    const d = max-min;
-    s = l>0.5 ? d/(2-max-min) : d/(max+min);
-    switch(max){
-      case r: h=(g-b)/d+(g<b?6:0); break;
-      case g: h=(b-r)/d+2; break;
-      case b: h=(r-g)/d+4; break;
-    }
-    h/=6;
-  }
-  return [h*360, s*100, l*100];
-}
-function hslToHex(h,s,l){
-  h/=360; s/=100; l/=100;
-  let r,g,b;
-  if(s===0){ r=g=b=l; }
-  else{
-    const hue2rgb=(p,q,t)=>{
-      if(t<0) t+=1; if(t>1) t-=1;
-      if(t<1/6) return p+(q-p)*6*t;
-      if(t<1/2) return q;
-      if(t<2/3) return p+(q-p)*(2/3-t)*6;
-      return p;
-    };
-    const q = l<0.5 ? l*(1+s) : l+s-l*s;
-    const p = 2*l-q;
-    r=hue2rgb(p,q,h+1/3); g=hue2rgb(p,q,h); b=hue2rgb(p,q,h-1/3);
-  }
-  const toHex = v => Math.round(v*255).toString(16).padStart(2,'0');
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-function getDisplayColor(hex){
-  if(!hex) return hex;
-  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  try{
-    const [h,s,l] = hexToHsl(hex);
-    if(!isLight) {
-      const newL = Math.max(l, 65);
-      const newS = Math.min(100, s + 15);
-      return hslToHex(h, newS, newL);
-    } else {
-      const isYellowish = h>=40 && h<=110;
-      const cap = isYellowish ? 22 : 28;
-      const newL = Math.min(l, cap);
-      const newS = Math.min(100, s+10);
-      return hslToHex(h, newS, newL);
-    }
-  }catch(e){ return hex; }
-}
-
-function escapeHtml(str){
-  if(str==null) return '';
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
-}
-function safeUrl(url){
-  if(!url) return '';
-  const trimmed = String(url).trim();
-  return /^https?:\/\//i.test(trimmed) ? escapeHtml(trimmed) : '';
-}
-
-
-// 제목 키워드 -> 아이콘. 이미지 아이콘을 받으면 이 부분을 <img> 태그로 교체할 예정.
-function getAbbr(title) {
-  if (!title) return '';
-  const up = title.toUpperCase();
-  if (up.includes('귀국') || up.includes('입국')) return '올귀';
-  if (up.includes('출국') || up.includes('출장')) return '올출';
-  if (up.includes('스타2') || up.includes('스타 II') || up.includes('스타II') || up.includes('SC2')) return '스II';
-  if (up.includes('스타크래프트') || up.includes('스타1') || up.includes('스타')) return '스타';
-  if (up.includes('마리오 카트') || up.includes('마카')) return '마카';
-  if (up.includes('롤') || up.includes('리그 오브 레전드') || up.includes('리그오브레전드')) return '롤';
-  if (up.includes('이터널') || up.includes('이리')) return '이리';
-  if (up.includes('휴방')) return '휴방';
-  if (up.includes('야구')) return '야구';
-  if (up.includes('월드컵') || up.includes('축구')) return '축구';
-  if (up.includes('모험가') || up.includes('앨리엇')) return '앨리';
-  if (up.includes('유로트럭')) return '트럭';
-  if (up.includes('토크') || up.includes('저챗')) return '저챗';
-  if (up.includes('대회') || up.includes('컵') || up.includes('CUP')) return '대회';
-  const clean = title.replace(/[\[\]\s]/g, '');
-  return clean.substring(0, 2);
-}
-
-function parseTitle(en) {
-  let titleStr = typeof en === 'string' ? en : (en.title || '');
-  let explicitIcon = typeof en === 'object' && en.icon ? en.icon : null;
-  if(explicitIcon === 'auto') explicitIcon = null;
-
-  let displayTitle = titleStr || '';
-  
-  if (explicitIcon && explicitIcon !== 'none') {
-    let customIcon = false;
-    let iconHtml = '';
-    
-    if(explicitIcon === 'lol') { iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'sc2') { iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'sc1') { iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'er') { iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'mk') { iconHtml = `<img src="assets/images/mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'bb') { iconHtml = `⚾`; customIcon=true;}
-    else if(explicitIcon === 'poke') { iconHtml = `<img src="assets/images/poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'chat') { iconHtml = `💬`; customIcon=true;}
-    else if(explicitIcon === 'watch') { iconHtml = `<img src="assets/images/watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    
-    return {
-        displayTitle: displayTitle,
-        customIcon: customIcon,
-        iconHtml: iconHtml
-    };
-  } else if (explicitIcon === 'none') {
-    return {
-        displayTitle: displayTitle,
-        customIcon: false,
-        iconHtml: ''
-    };
-  }
-
-  // Auto Mode
-  let isLol = false;
-  let isSc2 = false;
-  let isSc1 = false;
-  let isMk = false;
-  let isBaseball = false;
-  let isWatch = false;
-  let isChat = false;
-  let isPoke = false;
-  let isEr = false;
-  
-  const lolRegex = /(?:리그\s*오브\s*레전드|리그오브레전드|롤|LOL)/i;
-  const lolKeepRegex = /(?:LEC|LCK)/i;
-  const sc2Regex = /(?:스타크래프트\s*2|스타크래프트2|스타\s*2|스타2|스타\s*II|스타II|SC2)/i;
-  const sc1Regex = /(?:스타크래프트\s*1|스타크래프트1|스타\s*1|스타1|스타크래프트|스타)/i;
-  const mkRegex = /(?:마리오\s*카트|마리오카트|마카)/i;
-  const watchRegex = /(?:월드컵|올림픽)/i;
-  const chatRegex = /(?:저챗|토크|Just\s*Chatting)/i;
-  const pokeRegex = /(?:포켓몬스터|포켓몬)/i;
-  const erRegex = /(?:이터널\s*리턴|이리)/i;
-  
-  if(lolRegex.test(displayTitle)) {
-      isLol = true;
-      let rest = displayTitle.replace(lolRegex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '솔랭' : rest;
-  } else if (lolKeepRegex.test(displayTitle)) {
-      isLol = true;
-  } else if(sc2Regex.test(displayTitle)) {
-      isSc2 = true;
-      let rest = displayTitle.replace(sc2Regex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '스타 II' : rest;
-  } else if(sc1Regex.test(displayTitle)) {
-      isSc1 = true;
-      let rest = displayTitle.replace(sc1Regex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '스타' : rest;
-  } else if(mkRegex.test(displayTitle)) {
-      isMk = true;
-      let rest = displayTitle.replace(mkRegex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      rest = rest.replace(/8\s*디럭스/i, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      
-      if (rest === '') {
-          displayTitle = '8 디럭스';
-      } else {
-          if (/월[드즈]/.test(rest)) {
-              rest = rest.replace(/월즈/g, '월드');
-          }
-          displayTitle = rest;
-      }
-  } else if(/야구|삼성/.test(displayTitle)) {
-      isBaseball = true;
-      let rest = displayTitle.replace(/야구/g, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '야구' : rest;
-  } else if(watchRegex.test(displayTitle)) {
-      isWatch = true;
-  } else if(chatRegex.test(displayTitle)) {
-      isChat = true;
-      let rest = displayTitle.replace(chatRegex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '저챗' : rest;
-  } else if(pokeRegex.test(displayTitle)) {
-      isPoke = true;
-      let rest = displayTitle.replace(pokeRegex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '포켓몬' : rest;
-  } else if(erRegex.test(displayTitle)) {
-      isEr = true;
-      let rest = displayTitle.replace(erRegex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '솔랭' : rest;
-  }
-  
-  let iconHtml = getIcon(displayTitle);
-  let customIcon = false;
-  
-  if(isLol) {
-      iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isSc2) {
-      iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isSc1) {
-      iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isMk) {
-      iconHtml = `<img src="assets/images/mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isBaseball) {
-      iconHtml = `⚾`;
-      customIcon = true;
-  } else if(isWatch) {
-      iconHtml = `<img src="assets/images/watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isChat) {
-      iconHtml = `💬`;
-      customIcon = true;
-  } else if(isPoke) {
-      iconHtml = `<img src="assets/images/poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isEr) {
-      iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  }
-  
-  return {
-      displayTitle: displayTitle,
-      customIcon: customIcon,
-      iconHtml: iconHtml
-  };
-}
-
-function getIcon(title){
-  const t = title || '';
-  if(t.includes('휴방')) return '😴';
-  if(t.includes('스타')) return '👾';
-  if(t.includes('이터널')) return '🏹';
-  if(t.includes('롤')) return '⚔️';
-  if(t.includes('같이보기')) return '📺';
-  if(t.includes('야구')) return '⚾';
-  const generalGames = ['유로트럭','앨리엇','포켓몬','제로 스페이스','스팀 데모','데모 RTS'];
-  if(generalGames.some(k=>t.includes(k))) return '🎮';
-  return '📌';
-}
-function withIcon(en){
-  const parsed = parseTitle(en);
-  const safe = escapeHtml(parsed.displayTitle);
-  return (parsed.iconHtml ? parsed.iconHtml + ' ' : '') + safe;
-}
 
 
 let savedDate = sessionStorage.getItem('viewingDate');
@@ -1430,13 +1173,38 @@ function seedJune2026(){
   };
 }
 
+// ===== 네트워크 실패/오프라인 알림 =====
+let _netNoticeEl = null;
+let _netNoticeTimer = 0;
+function notifyNetworkIssue(message = '오프라인 상태예요 · 저장된 일정을 표시합니다'){
+  if(!_netNoticeEl){
+    _netNoticeEl = document.createElement('div');
+    _netNoticeEl.setAttribute('role', 'status');
+    _netNoticeEl.style.cssText = 'position:fixed;left:50%;bottom:calc(72px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);z-index:9999;max-width:calc(100vw - 32px);padding:9px 16px;border-radius:999px;background:rgba(20,20,20,.92);color:#fff;font-size:13px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.35);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;';
+    document.body.appendChild(_netNoticeEl);
+  }
+  _netNoticeEl.textContent = message;
+  requestAnimationFrame(()=>{
+    _netNoticeEl.style.opacity = '1';
+    _netNoticeEl.style.transform = 'translateX(-50%) translateY(0)';
+  });
+  clearTimeout(_netNoticeTimer);
+  _netNoticeTimer = setTimeout(()=>{
+    if(!_netNoticeEl) return;
+    _netNoticeEl.style.opacity = '0';
+    _netNoticeEl.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 4000);
+}
+window.addEventListener('offline', ()=>notifyNetworkIssue());
+window.addEventListener('online', ()=>notifyNetworkIssue('다시 연결됐어요 · 새로고침하면 최신 일정이 보여요'));
+
 async function loadMonth(d){
   const key = storageKey(d);
   if(cache[key]) return cache[key];
-  
+
   const y = d.getFullYear();
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
-  
+
   let dataFromNetwork = null;
   try {
     const baseUrl = location.protocol === 'file:' ? 'https://crank-schedule.github.io/Calendar/' : '';
@@ -1444,7 +1212,9 @@ async function loadMonth(d){
     if (res.ok) {
        dataFromNetwork = await res.json();
     }
-  } catch(e) {}
+  } catch(e) {
+    notifyNetworkIssue();
+  }
   
   let dataFromLocal = null;
   try {
@@ -1778,9 +1548,9 @@ async function renderCalendarMonth(){
         const label = document.createElement('span');
         label.innerHTML = (parsed.iconHtml ? `<span style="color:var(--tag-color)">${parsed.iconHtml}</span> ` : '') + escapeHtml(parsed.displayTitle) + (en.time ? ' · '+escapeHtml(en.time) : '');
         t.appendChild(label);
-        if(en.link){
+        if(en.link && /^https?:\/\//i.test(String(en.link).trim())){
           const a = document.createElement('a');
-          a.href=en.link; a.target='_blank'; a.rel='noopener'; a.textContent='🔗';
+          a.href=String(en.link).trim(); a.target='_blank'; a.rel='noopener'; a.textContent='🔗';
           a.addEventListener('click', e=>e.stopPropagation());
           t.appendChild(a);
         }
@@ -2529,7 +2299,7 @@ async function loadVideoCards(){
       if(!card || !v) return;
       card.innerHTML = `
         <img class="vc-thumb" src="${safeUrl(v.thumb)}" alt="">
-        <span class="vc-label">${c.label}</span>
+        <span class="vc-label">${escapeHtml(c.label)}</span>
         <span class="vc-title">${escapeHtml(v.title)}</span>
       `;
       if (/^https?:\/\//i.test(String(v.url||''))) { card.href = v.url; }
@@ -2563,6 +2333,13 @@ render();
       }
       updateThemeButton();
       render();
+    });
+  }
+
+  // ===== PWA: 서비스 워커 등록 (오프라인 · 홈 화면 추가) =====
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js?v=20260801-1').catch(() => {});
     });
   }
 </script>
