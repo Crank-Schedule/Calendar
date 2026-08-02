@@ -393,15 +393,15 @@
     "2026-08-01": {
       "a_video": {
         "t": "크총모파이널",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "진균 피하기",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 - 6",
-        "done": false
+        "done": true
       }
     },
     "2026-08-02": {
