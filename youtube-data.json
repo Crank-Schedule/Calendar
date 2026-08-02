@@ -389,6 +389,20 @@
         "t": "스파이더맨 뉴욕 어떻게 삶",
         "done": true
       }
+    },
+    "2026-08-01": {
+      "a_video": {
+        "t": "크총모파이널",
+        "done": false
+      },
+      "a_short": {
+        "t": "진균 피하기",
+        "done": false
+      },
+      "b_video": {
+        "t": "자날 3회차 - 6",
+        "done": false
+      }
     }
   },
   "sources": {
