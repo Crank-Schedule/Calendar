@@ -416,6 +416,10 @@
       "a_short": {
         "t": "상처만 남은 테란",
         "done": false
+      },
+      "b_short": {
+        "t": "박수장인",
+        "done": false
       }
     }
   },
