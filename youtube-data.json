@@ -407,19 +407,19 @@
     "2026-08-02": {
       "a_video": {
         "t": "무한 베슬",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 - 7",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "상처만 남은 테란",
-        "done": false
+        "done": true
       },
       "b_short": {
         "t": "박수장인",
-        "done": false
+        "done": true
       }
     }
   },
