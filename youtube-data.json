@@ -439,11 +439,19 @@
     "2026-08-04": {
       "a_video": {
         "t": "[sel3]김도우 김도욱",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자유의 날개 로그라이크 3회차 - 8",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "쪽박 토스",
+        "done": true
+      },
+      "b_short": {
+        "t": "용암 목욕",
+        "done": true
       }
     }
   },
