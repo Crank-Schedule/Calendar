@@ -471,7 +471,15 @@
     "2026-08-06": {
       "a_video": {
         "t": "[와디 서머 컵] 김도욱vs이병렬",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "밤까마귀 잡아라",
+        "done": true
+      },
+      "b_video": {
+        "t": "자날 3회차 - 10",
+        "done": true
       }
     }
   },
