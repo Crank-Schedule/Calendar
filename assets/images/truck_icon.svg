@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="유로트럭">
+  <defs>
+    <linearGradient id="cargo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffd166"/>
+      <stop offset="1" stop-color="#f4a261"/>
+    </linearGradient>
+  </defs>
+  <rect x="3" y="15" width="35" height="29" rx="5" fill="url(#cargo)" stroke="#fff3c4" stroke-width="2"/>
+  <path d="M38 25h12l10 11v8H38z" fill="#34f5d8" stroke="#bafff3" stroke-width="2"/>
+  <path d="M43 29h6l6 7H43z" fill="#18313a"/>
+  <rect x="8" y="21" width="25" height="4" rx="2" fill="#fff3c4" opacity=".9"/>
+  <circle cx="16" cy="47" r="7" fill="#111827" stroke="#e5e7eb" stroke-width="3"/>
+  <circle cx="50" cy="47" r="7" fill="#111827" stroke="#e5e7eb" stroke-width="3"/>
+</svg>

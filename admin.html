@@ -1180,7 +1180,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   </div>
 </div>
 
-<script src="schedule_core.js?v=20260801-1"></script>
+<script src="schedule_core.js?v=20260806-1"></script>
 <script>
 
 const COLORS = [
@@ -1190,17 +1190,25 @@ const COLORS = [
   {name:'lime', hex:'#33FF00'},
   {name:'violet', hex:'#9900FF'},
   {name:'red', hex:'#FF0000'},
+  {name:'sky', hex:'#38BDF8'},
+  {name:'orange', hex:'#F4A261'},
+  {name:'pink', hex:'#FF66B2'},
+  {name:'yellow', hex:'#FFD93D'},
 ];
 
 const PRESETS = [
+  {title:'스타 II WardiTV', color:'#9900FF', icon:'sc2'},
   {title:'스타 II MoG 2', color:'#9900FF', icon:'sc2'},
   {title:'스타 II 군심 로그라이크', color:'#9900FF', icon:'sc2'},
-  {title:'이터널 리턴', color:'#555555', icon:'er'},
-  {title:'모험가 앨리엇 천 년의 이야기', color:'#FF9900'},
-  {title:'유로트럭', color:'#FF9900'},
   {title:'롤', color:'#33FF00', icon:'lol'},
+  {title:'포켓몬스터 블루', color:'#FFD93D', icon:'poke'},
+  {title:'이터널 리턴', color:'#555555', icon:'er'},
+  {title:'모험가 앨리엇 천 년의 이야기', color:'#C6FF3C', icon:'adventure'},
+  {title:'유로트럭', color:'#F4A261', icon:'truck'},
   {title:'같이보기', color:'#9AD1FF', icon:'watch'},
   {title:'야구', color:'#FF9F43', icon:'bb'},
+  {title:'월드컵', color:'#38BDF8', icon:'football'},
+  {title:'디아블로 4', color:'#E63946', icon:'diablo'},
   {title:'휴방', color:'#FF0000'},
 ];
 
@@ -1257,6 +1265,10 @@ const ICONS = [
   {id:'poke', name:'포켓몬', html:'<img src="assets/images/poke_icon.png" onerror="this.outerHTML=\'🔴\'">', color: '#FFFF00'},
   {id:'chat', name:'저챗', html:'💬', color: '#FF66B2'},
   {id:'watch', name:'같이보기', html:'<img src="assets/images/watch_icon.png" onerror="this.outerHTML=\'📺\'">', color: '#9AD1FF'},
+  {id:'truck', name:'유로트럭', html:'<img src="assets/images/truck_icon.svg" onerror="this.outerHTML=\'🚛\'">', color: '#F4A261'},
+  {id:'adventure', name:'앨리엇', html:'<img src="assets/images/adventure_icon.svg" onerror="this.outerHTML=\'🧭\'">', color: '#C6FF3C'},
+  {id:'football', name:'축구', html:'⚽', color: '#38BDF8'},
+  {id:'diablo', name:'디아블로', html:'<img src="assets/images/diablo_icon.svg" onerror="this.outerHTML=\'🔥\'">', color: '#E63946'},
   {id:'none', name:'없음', html:'❌'}
 ];
 
@@ -1272,7 +1284,11 @@ function getFixedColor(title, pIcon, defaultColor) {
     if(title.includes('야구')) return '#FF9F43';
     if(title.includes('포켓몬')) return '#FFFF00';
     if(title.includes('저챗')) return '#FF66B2';
-    if(title.includes('같이보기')) return '#9AD1FF';
+    if(title.includes('유로트럭') || title.includes('유로 트럭')) return '#F4A261';
+    if(title.includes('앨리엇')) return '#C6FF3C';
+    if(title.includes('월드컵') || title.includes('축구')) return '#38BDF8';
+    if(title.includes('디아블로')) return '#E63946';
+    if(title.includes('같이보기') || title.includes('같이 보기') || title.includes('입중계') || title.includes('시청') || title.includes('올림픽')) return '#9AD1FF';
   }
   return defaultColor;
 }
@@ -1967,7 +1983,8 @@ async function renderCalendarMonth(){
     num.className='date-num'; num.textContent=day;
     headerWrap.appendChild(num);
 
-    const specialKeywords = ['휴방', '출국', '출장', '귀국', '입국', '결방'];
+    // 과거 관리자 빠른 입력이 저장한 축약어(올출/올귀)도 특수 일정으로 취급한다.
+    const specialKeywords = ['휴방', '출국', '출장', '귀국', '입국', '결방', '올출', '올귀'];
     const specials = entries.filter(e => specialKeywords.some(k => e.title.includes(k)));
     const regulars = entries.filter(e => !specialKeywords.some(k => e.title.includes(k)));
 
@@ -1981,7 +1998,9 @@ async function renderCalendarMonth(){
       let hasTrip = false;
       specials.forEach(sp => {
         const isRest = sp.title.includes('휴방');
-        const isTrip = sp.title.includes('귀국') || sp.title.includes('출국') || sp.title.includes('출장') || sp.title.includes('입국');
+        const isReturn = sp.title.includes('귀국') || sp.title.includes('입국') || sp.title.includes('올귀');
+        const isDeparture = sp.title.includes('출국') || sp.title.includes('출장') || sp.title.includes('올출');
+        const isTrip = isReturn || isDeparture;
         if (isRest) hasRest = true;
         if (isTrip) hasTrip = true;
         const color = getDisplayColor(isRest ? '#00FFFF' : (isTrip ? '#FF9900' : '#FF0000'));
@@ -1990,13 +2009,16 @@ async function renderCalendarMonth(){
         s.className = 'special-badge draggable-item' + ((isRest || isTrip) ? ' badge-circle' : '');
         s.style.color = color;
         s.style.background = isRest ? 'rgba(0,255,255,0.1)' : (isTrip ? 'rgba(255,153,0,0.1)' : 'rgba(255,0,0,0.1)');
-        s.title = sp.title;
-        let innerText = sp.title;
+        const displayTitle = sp.title.trim() === '올귀'
+          ? '올리비아 귀국'
+          : (sp.title.trim() === '올출' ? '올리비아 출국' : sp.title);
+        s.title = displayTitle;
+        let innerText = displayTitle;
         if(isRest) innerText = '(휴방)';
-        else if(sp.title.includes('출국') || sp.title.includes('출장')) innerText = '(올출)';
-        else if(sp.title.includes('귀국') || sp.title.includes('입국')) innerText = '(올귀)';
+        else if(isDeparture) innerText = '(올출)';
+        else if(isReturn) innerText = '(올귀)';
 
-        s.innerHTML = `<span class="sp-icon">${icon}</span><span class="sp-abbr">${getAbbr(sp.title)}</span><span class="sp-inner-text" style="display:none; font-weight:800;">${innerText}</span><span class="sp-label">${escapeHtml(sp.title)}</span>`;
+        s.innerHTML = `<span class="sp-icon">${icon}</span><span class="sp-abbr">${getAbbr(displayTitle)}</span><span class="sp-inner-text" style="display:none; font-weight:800;">${innerText}</span><span class="sp-label">${escapeHtml(displayTitle)}</span>`;
         
         // 드래그 데이터 속성 추가
         if (window.innerWidth > 900) {
@@ -2517,20 +2539,28 @@ function buildSwatches(){
 
 function buildPresets(){
   presetsEl.innerHTML='';
-  let presets = PRESETS;
+  let recentPresets = [];
   try {
     const stored = localStorage.getItem('crank_recent_presets');
     if(stored) {
       const parsed = JSON.parse(stored);
       if(Array.isArray(parsed) && parsed.length > 0) {
         // 예전 저장 프리셋에 icon 값이 없어도 같은 기본 프리셋의 게임 아이콘을 다시 연결합니다.
-        presets = parsed.map(p => {
+        recentPresets = parsed.map(p => {
           const base = PRESETS.find(item => item.title === p.title);
           return p.icon === undefined && base && base.icon ? { ...p, icon: base.icon } : p;
         });
       }
     }
   } catch(e) {}
+
+  // 기존 사용자의 최근 프리셋은 앞에 유지하고, 새 기본 프리셋도 빠지지 않게 합칩니다.
+  const seenTitles = new Set();
+  const presets = [...recentPresets, ...PRESETS].filter(p => {
+    if(!p || !p.title || seenTitles.has(p.title)) return false;
+    seenTitles.add(p.title);
+    return true;
+  }).slice(0, 18);
 
   presets.forEach(p=>{
     const chip = document.createElement('button');
@@ -2549,7 +2579,7 @@ function buildPresets(){
 }
 
 function updateRecentPresets(title, color, icon) {
-  let presets = PRESETS;
+  let presets = [];
   try {
     const stored = localStorage.getItem('crank_recent_presets');
     if(stored) {
@@ -2559,8 +2589,6 @@ function updateRecentPresets(title, color, icon) {
       }
     }
   } catch(e) {}
-  
-  if(presets === PRESETS) presets = [...PRESETS];
   
   presets = presets.filter(p => p.title !== title);
   presets.unshift({title, color, icon});
@@ -2759,8 +2787,8 @@ function addQuickTag(title, color) {
   render();
 }
 document.getElementById('quickRest').addEventListener('click', () => addQuickTag('휴방', '#FF0000'));
-document.getElementById('quickReturn').addEventListener('click', () => addQuickTag('올귀', '#00BFFF'));
-document.getElementById('quickDepart').addEventListener('click', () => addQuickTag('올출', '#FFA500'));
+document.getElementById('quickReturn').addEventListener('click', () => addQuickTag('올리비아 귀국', '#00BFFF'));
+document.getElementById('quickDepart').addEventListener('click', () => addQuickTag('올리비아 출국', '#FFA500'));
 document.getElementById('quickTrip').addEventListener('click', () => addQuickTag('올리비아 출장', '#9900FF'));
 document.getElementById('customQuickTagBtn').addEventListener('click', () => {
   const val = document.getElementById('customQuickTagInput').value.trim();

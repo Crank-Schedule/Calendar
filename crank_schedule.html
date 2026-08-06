@@ -1105,7 +1105,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   </div>
 </div>
 
-<script src="schedule_core.js?v=20260801-1"></script>
+<script src="schedule_core.js?v=20260806-1"></script>
 <script>
 
 const WORKER_URL = 'https://crank-admin.axcrank.workers.dev';
@@ -1428,7 +1428,8 @@ async function renderCalendarMonth(){
     num.className='date-num'; num.textContent=day;
     headerWrap.appendChild(num);
 
-    const specialKeywords = ['휴방', '출국', '출장', '귀국', '입국', '결방'];
+    // 과거 관리자 빠른 입력이 저장한 축약어(올출/올귀)도 특수 일정으로 취급한다.
+    const specialKeywords = ['휴방', '출국', '출장', '귀국', '입국', '결방', '올출', '올귀'];
     const specials = entries.filter(e => specialKeywords.some(k => e.title.includes(k)));
     const regulars = entries.filter(e => !specialKeywords.some(k => e.title.includes(k)));
 
@@ -1442,7 +1443,9 @@ async function renderCalendarMonth(){
       let hasTrip = false;
       specials.forEach(sp => {
         const isRest = sp.title.includes('휴방');
-        const isTrip = sp.title.includes('귀국') || sp.title.includes('출국') || sp.title.includes('출장') || sp.title.includes('입국');
+        const isReturn = sp.title.includes('귀국') || sp.title.includes('입국') || sp.title.includes('올귀');
+        const isDeparture = sp.title.includes('출국') || sp.title.includes('출장') || sp.title.includes('올출');
+        const isTrip = isReturn || isDeparture;
         if (isRest) hasRest = true;
         if (isTrip) hasTrip = true;
         const color = getDisplayColor(isRest ? '#00FFFF' : (isTrip ? '#FF9900' : '#FF0000'));
@@ -1451,13 +1454,16 @@ async function renderCalendarMonth(){
         s.className = 'special-badge' + ((isRest || isTrip) ? ' badge-circle' : '');
         s.style.color = color;
         s.style.background = isRest ? 'rgba(0,255,255,0.1)' : (isTrip ? 'rgba(255,153,0,0.1)' : 'rgba(255,0,0,0.1)');
-        s.title = sp.title;
-        let innerText = sp.title;
+        const displayTitle = sp.title.trim() === '올귀'
+          ? '올리비아 귀국'
+          : (sp.title.trim() === '올출' ? '올리비아 출국' : sp.title);
+        s.title = displayTitle;
+        let innerText = displayTitle;
         if(isRest) innerText = '(휴방)';
-        else if(sp.title.includes('출국') || sp.title.includes('출장')) innerText = '(올출)';
-        else if(sp.title.includes('귀국') || sp.title.includes('입국')) innerText = '(올귀)';
+        else if(isDeparture) innerText = '(올출)';
+        else if(isReturn) innerText = '(올귀)';
 
-        s.innerHTML = `<span class="sp-icon">${icon}</span><span class="sp-abbr">${getAbbr(sp.title)}</span><span class="sp-inner-text" style="display:none; font-weight:800;">${innerText}</span><span class="sp-label">${escapeHtml(sp.title)}</span>`;
+        s.innerHTML = `<span class="sp-icon">${icon}</span><span class="sp-abbr">${getAbbr(displayTitle)}</span><span class="sp-inner-text" style="display:none; font-weight:800;">${innerText}</span><span class="sp-label">${escapeHtml(displayTitle)}</span>`;
         spWrap.appendChild(s);
       });
       headerWrap.appendChild(spWrap);

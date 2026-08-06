@@ -93,6 +93,7 @@ function getAbbr(title) {
   if (up.includes('월드컵') || up.includes('축구')) return '축구';
   if (up.includes('모험가') || up.includes('앨리엇')) return '앨리';
   if (up.includes('유로트럭')) return '트럭';
+  if (up.includes('디아블로')) return '디4';
   if (up.includes('토크') || up.includes('저챗')) return '저챗';
   if (up.includes('대회') || up.includes('컵') || up.includes('CUP')) return '대회';
   const clean = title.replace(/[\[\]\s]/g, '');
@@ -119,6 +120,10 @@ function parseTitle(en) {
     else if(explicitIcon === 'poke') { iconHtml = `<img src="assets/images/poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'chat') { iconHtml = `💬`; customIcon=true;}
     else if(explicitIcon === 'watch') { iconHtml = `<img src="assets/images/watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'truck') { iconHtml = `<img src="assets/images/truck_icon.svg" onerror="this.outerHTML='🚛'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'adventure') { iconHtml = `<img src="assets/images/adventure_icon.svg" onerror="this.outerHTML='🧭'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'football') { iconHtml = `⚽`; customIcon=true;}
+    else if(explicitIcon === 'diablo') { iconHtml = `<img src="assets/images/diablo_icon.svg" onerror="this.outerHTML='🔥'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
 
     // 아이콘을 직접 골랐을 때도 자동 모드처럼 제목을 보정한다 (키워드 제거 + 비면 기본값 채우기)
     const EXPLICIT_TITLE = {
@@ -129,7 +134,10 @@ function parseTitle(en) {
       mk:   {re:/(?:마리오\s*카트|마리오카트|마카)/i, def:'8 디럭스'},
       bb:   {re:/야구/g, def:'야구'},
       poke: {re:/(?:포켓몬스터|포켓몬)/i, def:'포켓몬'},
-      chat: {re:/(?:저챗|토크|Just\s*Chatting)/i, def:'저챗'}
+      chat: {re:/(?:저챗|토크|Just\s*Chatting)/i, def:'저챗'},
+      truck: {re:/(?:유로\s*트럭|유로트럭|Euro\s*Truck)/i, def:'유로트럭'},
+      football: {re:/(?:월드컵|축구)/i, def:'축구'},
+      diablo: {re:/(?:디아블로\s*4?|Diablo\s*IV?)/i, def:'디아블로 4'}
     };
     const et = EXPLICIT_TITLE[explicitIcon];
     if (et) {
@@ -161,16 +169,24 @@ function parseTitle(en) {
   let isChat = false;
   let isPoke = false;
   let isEr = false;
+  let isTruck = false;
+  let isAdventure = false;
+  let isFootball = false;
+  let isDiablo = false;
 
   const lolRegex = /(?:리그\s*오브\s*레전드|리그오브레전드|롤|LOL)/i;
   const lolKeepRegex = /(?:LEC|LCK)/i;
   const sc2Regex = /(?:스타크래프트\s*2|스타크래프트2|스타\s*2|스타2|스타\s*II|스타II|SC2)/i;
   const sc1Regex = /(?:스타크래프트\s*1|스타크래프트1|스타\s*1|스타1|스타크래프트|스타)/i;
   const mkRegex = /(?:마리오\s*카트|마리오카트|마카)/i;
-  const watchRegex = /(?:월드컵|올림픽)/i;
+  const watchRegex = /(?:같이\s*보기|입중계|시청|올림픽)/i;
   const chatRegex = /(?:저챗|토크|Just\s*Chatting)/i;
   const pokeRegex = /(?:포켓몬스터|포켓몬)/i;
   const erRegex = /(?:이터널\s*리턴|이리)/i;
+  const truckRegex = /(?:유로\s*트럭|유로트럭|Euro\s*Truck)/i;
+  const adventureRegex = /(?:모험가\s*앨리엇|앨리엇)/i;
+  const footballRegex = /(?:월드컵|축구)/i;
+  const diabloRegex = /(?:디아블로|Diablo)/i;
 
   if(lolRegex.test(displayTitle)) {
       isLol = true;
@@ -204,11 +220,15 @@ function parseTitle(en) {
           }
           displayTitle = rest;
       }
+  } else if(truckRegex.test(displayTitle)) {
+      isTruck = true;
   } else if(/야구|삼성/.test(displayTitle)) {
       isBaseball = true;
       let rest = displayTitle.replace(/야구/g, '').trim();
       rest = rest.replace(/^[-:,\s]+/, '');
       displayTitle = rest === '' ? '야구' : rest;
+  } else if(footballRegex.test(displayTitle)) {
+      isFootball = true;
   } else if(watchRegex.test(displayTitle)) {
       isWatch = true;
   } else if(chatRegex.test(displayTitle)) {
@@ -226,6 +246,10 @@ function parseTitle(en) {
       let rest = displayTitle.replace(erRegex, '').trim();
       rest = rest.replace(/^[-:,\s]+/, '');
       displayTitle = rest === '' ? '솔랭' : rest;
+  } else if(diabloRegex.test(displayTitle)) {
+      isDiablo = true;
+  } else if(adventureRegex.test(displayTitle)) {
+      isAdventure = true;
   }
 
   let iconHtml = getIcon(displayTitle);
@@ -258,6 +282,18 @@ function parseTitle(en) {
   } else if(isEr) {
       iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
+  } else if(isTruck) {
+      iconHtml = `<img src="assets/images/truck_icon.svg" onerror="this.outerHTML='🚛'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`;
+      customIcon = true;
+  } else if(isAdventure) {
+      iconHtml = `<img src="assets/images/adventure_icon.svg" onerror="this.outerHTML='🧭'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`;
+      customIcon = true;
+  } else if(isFootball) {
+      iconHtml = `⚽`;
+      customIcon = true;
+  } else if(isDiablo) {
+      iconHtml = `<img src="assets/images/diablo_icon.svg" onerror="this.outerHTML='🔥'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`;
+      customIcon = true;
   }
 
   return {
@@ -275,6 +311,10 @@ function getIcon(title){
   if(t.includes('롤')) return '⚔️';
   if(t.includes('같이보기')) return '📺';
   if(t.includes('야구')) return '⚾';
+  if(t.includes('유로트럭') || t.includes('유로 트럭')) return '🚛';
+  if(t.includes('월드컵') || t.includes('축구')) return '⚽';
+  if(t.includes('디아블로')) return '🔥';
+  if(t.includes('앨리엇')) return '🧭';
   const generalGames = ['유로트럭','앨리엇','포켓몬','제로 스페이스','스팀 데모','데모 RTS'];
   if(generalGames.some(k=>t.includes(k))) return '🎮';
   return '📌';
