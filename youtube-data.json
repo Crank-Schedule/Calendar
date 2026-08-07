@@ -495,6 +495,16 @@
         "t": "해설이 뭘 알아",
         "done": true
       }
+    },
+    "2026-08-08": {
+      "a_video": {
+        "t": "[RSL]이병렬vs김준호",
+        "done": false
+      },
+      "b_video": {
+        "t": "자날 3회차 - 12",
+        "done": false
+      }
     }
   },
   "sources": {
