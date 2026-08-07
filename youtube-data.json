@@ -485,11 +485,15 @@
     "2026-08-07": {
       "a_video": {
         "t": "[와디 서머 컵]변현우vs영야코브",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 - 11",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "해설이 뭘 알아",
+        "done": true
       }
     }
   },
