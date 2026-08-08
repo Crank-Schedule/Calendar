@@ -1342,12 +1342,25 @@ function manualReplayFromEntries(entries){
 
 let replayDateMapPromise = null;
 let chzzkThumbnailById = {};
+let chzzkLiveOpen = false;
+let chzzkLiveImageUrl = '';
 function attachKnownChzzkThumbnail(video){
   if(video?.isChzzk && video.chzzkId && !video.thumb){
     const thumb = chzzkThumbnailById[String(video.chzzkId)];
     if(thumb) return { ...video, thumb };
   }
   return video;
+}
+function liveLinkForToday(dateKey, fallback){
+  const now = new Date();
+  const todayKey = replayDateKey(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  if (!chzzkLiveOpen || dateKey !== todayKey) return fallback;
+  return {
+    url: `https://chzzk.naver.com/live/${CHZZK_CHANNEL_ID}`,
+    thumb: chzzkLiveImageUrl,
+    isChzzk: true,
+    source: 'live',
+  };
 }
 async function loadReplayDateMap(){
   if(replayDateMapPromise) return replayDateMapPromise;
@@ -1493,8 +1506,9 @@ async function renderCalendarMonth(){
     cellBody.appendChild(tagsWrap);
 
     const dStr = `${cellDate.getFullYear()}-${cellDate.getMonth()+1}-${cellDate.getDate()}`;
-    // 최종 우선순위: 수동 입력 > 날짜가 맞는 YouTube > 치지직
-    const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(entries) || videoDateMap[dStr]);
+    // 최종 우선순위: 수동 입력 > 오늘 라이브 스트리밍 > 날짜가 맞는 YouTube > 치지직
+    const manualReplay = manualReplayFromEntries(entries);
+    const vid = attachKnownChzzkThumbnail(manualReplay || liveLinkForToday(dStr, videoDateMap[dStr]));
     if (vid) {
         const ytCol = document.createElement('a');
         ytCol.className = 'cell-thumb-yt';
@@ -1503,7 +1517,7 @@ async function renderCalendarMonth(){
         if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
         ytCol.target = '_blank';
         ytCol.rel = 'noopener';
-        ytCol.title = vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기');
+        ytCol.title = vid.source === 'live' ? '치지직 라이브 스트리밍' : (vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기'));
         ytCol.setAttribute('aria-label', ytCol.title);
         ytCol.onclick = (e) => e.stopPropagation();
         
@@ -1894,8 +1908,9 @@ async function renderListMonth(){
 
     if (isPast) {
         const dStr = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
-        // 최종 우선순위: 수동 입력 > 날짜가 맞는 YouTube > 치지직
-        const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(entries) || videoDateMap[dStr]);
+        // 최종 우선순위: 수동 입력 > 오늘 라이브 스트리밍 > 날짜가 맞는 YouTube > 치지직
+        const manualReplay = manualReplayFromEntries(entries);
+        const vid = attachKnownChzzkThumbnail(manualReplay || liveLinkForToday(dStr, videoDateMap[dStr]));
         
         if (vid) {
             const ytCol = document.createElement('a');
@@ -1905,7 +1920,7 @@ async function renderListMonth(){
             if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
             ytCol.target = '_blank';
             ytCol.rel = 'noopener';
-            ytCol.title = vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기');
+            ytCol.title = vid.source === 'live' ? '치지직 라이브 스트리밍' : (vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기'));
             ytCol.setAttribute('aria-label', ytCol.title);
             ytCol.onclick = (e) => e.stopPropagation();
             
@@ -2182,12 +2197,17 @@ async function checkChzzkLive(){
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     const live = json && json.content;
+    const nextLiveOpen = live?.status === 'OPEN';
+    const nextLiveImage = nextLiveOpen ? String(live.liveImageUrl || '').replace('{type}', '480') : '';
+    const liveStateChanged = nextLiveOpen !== chzzkLiveOpen || nextLiveImage !== chzzkLiveImageUrl;
+    chzzkLiveOpen = nextLiveOpen;
+    chzzkLiveImageUrl = nextLiveImage;
     if(live && live.status === 'OPEN'){
       lbTitle.textContent = live.liveTitle || '방송 중';
       const liveCategory = String(live.liveCategoryValue || '').trim();
       lbMeta.textContent = liveCategory;
       lbMeta.hidden = !liveCategory;
-      lbThumb.src = (live.liveImageUrl || '').replace('{type}', '480');
+      lbThumb.src = chzzkLiveImageUrl;
       lbThumb.hidden = !lbThumb.src;
       liveBanner.classList.add('show');
       requestAnimationFrame(syncLiveBannerOffset);
@@ -2196,6 +2216,7 @@ async function checkChzzkLive(){
       lbThumb.hidden = true;
       syncLiveBannerOffset();
     }
+    if(liveStateChanged && typeof render === 'function') render().catch(()=>{});
   }catch(e){
     console.warn('치지직 라이브 상태를 확인하지 못했습니다.', e.message);
   }
@@ -2363,7 +2384,7 @@ render();
   // ===== PWA: 서비스 워커 등록 (오프라인 · 홈 화면 추가) =====
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js?v=20260801-1').catch(() => {});
+      navigator.serviceWorker.register('sw.js?v=20260808-2').catch(() => {});
     });
   }
 </script>
