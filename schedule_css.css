@@ -1034,4 +1034,34 @@ body.replay-page .video-card:hover {
     font-size: 14px !important;
     letter-spacing: -.04em !important;
   }
+
+  /* Keep the mobile calendar readable: flat cells, a distinct date strip,
+     and no decorative scanline texture competing with the schedule cards. */
+  body.schedule-page::after,
+  body.admin-page::after { display: none !important; }
+
+  #scheduleGridSection .weekdays {
+    background: #20242a !important;
+    border-color: #59616b !important;
+    border-radius: 10px 10px 0 0 !important;
+  }
+
+  #scheduleGridSection .grid {
+    background: #59616b !important;
+    border-color: #59616b !important;
+    border-radius: 0 0 10px 10px !important;
+  }
+
+  #scheduleGridSection .cell,
+  #scheduleGridSection .cell:not(.empty) {
+    background: #2d3137 !important;
+  }
+
+  #scheduleGridSection .cell > div:first-child {
+    background: #3b4048 !important;
+    border-bottom-color: #626a74 !important;
+  }
+
+  #scheduleGridSection .date-num { color: #d5d9df !important; }
+  #scheduleGridSection .cell.empty.adjacent-month { background: #24282d !important; }
 }
