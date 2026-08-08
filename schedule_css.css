@@ -760,10 +760,21 @@ body.replay-page .video-card:hover {
     align-items: center !important;
   }
 
+  /* The small LIVE SCHEDULE kicker is useful on desktop, but duplicates the
+     title on the Fold outer display. Keep one clear title line on mobile. */
+  body.schedule-page .header-left .brand {
+    display: none !important;
+  }
+
+  body.schedule-page .header-left {
+    min-height: 28px !important;
+  }
+
   body.schedule-page h1 {
     font-size: 21px !important;
     line-height: 1.1 !important;
     letter-spacing: .02em !important;
+    margin-top: 0 !important;
   }
 
   body.admin-page .header-left h1 {
