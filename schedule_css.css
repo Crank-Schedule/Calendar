@@ -703,20 +703,37 @@ body.replay-page .video-card:hover {
     gap: 6px !important;
   }
 
+  /* The Fold outer display has very little vertical room. Keep the status
+     line close to the header so the calendar starts as one balanced block. */
+  body.schedule-page .top-sticky,
+  body.admin-page .top-sticky {
+    margin-bottom: 6px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+
+  body.admin-page .admin-utility-bar {
+    box-sizing: border-box;
+    min-height: 20px !important;
+    height: 20px !important;
+    padding: 0 4px 2px !important;
+    margin: 0 !important;
+  }
+
   #scheduleGridSection .cell,
   #scheduleGridSection .cell:not(.empty) {
-    min-height: clamp(130px, 39vw, 180px) !important;
+    min-height: clamp(170px, 48vw, 230px) !important;
     padding: 5px 3px !important;
   }
 
   #scheduleGridSection .tag {
-    min-height: 36px !important;
-    padding: 6px 2px !important;
+    min-height: 44px !important;
+    padding: 8px 2px !important;
     border-left-width: 2px !important;
-    font-size: 11px !important;
+    font-size: 12px !important;
   }
 
-  #scheduleGridSection .cell-tags-col { gap: 4px !important; }
+  #scheduleGridSection .cell-tags-col { gap: 6px !important; }
   #scheduleGridSection .more { min-height: 20px; font-size: 8px !important; }
   #scheduleGridSection .date-num { font-size: 12px !important; }
 
