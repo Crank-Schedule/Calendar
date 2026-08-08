@@ -594,3 +594,133 @@ body.replay-page .video-card:hover {
   #scheduleGridSection .cell { min-height: clamp(62px, 18vw, 86px); }
   #scheduleGridSection .more { font-size: 7.5px !important; }
 }
+
+/* Mobile calendar: one connected table with readable schedule blocks. */
+@media (max-width: 1050px) {
+  body.schedule-page .top-sticky,
+  body.admin-page .top-sticky {
+    padding-bottom: 10px !important;
+  }
+
+  body.schedule-page .top-sticky .header,
+  body.admin-page .top-sticky .header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  body.schedule-page .header-left,
+  body.admin-page .header-left {
+    width: 100% !important;
+    max-width: none !important;
+    justify-content: space-between;
+  }
+
+  body.schedule-page .nav,
+  body.admin-page .nav {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 3px !important;
+  }
+
+  #scheduleGridSection .weekdays {
+    gap: 1px !important;
+    margin: 0 !important;
+    padding: 8px 4px 6px;
+    border: 1px solid color-mix(in srgb, var(--border-strong) 74%, transparent);
+    border-bottom: 0;
+    border-radius: 8px 8px 0 0 !important;
+    background: var(--bg-panel);
+  }
+
+  #scheduleGridSection .grid {
+    gap: 1px !important;
+    padding: 1px;
+    border: 1px solid color-mix(in srgb, var(--border-strong) 74%, transparent);
+    border-top: 0;
+    border-radius: 0 0 8px 8px !important;
+    background: color-mix(in srgb, var(--border-strong) 56%, var(--bg-main));
+    overflow: hidden;
+  }
+
+  #scheduleGridSection .cell,
+  #scheduleGridSection .cell:not(.empty) {
+    min-height: clamp(150px, 24vw, 210px) !important;
+    padding: 6px 5px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #scheduleGridSection .cell.empty.adjacent-month {
+    background: color-mix(in srgb, var(--bg-cell) 22%, transparent) !important;
+    opacity: .5;
+  }
+
+  #scheduleGridSection .cell.today {
+    box-shadow: inset 4px 0 0 var(--neon-cyan) !important;
+  }
+
+  #scheduleGridSection .cell-tags-col {
+    gap: 5px !important;
+    justify-content: flex-start !important;
+  }
+
+  #scheduleGridSection .tag {
+    min-height: 40px !important;
+    padding: 7px 5px !important;
+    border-left-width: 3px !important;
+    border-radius: 3px !important;
+    background: color-mix(in srgb, var(--tag-color) 30%, var(--bg-cell)) !important;
+    justify-content: flex-start !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+  }
+
+  #scheduleGridSection .tag .tag-abbr {
+    font-size: 1em !important;
+    text-shadow: none !important;
+  }
+
+  #scheduleGridSection .more {
+    min-height: 22px;
+    padding: 3px 6px !important;
+    background: color-mix(in srgb, var(--bg-panel) 78%, transparent);
+    font-size: 9px !important;
+  }
+
+  #scheduleGridSection .cell-thumb-yt {
+    display: none !important;
+  }
+
+  #scheduleGridSection .date-num { font-size: 14px !important; }
+}
+
+@media (max-width: 560px) {
+  body.schedule-page .top-sticky .header,
+  body.admin-page .top-sticky .header {
+    gap: 6px !important;
+  }
+
+  #scheduleGridSection .cell,
+  #scheduleGridSection .cell:not(.empty) {
+    min-height: clamp(130px, 39vw, 180px) !important;
+    padding: 5px 3px !important;
+  }
+
+  #scheduleGridSection .tag {
+    min-height: 36px !important;
+    padding: 6px 2px !important;
+    border-left-width: 2px !important;
+    font-size: 11px !important;
+  }
+
+  #scheduleGridSection .cell-tags-col { gap: 4px !important; }
+  #scheduleGridSection .more { min-height: 20px; font-size: 8px !important; }
+  #scheduleGridSection .date-num { font-size: 12px !important; }
+
+  body.schedule-page h1 .h1-full { display: inline !important; }
+  body.schedule-page h1 .h1-short { display: none !important; }
+  body.schedule-page h1 { font-size: 16px !important; white-space: nowrap; }
+}
