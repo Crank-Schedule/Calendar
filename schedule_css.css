@@ -817,13 +817,31 @@ body.replay-page .video-card:hover {
 
   #scheduleGridSection .cell,
   #scheduleGridSection .cell:not(.empty) {
-    min-height: clamp(184px, 48vw, 224px) !important;
-    padding: 6px 3px !important;
+    /* Match the reference calendar's compact, content-led week rows. */
+    min-height: clamp(140px, 36vw, 158px) !important;
+    padding: 3px 2px !important;
     background: color-mix(in srgb, var(--bg-cell) 88%, #fff 12%) !important;
   }
 
   #scheduleGridSection .cell.empty.adjacent-month {
     background: color-mix(in srgb, var(--bg-cell) 52%, var(--bg-main)) !important;
+  }
+
+  /* Give every day the same compact date strip as the reference calendar. */
+  #scheduleGridSection .cell > div:first-child {
+    flex: 0 0 27px !important;
+    width: 100% !important;
+    min-height: 27px !important;
+    box-sizing: border-box !important;
+    margin: -3px -2px 0 !important;
+    padding: 3px 4px !important;
+    background: color-mix(in srgb, var(--bg-cell-hover) 58%, var(--bg-cell)) !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent) !important;
+  }
+
+  #scheduleGridSection .cell > .cell-body {
+    width: 100% !important;
+    min-height: 0 !important;
   }
 
   #scheduleGridSection .date-num {
@@ -834,13 +852,14 @@ body.replay-page .video-card:hover {
   }
 
   #scheduleGridSection .cell-tags-col {
-    gap: 6px !important;
-    padding-top: 3px !important;
+    gap: 3px !important;
+    padding-top: 2px !important;
   }
 
   #scheduleGridSection .tag {
-    min-height: 52px !important;
-    padding: 5px 2px !important;
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    padding: 3px 2px !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
@@ -853,30 +872,49 @@ body.replay-page .video-card:hover {
   #scheduleGridSection .tag .tag-icon {
     display: block !important;
     width: 100% !important;
-    height: 15px !important;
+    height: 12px !important;
     margin: 0 !important;
     text-align: center !important;
-    flex: 0 0 15px !important;
+    flex: 0 0 12px !important;
   }
 
   #scheduleGridSection .tag .tag-icon img {
-    width: 14px !important;
-    height: 14px !important;
+    width: 11px !important;
+    height: 11px !important;
     margin: 0 !important;
     vertical-align: top !important;
   }
 
+  #scheduleGridSection .tag .t-time {
+    display: block !important;
+    width: 100% !important;
+    min-height: 9px !important;
+    margin: 0 !important;
+    font-size: 8px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    opacity: .78 !important;
+    order: 0 !important;
+  }
+
+  #scheduleGridSection .tag .tag-icon { order: 1 !important; }
+  #scheduleGridSection .tag .tag-abbr { order: 2 !important; }
+
   #scheduleGridSection .tag .tag-abbr {
     display: -webkit-box !important;
+    flex: 0 0 auto !important;
+    min-height: 11px !important;
     width: 100% !important;
     max-width: 100% !important;
-    max-height: 2.25em !important;
+    max-height: 2.35em !important;
     overflow: hidden !important;
     white-space: normal !important;
     text-overflow: clip !important;
     overflow-wrap: anywhere !important;
-    word-break: break-all !important;
-    line-height: 1.1 !important;
+    word-break: keep-all !important;
+    font-size: 10px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -.02em !important;
     text-align: center !important;
     -webkit-box-orient: vertical !important;
     -webkit-line-clamp: 2 !important;
