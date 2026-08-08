@@ -768,13 +768,18 @@ body.replay-page .video-card:hover {
 
   body.schedule-page .header-left {
     min-height: 28px !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
   }
 
   body.schedule-page h1 {
-    font-size: 21px !important;
+    width: auto !important;
+    font-size: 18px !important;
     line-height: 1.1 !important;
     letter-spacing: .02em !important;
     margin-top: 0 !important;
+    text-align: right !important;
   }
 
   body.admin-page .header-left h1 {
@@ -873,6 +878,7 @@ body.replay-page .video-card:hover {
     padding: 3px 2px !important;
     border: 1px solid color-mix(in srgb, var(--tag-color) 72%, transparent) !important;
     border-left-width: 3px !important;
+    border-radius: 4px !important;
     background: color-mix(in srgb, var(--tag-color) 44%, var(--bg-cell-hover)) !important;
     flex-direction: column !important;
     align-items: center !important;
