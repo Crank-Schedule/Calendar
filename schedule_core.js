@@ -94,6 +94,15 @@ function getAbbr(title) {
   if (up.includes('모험가') || up.includes('앨리엇')) return '앨리';
   if (up.includes('유로트럭')) return '트럭';
   if (up.includes('디아블로')) return '디4';
+  if (up.includes('WARDI')) return 'Wardi';
+  if (up.includes('PIGFEST') || up.includes('PIG FEST')) return 'PiG';
+  if (up.includes('RSL')) return 'RSL';
+  if (up.includes('GSL')) return 'GSL';
+  if (up.includes('자날')) return '자날';
+  if (up.includes('군심')) return '군심';
+  if (up.includes('에오엠') || up.includes('AGE OF EMPIRES') || up.includes('AOE')) return '에오엠';
+  if (up.includes('제로 스페이스') || up.includes('ZEROSPACE')) return '제로';
+  if (up.includes('치지직')) return '치지직';
   if (up.includes('토크') || up.includes('저챗')) return '저챗';
   if (up.includes('대회') || up.includes('컵') || up.includes('CUP')) return '대회';
   const clean = title.replace(/[\[\]\s]/g, '');

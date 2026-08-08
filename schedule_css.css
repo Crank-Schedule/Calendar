@@ -321,3 +321,92 @@
   .cell-thumb-yt .yt-play-icon { width: 24px; height: 24px; }
   .cell-thumb-yt .yt-play-icon::after { border-width: 5px 0 5px 7px; }
 }
+
+/* 폴드·태블릿의 좁은 폭에서는 달력을 '상세 목록'이 아니라 한눈에 보는 월간 개요로 만듭니다.
+   긴 제목은 날짜를 눌렀을 때만 표시하고, 칸 안에는 게임 아이콘·축약명·색상만 남깁니다. */
+@media (max-width: 1050px) {
+  body { padding-left: 10px; padding-right: 10px; }
+  .wrap { padding-left: 8px; padding-right: 8px; }
+  .top-sticky { padding-top: 6px !important; padding-bottom: 8px !important; }
+  .header { align-items: center !important; gap: 6px !important; padding: 4px 0 8px !important; }
+  .header-left { max-width: 42%; }
+  .brand-text { font-size: 10px !important; letter-spacing: .05em !important; }
+  h1 { font-size: clamp(18px, 3vw, 23px) !important; line-height: 1.1 !important; }
+  .nav { gap: 2px !important; }
+  .month-label { margin: 0 2px !important; font-size: clamp(14px, 2.2vw, 18px) !important; }
+  .nav .today-btn { padding: 0 7px !important; }
+  .video-cards { display: none !important; }
+
+  #scheduleGridSection { min-width: 0; }
+  #scheduleGridSection .weekdays { gap: 3px; margin-bottom: 3px; }
+  #scheduleGridSection .weekdays div { font-size: 9px; padding-bottom: 2px; letter-spacing: .02em; }
+  #scheduleGridSection .grid { gap: 3px; flex: none !important; align-content: start; }
+  #scheduleGridSection .cell {
+    min-height: clamp(74px, 14.5vw, 118px);
+    padding: 4px;
+    gap: 3px;
+    border-radius: 4px;
+  }
+  #scheduleGridSection .cell-body { display: block; flex: 1; min-height: 0; }
+  #scheduleGridSection .cell-tags-col { height: 100%; gap: 3px; justify-content: flex-start; padding-top: 1px; }
+  #scheduleGridSection .tag {
+    min-height: 20px;
+    padding: 2px 3px;
+    gap: 2px;
+    justify-content: center;
+    font-size: 10px;
+    line-height: 1;
+    background: color-mix(in srgb, var(--tag-color) 18%, transparent) !important;
+  }
+  #scheduleGridSection .tag .title-wrap,
+  #scheduleGridSection .tag .t-time,
+  #scheduleGridSection .tag a { display: none !important; }
+  #scheduleGridSection .tag-abbr {
+    display: inline-block !important;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: 'Paperozi', sans-serif;
+    font-weight: 800;
+    letter-spacing: -.03em;
+  }
+  #scheduleGridSection .tag-icon { display: none !important; }
+  #scheduleGridSection .tag.tag-custom-icon .tag-icon {
+    display: inline-flex !important;
+    align-items: center;
+    flex: 0 0 auto;
+    margin: 0 !important;
+  }
+  #scheduleGridSection .tag.tag-custom-icon .tag-icon img {
+    width: 11px !important;
+    height: 11px !important;
+    margin: 0 !important;
+  }
+  #scheduleGridSection .tag.tag-custom-icon .tag-abbr { display: inline-block !important; }
+  #scheduleGridSection .more { padding: 0; text-align: center; font-size: 8px; }
+  #scheduleGridSection .date-num { font-size: 12px; }
+}
+
+@media (max-width: 560px) {
+  body { padding-left: 6px; padding-right: 6px; }
+  .wrap { padding-left: 4px; padding-right: 4px; }
+  .header-left { max-width: 34%; }
+  .brand-text { font-size: 8.5px !important; }
+  h1 { font-size: 16px !important; }
+  .nav button, #themeToggleBtn { width: 27px !important; height: 27px !important; font-size: 12px !important; }
+  .view-toggle { height: 27px !important; }
+  .view-toggle button { padding: 0 5px !important; }
+  .nav .today-btn { height: 27px !important; padding: 0 5px !important; font-size: 10px !important; }
+  .month-label { font-size: 13px !important; }
+  #scheduleGridSection .weekdays { gap: 2px; }
+  #scheduleGridSection .weekdays div { font-size: 8px; }
+  #scheduleGridSection .grid { gap: 2px; }
+  #scheduleGridSection .cell { min-height: clamp(58px, 18vw, 82px); padding: 2px; gap: 2px; }
+  #scheduleGridSection .cell-tags-col { gap: 2px; }
+  #scheduleGridSection .tag { min-height: 18px; padding: 2px 1px; font-size: 8.5px; }
+  #scheduleGridSection .tag.tag-custom-icon .tag-icon img { width: 9px !important; height: 9px !important; }
+  #scheduleGridSection .date-num { font-size: 10px; }
+  #scheduleGridSection .special-badge.badge-circle { min-width: 26px !important; height: 16px !important; }
+  #scheduleGridSection .special-badge.badge-circle .sp-abbr { font-size: 8px !important; }
+}
