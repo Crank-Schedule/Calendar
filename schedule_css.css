@@ -860,6 +860,9 @@ body.replay-page .video-card:hover {
     flex: 1 1 0 !important;
     min-height: 0 !important;
     padding: 3px 2px !important;
+    border: 1px solid color-mix(in srgb, var(--tag-color) 72%, transparent) !important;
+    border-left-width: 3px !important;
+    background: color-mix(in srgb, var(--tag-color) 44%, var(--bg-cell-hover)) !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
@@ -894,6 +897,8 @@ body.replay-page .video-card:hover {
     line-height: 1 !important;
     text-align: center !important;
     opacity: .78 !important;
+    color: #f3f5fa !important;
+    font-weight: 800 !important;
     order: 0 !important;
   }
 
@@ -916,6 +921,9 @@ body.replay-page .video-card:hover {
     line-height: 1.15 !important;
     letter-spacing: -.02em !important;
     text-align: center !important;
+    color: #f7f8fc !important;
+    font-weight: 900 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,.46) !important;
     -webkit-box-orient: vertical !important;
     -webkit-line-clamp: 2 !important;
   }

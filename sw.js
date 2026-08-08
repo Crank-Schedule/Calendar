@@ -6,7 +6,7 @@ const CACHE = 'crank-schedule-v9';
 const APP_SHELL = [
   './crank_schedule.html',
   './replay.html',
-  './schedule_css.css?v=20260808-13',
+  './schedule_css.css?v=20260808-14',
   './schedule_core.js?v=20260808-1',
   './manifest.json',
   './assets/images/favicon.jpg',
