@@ -822,8 +822,8 @@ body.replay-page .video-card:hover {
   body.schedule-page .view-toggle { width: 30px !important; gap: 0 !important; }
 
   body.schedule-page .nav button {
-    width: 30px !important;
-    min-width: 30px !important;
+    width: 28px !important;
+    min-width: 28px !important;
     height: 30px !important;
     min-height: 30px !important;
     font-size: 13px !important;
@@ -1010,12 +1010,26 @@ body.replay-page .video-card:hover {
   }
 
   body.schedule-page .view-toggle {
-    width: 30px !important;
+    width: 28px !important;
     gap: 0 !important;
   }
 
+  body.schedule-page .nav {
+    gap: 1px !important;
+  }
+
+  body.schedule-page .month-label {
+    width: 28px !important;
+    min-width: 28px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    font-size: 15px !important;
+  }
+
   body.schedule-page .header-left h1 {
-    font-size: 13px !important;
-    letter-spacing: -.02em !important;
+    width: 140px !important;
+    max-width: 140px !important;
+    font-size: 15px !important;
+    letter-spacing: -.04em !important;
   }
 }
