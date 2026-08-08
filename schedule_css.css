@@ -410,3 +410,187 @@
   #scheduleGridSection .special-badge.badge-circle { min-width: 26px !important; height: 16px !important; }
   #scheduleGridSection .special-badge.badge-circle .sp-abbr { font-size: 8px !important; }
 }
+
+/* 2026-08 visual refinement: the calendar is an overview, not a stack of cards.
+   Keep category colour, but let spacing and hierarchy do most of the work. */
+body.schedule-page.view-calendar .video-cards {
+  display: none !important;
+}
+
+@media (min-width: 1051px) {
+  body.schedule-page.view-list .video-cards {
+    display: flex;
+    gap: 6px;
+    max-width: 780px;
+    margin: 4px 0 0 auto;
+  }
+
+  body.schedule-page.view-list .video-card {
+    flex: 1 1 0;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    align-items: stretch;
+    border-radius: 5px;
+  }
+
+  body.schedule-page.view-list .video-card .vc-thumb {
+    width: 72px;
+    height: 48px;
+    aspect-ratio: auto;
+  }
+
+  body.schedule-page.view-list .video-card .vc-title {
+    display: -webkit-box;
+    padding: 5px 7px;
+    overflow: hidden;
+    text-align: left;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-height: 1.3;
+    font-size: 10px;
+  }
+}
+
+#scheduleGridSection .weekdays {
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+#scheduleGridSection .cell:not(.empty) {
+  background: color-mix(in srgb, var(--bg-cell) 94%, transparent) !important;
+  border-color: color-mix(in srgb, var(--border) 72%, transparent) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+#scheduleGridSection .cell.empty.adjacent-month {
+  display: flex;
+  background: color-mix(in srgb, var(--bg-cell) 48%, transparent) !important;
+  border-color: color-mix(in srgb, var(--border) 38%, transparent) !important;
+  opacity: .55;
+}
+
+#scheduleGridSection .cell.empty.adjacent-month .date-num {
+  color: var(--text-dim);
+}
+
+#scheduleGridSection .cell:not(.empty):hover {
+  transform: none !important;
+  background: var(--bg-cell-hover) !important;
+  border-color: var(--border-strong) !important;
+}
+
+#scheduleGridSection .cell.today {
+  border-color: color-mix(in srgb, var(--neon-cyan) 75%, var(--border)) !important;
+  box-shadow: inset 3px 0 0 var(--neon-cyan) !important;
+}
+
+#scheduleGridSection .cell.is-rest {
+  background: color-mix(in srgb, var(--neon-cyan) 9%, var(--bg-cell)) !important;
+}
+
+#scheduleGridSection .cell.is-trip {
+  background: color-mix(in srgb, var(--neon-amber) 8%, var(--bg-cell)) !important;
+}
+
+#scheduleGridSection .tag {
+  border: 1px solid transparent !important;
+  border-left: 3px solid var(--tag-color) !important;
+  border-radius: 4px !important;
+  background: color-mix(in srgb, var(--tag-color) 12%, transparent) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+}
+
+#scheduleGridSection .tag:hover {
+  background: color-mix(in srgb, var(--tag-color) 20%, transparent) !important;
+}
+
+#scheduleGridSection .special-badge {
+  box-shadow: none !important;
+}
+
+#scheduleGridSection .more {
+  align-self: flex-start;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--bg-panel);
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+body.schedule-page.view-calendar .cell-thumb-yt {
+  border-color: color-mix(in srgb, var(--border-strong) 80%, transparent);
+  box-shadow: none;
+  opacity: .9;
+}
+
+body.schedule-page #scheduleListSection .timeline-item,
+body.admin-page #scheduleListSection .timeline-item {
+  padding: 10px 8px;
+  border-bottom-color: color-mix(in srgb, var(--border) 72%, transparent);
+}
+
+body.schedule-page #scheduleListSection .timeline-item:hover,
+body.admin-page #scheduleListSection .timeline-item:hover {
+  background: color-mix(in srgb, var(--bg-cell-hover) 50%, transparent);
+}
+
+body.schedule-page #scheduleListSection .timeline-item.is-today,
+body.admin-page #scheduleListSection .timeline-item.is-today {
+  border: 1px solid var(--neon-magenta) !important;
+  border-left-width: 3px !important;
+  box-shadow: none !important;
+  padding: 11px 8px !important;
+}
+
+body.schedule-page #scheduleListSection .timeline-yt,
+body.admin-page #scheduleListSection .timeline-yt {
+  border-width: 1px;
+  border-radius: 6px;
+}
+
+body.replay-page .top-sticky {
+  padding: 14px 0 8px !important;
+  border-bottom-color: color-mix(in srgb, var(--border-strong) 72%, transparent);
+}
+
+body.replay-page .quicklinks {
+  gap: 6px;
+}
+
+body.replay-page .video-card {
+  border-color: color-mix(in srgb, var(--border) 76%, transparent);
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+body.replay-page .video-card:hover {
+  background: var(--bg-cell-hover);
+  border-color: var(--neon-cyan);
+}
+
+@media (max-width: 1050px) {
+  #scheduleGridSection .weekdays { gap: 4px; margin-bottom: 4px; }
+  #scheduleGridSection .grid { gap: 4px; }
+  #scheduleGridSection .cell {
+    min-height: clamp(78px, 15vw, 120px);
+    border-radius: 5px !important;
+  }
+  #scheduleGridSection .tag {
+    border-left-width: 2px !important;
+    background: color-mix(in srgb, var(--tag-color) 14%, transparent) !important;
+  }
+  #scheduleGridSection .more { padding: 1px 4px !important; }
+  body.replay-page .top-sticky { padding-top: 8px !important; }
+}
+
+@media (max-width: 560px) {
+  #scheduleGridSection .weekdays,
+  #scheduleGridSection .grid { gap: 3px; }
+  #scheduleGridSection .cell { min-height: clamp(62px, 18vw, 86px); }
+  #scheduleGridSection .more { font-size: 7.5px !important; }
+}

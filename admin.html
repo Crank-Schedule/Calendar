@@ -980,9 +980,9 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script>
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20260808-1">
+  <link rel="stylesheet" href="schedule_css.css?v=20260808-3">
 </head>
-<body>
+<body class="admin-page">
 <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
   <img id="lbThumb" alt="" hidden>
   <span class="lb-badge"><span class="lb-dot"></span>LIVE</span>
@@ -1048,7 +1048,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     <div class="grid" id="grid"></div>
     <div class="agenda" id="agenda"></div>
   </div>
-  <div id="scheduleListSection" style="max-width: 1000px; margin: 0 auto; padding-bottom:100px;">
+  <div id="scheduleListSection" style="width:100%; max-width:1280px; margin:0 auto; padding-bottom:100px; box-sizing:border-box;">
     <div class="list-tools">
       <button class="empty-filter-btn" id="emptyFilterBtn" type="button" aria-pressed="false">빈 날짜 숨기기</button>
     </div>
@@ -1963,7 +1963,11 @@ async function renderCalendarMonth(){
 
   for(let i=0;i<startOffset;i++){
     const c = document.createElement('div');
-    c.className='cell empty';
+    c.className='cell empty adjacent-month';
+    const num = document.createElement('div');
+    num.className = 'date-num';
+    num.textContent = new Date(current.getFullYear(), current.getMonth(), 0).getDate() - startOffset + i + 1;
+    c.appendChild(num);
     if(grid) grid.appendChild(c);
   }
   for(let day=1; day<=daysInMonth; day++){
@@ -2039,16 +2043,18 @@ async function renderCalendarMonth(){
     
     const tagsWrap = document.createElement('div');
     tagsWrap.className='tags cell-tags-col';
-    tagsWrap.classList.add('items-' + Math.min(regulars.length, 4));
+    const calendarTagLimit = window.innerWidth < 1600 ? 2 : 3;
+    tagsWrap.classList.add('items-' + Math.min(regulars.length, calendarTagLimit));
     // __day, __idx 주입 (드래그 용)
-    regulars.slice(0,4).forEach((en, i) => {
+    regulars.slice(0, calendarTagLimit).forEach((en, i) => {
       en.__day = day;
       en.__idx = entries.indexOf(en);
       tagsWrap.appendChild(buildTagEl(en));
     });
-    if(regulars.length>4){
+    if(regulars.length > calendarTagLimit){
       const more = document.createElement('div');
-      more.className='more'; more.textContent='+'+(regulars.length-4)+'개';
+      more.className='more'; more.textContent='+'+(regulars.length-calendarTagLimit)+'개';
+      more.title = '날짜를 누르면 전체 일정을 볼 수 있습니다';
       tagsWrap.appendChild(more);
     }
     cellBody.appendChild(tagsWrap);
@@ -2142,6 +2148,17 @@ async function renderCalendarMonth(){
       if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); openModal(cellDate); }
     });
     if(agenda) agenda.appendChild(row);
+  }
+
+  const trailingCount = (7 - ((startOffset + daysInMonth) % 7)) % 7;
+  for(let i=1; i<=trailingCount; i++){
+    const c = document.createElement('div');
+    c.className='cell empty adjacent-month';
+    const num = document.createElement('div');
+    num.className = 'date-num';
+    num.textContent = i;
+    c.appendChild(num);
+    if(grid) grid.appendChild(c);
   }
 
   // 그리드 드래그 앤 드롭 초기화
@@ -2340,6 +2357,8 @@ async function render(){
 
   if(monthBtn) monthBtn.classList.toggle('active', currentView === 'calendar');
   if(weekBtn) weekBtn.classList.toggle('active', currentView === 'list');
+  document.body.classList.toggle('view-calendar', currentView === 'calendar');
+  document.body.classList.toggle('view-list', currentView === 'list');
 
   if (currentView === 'calendar') {
     if(gridSec) gridSec.style.display = 'block';
