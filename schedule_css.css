@@ -5,6 +5,7 @@
     top: var(--live-banner-height, 0px) !important;
 }
 
+
 /* 상단 레이아웃을 차지하지 않는 연간 일정 검색 팝업 */
 .schedule-search-backdrop {
     position: fixed;
@@ -264,6 +265,7 @@
     object-position: center;
   }
 }
+
 
 /* 다시보기 출처를 눈으로 확인할 수 있게 해 우선순위 오동작을 빠르게 발견합니다. */
 .cell-thumb-yt::before,
@@ -782,6 +784,57 @@ body.replay-page .video-card:hover {
     text-align: right !important;
   }
 
+  /* Keep the Fold header on one line: compact controls on the left, title
+     tucked into the available right-hand space. */
+  body.schedule-page .top-sticky .header {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding-top: 4px !important;
+    padding-bottom: 8px !important;
+  }
+
+  body.schedule-page .header-left {
+    order: 2 !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    min-height: 28px !important;
+  }
+
+  body.schedule-page .header-left h1 {
+    width: 120px !important;
+    max-width: 120px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 14px !important;
+  }
+
+  body.schedule-page .nav {
+    order: 1 !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    justify-content: flex-start !important;
+    gap: 2px !important;
+  }
+
+  body.schedule-page #weekViewBtn { display: none !important; }
+  body.schedule-page .view-toggle { width: 30px !important; gap: 0 !important; }
+
+  body.schedule-page .nav button {
+    width: 30px !important;
+    min-width: 30px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    font-size: 13px !important;
+  }
+
+  body.schedule-page .month-label {
+    min-width: 30px !important;
+    width: 30px !important;
+    font-size: 16px !important;
+  }
+
   body.admin-page .header-left h1 {
     font-size: 20px !important;
     line-height: 1.1 !important;
@@ -943,5 +996,26 @@ body.replay-page .video-card:hover {
     text-shadow: 0 1px 2px rgba(0,0,0,.46) !important;
     -webkit-box-orient: vertical !important;
     -webkit-line-clamp: 2 !important;
+  }
+}
+
+/* Final mobile header sizing wins over the shared navigation defaults. */
+@media (max-width: 560px) {
+  body.schedule-page .nav button {
+    width: 30px !important;
+    min-width: 30px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    font-size: 13px !important;
+  }
+
+  body.schedule-page .view-toggle {
+    width: 30px !important;
+    gap: 0 !important;
+  }
+
+  body.schedule-page .header-left h1 {
+    font-size: 13px !important;
+    letter-spacing: -.02em !important;
   }
 }
