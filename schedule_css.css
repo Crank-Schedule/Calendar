@@ -1259,3 +1259,93 @@ body.replay-page .video-card:hover {
     gap: 3px !important;
   }
 }
+
+/* Readability pass: use a neutral UI font and softer table chrome.  The
+   display font remains on the page title, while dates and schedule pills use
+   the font that is easiest to scan in narrow Korean cells. */
+@media (max-width: 560px) {
+  #scheduleGridSection,
+  #scheduleGridSection * {
+    font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif !important;
+  }
+
+  #scheduleGridSection .weekdays {
+    border-color: #505861 !important;
+    background: #1a1d21 !important;
+  }
+
+  #scheduleGridSection .weekdays div {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: #e0e5eb !important;
+  }
+
+  #scheduleGridSection .grid {
+    gap: 1px !important;
+    padding: 1px !important;
+    border-color: #505861 !important;
+    background: #505861 !important;
+  }
+
+  #scheduleGridSection .cell,
+  #scheduleGridSection .cell:not(.empty) {
+    background: #252a30 !important;
+  }
+
+  #scheduleGridSection .cell > div:first-child {
+    min-height: 24px !important;
+    flex-basis: 24px !important;
+    padding: 4px 4px 3px !important;
+    background: #30363d !important;
+    border-bottom-color: #454c55 !important;
+  }
+
+  #scheduleGridSection .date-num {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #e7ebf0 !important;
+    letter-spacing: 0 !important;
+  }
+
+  #scheduleGridSection .cell-body { padding: 4px 3px !important; }
+  #scheduleGridSection .cell-tags-col { gap: 4px !important; }
+
+  #scheduleGridSection .tag {
+    min-height: 28px !important;
+    padding: 4px 3px !important;
+    border-left-width: 3px !important;
+    border-radius: 5px !important;
+    background: color-mix(in srgb, var(--tag-color) 46%, #252a30) !important;
+    justify-content: center !important;
+    gap: 2px !important;
+  }
+
+  #scheduleGridSection .tag .tag-icon {
+    flex-basis: 11px !important;
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  #scheduleGridSection .tag .tag-icon img {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  #scheduleGridSection .tag .tag-abbr {
+    flex: 0 1 auto !important;
+    width: auto !important;
+    max-width: calc(100% - 13px) !important;
+    font-size: 9px !important;
+    line-height: 1.15 !important;
+    font-weight: 700 !important;
+    letter-spacing: -.03em !important;
+    text-align: center !important;
+    color: #ffffff !important;
+  }
+
+  #scheduleGridSection .special-badge .sp-abbr,
+  #scheduleGridSection .more {
+    font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif !important;
+    font-weight: 700 !important;
+  }
+}
