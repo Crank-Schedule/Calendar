@@ -741,3 +741,144 @@ body.replay-page .video-card:hover {
   body.schedule-page h1 .h1-short { display: none !important; }
   body.schedule-page h1 { font-size: 16px !important; white-space: nowrap; }
 }
+
+/* Fold outer display: prioritize legibility over squeezing every field into
+   one horizontal line. The seven-column calendar remains intact, but each
+   event becomes a small vertical card so its icon and abbreviation stay
+   readable inside a 45–55px day cell. */
+@media (max-width: 560px) {
+  body.schedule-page .top-sticky .header,
+  body.admin-page .top-sticky .header {
+    gap: 12px !important;
+    padding-top: 9px !important;
+    padding-bottom: 12px !important;
+  }
+
+  body.schedule-page .header-left,
+  body.admin-page .header-left {
+    min-height: 36px !important;
+    align-items: center !important;
+  }
+
+  body.schedule-page h1 {
+    font-size: 21px !important;
+    line-height: 1.1 !important;
+    letter-spacing: .02em !important;
+  }
+
+  body.admin-page .header-left h1 {
+    font-size: 20px !important;
+    line-height: 1.1 !important;
+  }
+
+  body.schedule-page .nav,
+  body.admin-page .nav {
+    gap: 4px !important;
+    justify-content: center !important;
+  }
+
+  body.schedule-page .nav button,
+  body.admin-page .nav button {
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+  }
+
+  body.schedule-page .nav .today-btn,
+  body.admin-page .nav .today-btn {
+    font-size: 12px !important;
+  }
+
+  body.schedule-page .month-label,
+  body.admin-page .month-label {
+    min-width: 34px !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+  }
+
+  #scheduleGridSection .weekdays {
+    padding: 9px 4px 7px !important;
+  }
+
+  #scheduleGridSection .weekdays div {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #b9bdc8 !important;
+    letter-spacing: 0 !important;
+  }
+
+  #scheduleGridSection .weekdays div:first-child { color: #ff6868 !important; }
+  #scheduleGridSection .weekdays div:last-child { color: #62f4f4 !important; }
+
+  #scheduleGridSection .cell,
+  #scheduleGridSection .cell:not(.empty) {
+    min-height: clamp(184px, 48vw, 224px) !important;
+    padding: 6px 3px !important;
+    background: color-mix(in srgb, var(--bg-cell) 88%, #fff 12%) !important;
+  }
+
+  #scheduleGridSection .cell.empty.adjacent-month {
+    background: color-mix(in srgb, var(--bg-cell) 52%, var(--bg-main)) !important;
+  }
+
+  #scheduleGridSection .date-num {
+    font-size: 14px !important;
+    line-height: 1 !important;
+    color: #b5b9c4 !important;
+    font-weight: 700 !important;
+  }
+
+  #scheduleGridSection .cell-tags-col {
+    gap: 6px !important;
+    padding-top: 3px !important;
+  }
+
+  #scheduleGridSection .tag {
+    min-height: 52px !important;
+    padding: 5px 2px !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    overflow: hidden !important;
+    white-space: normal !important;
+    text-align: center !important;
+  }
+
+  #scheduleGridSection .tag .tag-icon {
+    display: block !important;
+    width: 100% !important;
+    height: 15px !important;
+    margin: 0 !important;
+    text-align: center !important;
+    flex: 0 0 15px !important;
+  }
+
+  #scheduleGridSection .tag .tag-icon img {
+    width: 14px !important;
+    height: 14px !important;
+    margin: 0 !important;
+    vertical-align: top !important;
+  }
+
+  #scheduleGridSection .tag .tag-abbr {
+    display: -webkit-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 2.25em !important;
+    overflow: hidden !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+    line-height: 1.1 !important;
+    text-align: center !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+  }
+}
