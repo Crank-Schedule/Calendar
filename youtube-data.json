@@ -513,11 +513,11 @@
     "2026-08-09": {
       "a_video": {
         "t": "[RSL]클렘vs세랄",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "-75-",
-        "done": false
+        "done": true
       }
     }
   },
