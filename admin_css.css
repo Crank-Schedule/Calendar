@@ -858,3 +858,410 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     white-space: nowrap !important; /* 4 items -> single line */
     text-overflow: ellipsis;
 }
+
+/* --------------------------------------------------------------------------
+   Admin skin
+   Keep the editor's existing markup and save flow, but make its controls use
+   the same rounded pastel calendar language as the public schedule.
+   -------------------------------------------------------------------------- */
+:root[data-theme='light'] {
+  --bg-main: #f7f5fb;
+  --bg-panel: #ffffff;
+  --bg-panel-solid: #ffffff;
+  --bg-cell: #ffffff;
+  --bg-cell-hover: #f3effc;
+  --text-primary: #3d3650;
+  --text-main: #3d3650;
+  --text-dim: #817895;
+  --border: #e7e0f2;
+  --border-strong: #cfc4e5;
+  --neon-cyan: #7867d8;
+  --neon-magenta: #cc78a0;
+  --neon-amber: #d39a52;
+  --neon-lime: #65a88a;
+  --neon-violet: #8a73c9;
+  --neon-red: #d66c89;
+  --bg-body: #f7f5fb;
+}
+
+:root:not([data-theme='light']) {
+  --bg-main: #17151d;
+  --bg-panel: #23202d;
+  --bg-panel-solid: #23202d;
+  --bg-cell: #252231;
+  --bg-cell-hover: #302b40;
+  --text-primary: #f3effa;
+  --text-main: #f3effa;
+  --text-dim: #aba2bd;
+  --border: #41394f;
+  --border-strong: #5b4f70;
+  --neon-cyan: #a99bff;
+  --neon-magenta: #ee9abd;
+  --neon-amber: #f0bc78;
+  --neon-lime: #83d0a9;
+  --neon-violet: #c2a7ff;
+  --neon-red: #ff8faa;
+  --bg-body: #17151d;
+}
+
+html,
+body.admin-page {
+  background: var(--bg-main) !important;
+  color: var(--text-primary) !important;
+}
+
+body.admin-page {
+  padding: 0 12px 104px !important;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+body.admin-page::after {
+  display: none !important;
+}
+
+.admin-page .wrap {
+  width: min(100%, 1440px) !important;
+  padding: 16px 0 28px !important;
+}
+
+.admin-page .top-sticky {
+  padding: 10px 0 16px !important;
+  margin: 0 0 14px !important;
+  background: color-mix(in srgb, var(--bg-main) 90%, transparent) !important;
+  border-bottom: 0 !important;
+  backdrop-filter: blur(14px);
+}
+
+.admin-page .header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 18px !important;
+  margin: 0 0 12px !important;
+  padding: 14px 16px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 22px !important;
+  background: var(--bg-panel) !important;
+  box-shadow: 0 10px 30px rgba(70, 52, 110, .08) !important;
+}
+
+.admin-page .header-left {
+  overflow: visible !important;
+}
+
+.admin-page .dot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: var(--neon-magenta) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--neon-magenta) 14%, transparent) !important;
+}
+
+.admin-page .brand-text {
+  color: var(--neon-magenta) !important;
+  font-size: 11px !important;
+  letter-spacing: .12em !important;
+}
+
+.admin-page h1 {
+  margin-top: 6px !important;
+  color: var(--text-primary) !important;
+  font-size: clamp(22px, 3vw, 34px) !important;
+  letter-spacing: -.04em !important;
+}
+
+.admin-page h1 span {
+  color: var(--neon-cyan) !important;
+  text-shadow: none !important;
+}
+
+.admin-page .nav {
+  gap: 5px !important;
+}
+
+.admin-page .nav button,
+.admin-page .theme-toggle-inline,
+.admin-page .view-toggle,
+.admin-page .nav .today-btn {
+  height: 34px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 11px !important;
+  background: var(--bg-panel) !important;
+  color: var(--text-primary) !important;
+}
+
+.admin-page .nav button,
+.admin-page .theme-toggle-inline {
+  width: 34px !important;
+}
+
+.admin-page .nav .today-btn {
+  width: auto !important;
+  padding: 0 10px !important;
+  font-weight: 700 !important;
+}
+
+.admin-page .view-toggle {
+  border: 1px solid var(--border) !important;
+  overflow: hidden !important;
+}
+
+.admin-page .view-toggle button {
+  color: var(--text-dim) !important;
+  background: transparent !important;
+}
+
+.admin-page .view-toggle button.active {
+  background: var(--neon-cyan) !important;
+  color: #fff !important;
+}
+
+.admin-page .nav button:hover,
+.admin-page .nav .today-btn:hover,
+.admin-page .theme-toggle-inline:hover,
+.admin-page .view-toggle:hover {
+  border-color: var(--neon-cyan) !important;
+  color: var(--neon-cyan) !important;
+  transform: translateY(-1px);
+}
+
+.admin-page .admin-utility-bar {
+  min-height: 34px !important;
+  margin: 0 0 8px !important;
+  padding: 7px 11px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 999px !important;
+  background: var(--bg-panel) !important;
+  color: var(--text-dim) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+.admin-page #saveStatus[data-state='dirty'] { color: var(--neon-amber) !important; }
+.admin-page #saveStatus[data-state='saving'] { color: var(--neon-cyan) !important; }
+.admin-page #saveStatus[data-state='error'] { color: var(--neon-red) !important; }
+
+.admin-page .modal,
+.admin-page .pin-modal,
+.admin-page .popover,
+.admin-page .schedule-search-dialog {
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  background: var(--bg-panel) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 18px 48px rgba(30, 20, 50, .22) !important;
+}
+
+.admin-page .modal h2,
+.admin-page .pop-title,
+.admin-page .schedule-search-heading {
+  color: var(--text-primary) !important;
+}
+
+.admin-page .entry {
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--bg-cell) !important;
+  padding: 10px !important;
+}
+
+.admin-page .entry:hover,
+.admin-page .video-list-item:hover,
+.admin-page .tournament-card:hover {
+  border-color: var(--border-strong) !important;
+  background: var(--bg-cell-hover) !important;
+}
+
+.admin-page .form-row input,
+.admin-page .form-row select,
+.admin-page .form-row textarea,
+.admin-page .pin-modal input,
+.admin-page .schedule-search-input {
+  border: 1px solid var(--border-strong) !important;
+  border-radius: 10px !important;
+  background: var(--bg-cell) !important;
+  color: var(--text-primary) !important;
+}
+
+.admin-page .form-row input:focus,
+.admin-page .form-row select:focus,
+.admin-page .form-row textarea:focus,
+.admin-page .pin-modal input:focus,
+.admin-page .schedule-search-input:focus {
+  outline: none !important;
+  border-color: var(--neon-cyan) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--neon-cyan) 14%, transparent) !important;
+}
+
+.admin-page .preset-chip,
+.admin-page .icon-sw,
+.admin-page .sw {
+  border-radius: 10px !important;
+}
+
+.admin-page .preset-chip:hover,
+.admin-page .icon-sw:hover {
+  background: color-mix(in srgb, var(--neon-cyan) 10%, var(--bg-cell)) !important;
+}
+
+.admin-page .sw.active,
+.admin-page .icon-sw.active {
+  outline: 2px solid var(--neon-cyan) !important;
+  outline-offset: 2px !important;
+}
+
+.admin-page .modal-actions button,
+.admin-page .save-btn,
+.admin-page .edit-btn,
+.admin-page #customQuickTagBtn,
+.admin-page #cancelEditBtn,
+.admin-page #cancelEditTournamentBtn {
+  min-height: 36px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--bg-panel) !important;
+  color: var(--text-primary) !important;
+  font-weight: 800 !important;
+}
+
+.admin-page .modal-actions .primary,
+.admin-page #addTournamentBtn,
+.admin-page #saveTournamentsBtn {
+  border-color: var(--neon-cyan) !important;
+  background: color-mix(in srgb, var(--neon-cyan) 13%, var(--bg-panel)) !important;
+  color: var(--neon-cyan) !important;
+}
+
+.admin-page .modal-actions button:hover,
+.admin-page .save-btn:hover,
+.admin-page .edit-btn:hover,
+.admin-page #customQuickTagBtn:hover,
+.admin-page #cancelEditBtn:hover,
+.admin-page #cancelEditTournamentBtn:hover {
+  border-color: var(--neon-cyan) !important;
+  color: var(--neon-cyan) !important;
+  transform: translateY(-1px);
+}
+
+.admin-page #quickRest,
+.admin-page #quickReturn,
+.admin-page #quickDepart,
+.admin-page #quickTrip {
+  border-radius: 10px !important;
+  font-weight: 800 !important;
+}
+
+.admin-page #quickRest {
+  border-color: var(--neon-red) !important;
+  background: color-mix(in srgb, var(--neon-red) 12%, var(--bg-cell)) !important;
+  color: var(--neon-red) !important;
+}
+
+.admin-page #quickReturn {
+  border-color: var(--neon-cyan) !important;
+  background: color-mix(in srgb, var(--neon-cyan) 12%, var(--bg-cell)) !important;
+  color: var(--neon-cyan) !important;
+}
+
+.admin-page #quickDepart {
+  border-color: var(--neon-amber) !important;
+  background: color-mix(in srgb, var(--neon-amber) 12%, var(--bg-cell)) !important;
+  color: var(--neon-amber) !important;
+}
+
+.admin-page #quickTrip {
+  border-color: var(--neon-violet) !important;
+  background: color-mix(in srgb, var(--neon-violet) 12%, var(--bg-cell)) !important;
+  color: var(--neon-violet) !important;
+}
+
+.admin-page .list-tools .empty-filter-btn {
+  border: 1px solid var(--border) !important;
+  border-radius: 999px !important;
+  background: var(--bg-panel) !important;
+  color: var(--text-dim) !important;
+}
+
+.admin-page .list-tools .empty-filter-btn[aria-pressed='true'] {
+  border-color: var(--neon-cyan) !important;
+  color: var(--neon-cyan) !important;
+  background: color-mix(in srgb, var(--neon-cyan) 10%, var(--bg-panel)) !important;
+}
+
+.admin-page .admin-toast {
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  background: var(--bg-panel-solid) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 10px 30px rgba(30, 20, 50, .2) !important;
+}
+
+.admin-page .bottom-nav {
+  border-top: 1px solid var(--border) !important;
+  background: color-mix(in srgb, var(--bg-panel) 94%, transparent) !important;
+  backdrop-filter: blur(14px);
+}
+
+.admin-page .bn-item {
+  border-radius: 12px !important;
+  color: var(--text-dim) !important;
+}
+
+.admin-page .bn-item.active {
+  color: var(--neon-cyan) !important;
+  background: color-mix(in srgb, var(--neon-cyan) 10%, transparent) !important;
+}
+
+@media (max-width: 680px) {
+  body.admin-page { padding: 0 10px 128px !important; }
+
+  .admin-page .wrap { padding: 8px 0 18px !important; }
+
+  .admin-page .header {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    padding: 12px !important;
+    border-radius: 18px !important;
+  }
+
+  .admin-page .nav {
+    width: 100% !important;
+    justify-content: space-between !important;
+    padding-top: 9px !important;
+    border-top: 1px solid var(--border) !important;
+  }
+
+  .admin-page .nav button,
+  .admin-page .theme-toggle-inline,
+  .admin-page .view-toggle,
+  .admin-page .nav .today-btn {
+    height: 30px !important;
+    border-radius: 9px !important;
+  }
+
+  .admin-page .nav button,
+  .admin-page .theme-toggle-inline { width: 30px !important; }
+
+  .admin-page .nav .today-btn {
+    padding: 0 7px !important;
+    font-size: 10px !important;
+  }
+
+  .admin-page .month-label {
+    min-width: 86px !important;
+    font-size: 14px !important;
+  }
+
+  .admin-page .admin-utility-bar {
+    min-height: 30px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .admin-page .modal,
+  .admin-page .pin-modal,
+  .admin-page .popover,
+  .admin-page .schedule-search-dialog {
+    border-radius: 14px !important;
+  }
+}
