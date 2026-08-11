@@ -1417,7 +1417,7 @@ body.admin-page > .wrap,
   align-items: center !important;
   flex: 0 0 auto !important;
   gap: 3px !important;
-  margin-left: 2px !important;
+  margin-left: auto !important;
   font-size: 13px !important;
 }
 
@@ -1479,7 +1479,7 @@ body.admin-page > .wrap,
 
   .admin-page .admin-month-nav {
     gap: 2px !important;
-    margin-left: 0 !important;
+    margin-left: auto !important;
   }
 
   .admin-page .admin-month-nav .month-label {
