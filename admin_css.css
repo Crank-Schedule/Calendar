@@ -1320,6 +1320,16 @@ body.admin-page::after {
   }
 }
 
+/* Desktop admin follows the public calendar and uses the full viewport.
+   The previous 1440px cap left large unused margins on FHD/4K displays. */
+body.admin-page > .wrap,
+.admin-page .wrap {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
 /* Samsung Browser on the Fold outer screen can expose a 320-360px CSS
    viewport. Keep every header control inside the card by letting the month
    label absorb the remaining width instead of relying on fixed totals. */
