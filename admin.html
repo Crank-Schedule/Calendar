@@ -2005,6 +2005,8 @@ async function renderCalendarMonth(){
     const specialKeywords = ['휴방', '출국', '출장', '귀국', '입국', '결방', '올출', '올귀'];
     const specials = entries.filter(e => specialKeywords.some(k => e.title.includes(k)));
     const regulars = entries.filter(e => !specialKeywords.some(k => e.title.includes(k)));
+    let hasRest = false;
+    let hasTrip = false;
 
     if(specials.length > 0){
       const spWrap = document.createElement('div');
@@ -2013,8 +2015,6 @@ async function renderCalendarMonth(){
       spWrap.style.flexDirection = 'column';
       spWrap.style.alignItems = 'flex-end';
       spWrap.style.gap = '2px';
-      let hasRest = false;
-      let hasTrip = false;
       specials.forEach(sp => {
         const isRest = sp.title.includes('휴방');
         const isReturn = sp.title.includes('귀국') || sp.title.includes('입국') || sp.title.includes('올귀');
