@@ -2904,6 +2904,99 @@ h1 span {
   }
 }
 
+/* Fold outer-screen fallback.  Samsung Browser can expose a narrower CSS
+   viewport than the device width suggests, so compact the cards before the
+   seven-column calendar starts stacking one character per line. */
+@media (max-width: 420px) {
+  body {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+  }
+
+  .wrap {
+    padding-top: 6px !important;
+  }
+
+  .header {
+    padding: 10px !important;
+    border-radius: 16px !important;
+  }
+
+  h1 {
+    font-size: 19px !important;
+  }
+
+  #scheduleGridSection .grid {
+    gap: 3px !important;
+    grid-auto-rows: minmax(104px, auto) !important;
+  }
+
+  #scheduleGridSection .cell {
+    min-height: 104px !important;
+    padding: 0 0 4px !important;
+    border-radius: 10px !important;
+  }
+
+  #scheduleGridSection .cell-tags-col {
+    gap: 4px !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag,
+  #scheduleGridSection .cell-tags-col .tag.has-time {
+    min-height: 23px !important;
+    padding: 3px 3px !important;
+    border-left-width: 2px !important;
+    border-radius: 7px !important;
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag .title-wrap,
+  #scheduleGridSection .cell-tags-col .tag.has-time .title-wrap {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+    line-height: 1.1 !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag .tag-title,
+  #scheduleGridSection .cell-tags-col .tag.has-time .tag-title {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    text-align: center !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag.has-time .tag-inline-time,
+  #scheduleGridSection .cell-tags-col .tag.has-time .t-time {
+    display: none !important;
+  }
+
+  #scheduleGridSection .cell > .cell-date-header {
+    min-height: 24px !important;
+    padding: 4px 5px !important;
+  }
+
+  #scheduleGridSection .cell > .cell-date-header > .date-num {
+    font-size: 10px !important;
+  }
+
+  #scheduleGridSection .cell > .cell-date-header > .cell-header-actions {
+    transform: scale(.86) !important;
+    transform-origin: top right !important;
+  }
+}
+
 /* Protect two-digit dates when a narrow cell has both travel and replay
    actions. The date never shrinks; actions use the remaining column and wrap
    inside that column if the cell cannot fit them on one row. */

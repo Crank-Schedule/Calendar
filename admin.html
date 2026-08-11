@@ -1908,15 +1908,13 @@ function initGridDragDrop() {
 function buildTagEl(en){
   const parsed = parseTitle(en);
   const t = document.createElement('div');
-  t.className='tag draggable-item' + (parsed.customIcon ? ' tag-custom-icon' : '');
+  t.className='tag draggable-item' + (parsed.customIcon ? ' tag-custom-icon' : '') + (en.time ? ' has-time' : '');
   t.setAttribute('data-first-char', getFirstChar(parsed.displayTitle));
   t.style.borderColor = getDisplayColor(en.color);
   t.style.setProperty('--tag-color', getDisplayColor(en.color));
   t.style.background = getDisplayColor(en.color)+'1A';
-  let html = `<span class="tag-icon" style="color:var(--tag-color)">${parsed.iconHtml}</span><span class="tag-abbr" style="color:var(--tag-color)">${getAbbr(parsed.displayTitle)}</span><span class="title-wrap" style="overflow:hidden; display:block; flex:1; min-width:0; white-space:nowrap; text-overflow:ellipsis;"><span class="tag-title" style="display:inline;">${escapeHtml(parsed.displayTitle)}</span></span>`;
-  if(en.time) {
-      html += `<span class="t-time">${escapeHtml(en.time)}</span>`;
-  }
+  const timeHtml = en.time ? `<span class="tag-inline-time">${escapeHtml(en.time)}</span> ` : '';
+  let html = `<span class="tag-icon" style="color:var(--tag-color)">${parsed.iconHtml}</span><span class="tag-abbr" style="color:var(--tag-color)">${getAbbr(parsed.displayTitle)}</span><span class="title-wrap" style="overflow:hidden; display:block; flex:1; min-width:0; white-space:normal; text-overflow:clip;"><span class="tag-title" style="display:inline;">${timeHtml}${escapeHtml(parsed.displayTitle)}</span></span>`;
   t.innerHTML = html;
   t.title = parsed.displayTitle + (en.time ? ' · '+en.time : '');
   
@@ -1977,11 +1975,7 @@ async function renderCalendarMonth(){
 
   for(let i=0;i<startOffset;i++){
     const c = document.createElement('div');
-    c.className='cell empty adjacent-month';
-    const num = document.createElement('div');
-    num.className = 'date-num';
-    num.textContent = new Date(current.getFullYear(), current.getMonth(), 0).getDate() - startOffset + i + 1;
-    c.appendChild(num);
+    c.className='cell empty';
     if(grid) grid.appendChild(c);
   }
   for(let day=1; day<=daysInMonth; day++){
@@ -1990,9 +1984,11 @@ async function renderCalendarMonth(){
     
     const c = document.createElement('div');
     c.className='cell';
+    c.classList.add(`day-${cellDate.getDay()}`);
     if(isSameYMD(cellDate, today)) c.classList.add('today');
     
     const headerWrap = document.createElement('div');
+    headerWrap.className = 'cell-date-header';
     headerWrap.style.display = 'flex';
     headerWrap.style.justifyContent = 'space-between';
     headerWrap.style.alignItems = 'flex-start';
@@ -2001,6 +1997,10 @@ async function renderCalendarMonth(){
     num.className='date-num'; num.textContent=day;
     headerWrap.appendChild(num);
 
+    const headerActions = document.createElement('div');
+    headerActions.className = 'cell-header-actions';
+    headerWrap.appendChild(headerActions);
+
     // 과거 관리자 빠른 입력이 저장한 축약어(올출/올귀)도 특수 일정으로 취급한다.
     const specialKeywords = ['휴방', '출국', '출장', '귀국', '입국', '결방', '올출', '올귀'];
     const specials = entries.filter(e => specialKeywords.some(k => e.title.includes(k)));
@@ -2008,6 +2008,7 @@ async function renderCalendarMonth(){
 
     if(specials.length > 0){
       const spWrap = document.createElement('div');
+      spWrap.className = 'special-badges';
       spWrap.style.display = 'flex';
       spWrap.style.flexDirection = 'column';
       spWrap.style.alignItems = 'flex-end';
@@ -2021,6 +2022,7 @@ async function renderCalendarMonth(){
         const isTrip = isReturn || isDeparture;
         if (isRest) hasRest = true;
         if (isTrip) hasTrip = true;
+        if (isRest) return;
         const color = getDisplayColor(isRest ? '#00FFFF' : (isTrip ? '#FF9900' : '#FF0000'));
         const icon = isRest ? '😴' : (isTrip ? '✈️' : '🚫');
         const s = document.createElement('span');
@@ -2046,7 +2048,10 @@ async function renderCalendarMonth(){
         
         spWrap.appendChild(s);
       });
-      headerWrap.appendChild(spWrap);
+      if (spWrap.children.length) {
+        headerActions.appendChild(spWrap);
+        headerActions.classList.add('has-special-action');
+      }
       if(hasRest) c.classList.add('is-rest');
       if(hasTrip) c.classList.add('is-trip');
     }
@@ -2057,7 +2062,7 @@ async function renderCalendarMonth(){
     
     const tagsWrap = document.createElement('div');
     tagsWrap.className='tags cell-tags-col';
-    const calendarTagLimit = window.innerWidth < 1600 ? 2 : 3;
+    const calendarTagLimit = 4;
     tagsWrap.classList.add('items-' + Math.min(regulars.length, calendarTagLimit));
     // __day, __idx 주입 (드래그 용)
     regulars.slice(0, calendarTagLimit).forEach((en, i) => {
@@ -2109,6 +2114,31 @@ async function renderCalendarMonth(){
             ytCol.innerHTML = `<img src="${safeUrl(vid.thumb || (vid.thumbnails && vid.thumbnails.default ? vid.thumbnails.default.url : ''))}" alt="replay"><span class="yt-play-icon"></span>`;
             cellBody.appendChild(ytCol);
         }
+    }
+
+    if (vid) {
+      headerWrap.classList.add('has-replay');
+      headerActions.classList.add('has-replay');
+      const replayLink = document.createElement('a');
+      replayLink.className = 'cell-replay-link';
+      replayLink.dataset.source = vid.isChzzk ? 'chzzk' : 'youtube';
+      if (/^https?:\/\//i.test(String(vid.url || ''))) replayLink.href = vid.url;
+      replayLink.target = '_blank';
+      replayLink.rel = 'noopener';
+      replayLink.title = vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기');
+      replayLink.setAttribute('aria-label', replayLink.title);
+      replayLink.innerHTML = '<span class="cell-replay-icon" aria-hidden="true">&#9654;</span><span class="cell-replay-label">다시보기</span>';
+      replayLink.addEventListener('click', (event) => event.stopPropagation());
+      replayLink.addEventListener('keydown', (event) => event.stopPropagation());
+      headerActions.appendChild(replayLink);
+    }
+
+    if (hasRest) {
+      const restLabel = document.createElement('div');
+      restLabel.className = 'rest-label';
+      restLabel.innerHTML = '<span class="rest-icon" aria-hidden="true">&#128564;</span>';
+      restLabel.setAttribute('aria-label', '휴방');
+      cellBody.appendChild(restLabel);
     }
 
     c.appendChild(cellBody);
