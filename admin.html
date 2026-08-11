@@ -980,8 +980,8 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script>
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20260811-90">
-  <link rel="stylesheet" href="admin_css.css?v=20260811-2">
+  <link rel="stylesheet" href="schedule_css.css?v=20260811-91">
+  <link rel="stylesheet" href="admin_css.css?v=20260811-3">
 </head>
 <body class="admin-page">
 <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
@@ -1181,7 +1181,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   </div>
 </div>
 
-<script src="schedule_core.js?v=20260808-1"></script>
+<script src="schedule_core.js?v=20260811-3"></script>
 <script>
 
 const COLORS = [
@@ -1574,9 +1574,9 @@ function replayDateKey(year, month, day){
 
 function replayDateKeyFromTitle(title){
   const value = String(title || '').trim();
-  let match = value.match(/^(?:20)?(\d{2})(\d{2})(\d{2})(?=\D|$)/);
+  let match = value.match(/(?:^|[^\d])(?:20)?(\d{2})(\d{2})(\d{2})(?=\D|$)/);
   if(!match){
-    match = value.match(/^(?:20)?(\d{2})[년.\-/\s]+0?(\d{1,2})[월.\-/\s]+0?(\d{1,2})(?:일)?(?=\D|$)/);
+    match = value.match(/(?:^|[^\d])(?:20)?(\d{2})[년.\-/\s]+0?(\d{1,2})[월.\-/\s]+0?(\d{1,2})(?:일)?(?=\D|$)/);
   }
   if(!match) return '';
   return replayDateKey(2000 + Number(match[1]), Number(match[2]), Number(match[3]));
@@ -1958,6 +1958,51 @@ function buildTagEl(en){
   return t;
 }
 
+function applyDesktopLineBudget(tagsWrap) {
+  if (!tagsWrap) return;
+  const tags = Array.from(tagsWrap.querySelectorAll(':scope > .tag'));
+  const isDesktop = window.matchMedia('(min-width: 681px)').matches;
+
+  tagsWrap.classList.remove('desktop-line-budget');
+  tags.forEach(tag => {
+    tag.classList.remove('is-line-clamped', 'is-line-hidden');
+    tag.style.removeProperty('--desktop-title-lines');
+    tag.style.removeProperty('display');
+  });
+
+  if (!isDesktop || !tags.length) return;
+
+  requestAnimationFrame(() => {
+    let remainingLines = 5;
+    tags.forEach((tag, index) => {
+      const wrap = tag.querySelector('.title-wrap');
+      if (!wrap) return;
+
+      const style = getComputedStyle(wrap);
+      const parsedLineHeight = parseFloat(style.lineHeight);
+      const fontSize = parseFloat(style.fontSize) || 9;
+      const lineHeight = Number.isFinite(parsedLineHeight) ? parsedLineHeight : fontSize * 1.2;
+      const naturalLines = Math.max(1, Math.ceil(wrap.scrollHeight / lineHeight));
+      const linesReservedForLater = tags.length - index - 1;
+      const linesAvailableForThis = Math.max(1, remainingLines - linesReservedForLater);
+      const allowedLines = Math.min(naturalLines, linesAvailableForThis);
+
+      tag.style.setProperty('--desktop-title-lines', String(allowedLines));
+      if (allowedLines < naturalLines) tag.classList.add('is-line-clamped');
+      remainingLines -= allowedLines;
+    });
+    tagsWrap.classList.add('desktop-line-budget');
+  });
+}
+
+let desktopLineBudgetResizeTimer = 0;
+window.addEventListener('resize', () => {
+  clearTimeout(desktopLineBudgetResizeTimer);
+  desktopLineBudgetResizeTimer = setTimeout(() => {
+    document.querySelectorAll('#scheduleGridSection .cell-tags-col').forEach(applyDesktopLineBudget);
+  }, 140);
+});
+
 async function renderCalendarMonth(){
   const data = await loadMonth(current);
 
@@ -2010,7 +2055,8 @@ async function renderCalendarMonth(){
 
     if(specials.length > 0){
       const spWrap = document.createElement('div');
-      spWrap.className = 'special-badges';
+      const hasArrivalSpecial = specials.some(sp => sp.title.includes('귀국') || sp.title.includes('입국') || sp.title.includes('올귀'));
+      spWrap.className = 'special-badges' + (hasArrivalSpecial ? ' has-arrival' : '');
       spWrap.style.display = 'flex';
       spWrap.style.flexDirection = 'column';
       spWrap.style.alignItems = 'flex-end';
@@ -2026,7 +2072,7 @@ async function renderCalendarMonth(){
         const color = getDisplayColor(isRest ? '#00FFFF' : (isTrip ? '#FF9900' : '#FF0000'));
         const icon = isRest ? '😴' : (isTrip ? '✈️' : '🚫');
         const s = document.createElement('span');
-        s.className = 'special-badge draggable-item' + ((isRest || isTrip) ? ' badge-circle' : '');
+        s.className = 'special-badge draggable-item' + ((isRest || isTrip) ? ' badge-circle' : '') + (isReturn ? ' badge-arrival' : (isTrip ? ' badge-departure' : ''));
         s.style.color = color;
         s.style.background = isRest ? 'rgba(0,255,255,0.1)' : (isTrip ? 'rgba(255,153,0,0.1)' : 'rgba(255,0,0,0.1)');
         const displayTitle = sp.title.trim() === '올귀'
@@ -2079,42 +2125,9 @@ async function renderCalendarMonth(){
     cellBody.appendChild(tagsWrap);
 
     const dStr = `${cellDate.getFullYear()}-${cellDate.getMonth()+1}-${cellDate.getDate()}`;
-    // 최종 우선순위: 수동 입력 > 오늘 라이브 스트리밍 > 날짜가 맞는 YouTube > 치지직
-    const manualReplay = manualReplayFromEntries(entries);
-    const vid = attachKnownChzzkThumbnail(manualReplay || liveLinkForToday(dStr, videoDateMap[dStr]));
-    if (vid) {
-        const ytCol = document.createElement('a');
-        ytCol.className = 'cell-thumb-yt';
-        ytCol.dataset.source = vid.isChzzk ? 'chzzk' : 'youtube';
-        ytCol.dataset.sourceLabel = vid.isChzzk ? 'CHZZK' : 'YT';
-        if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
-        ytCol.target = '_blank';
-        ytCol.rel = 'noopener';
-        ytCol.title = vid.source === 'live' ? '치지직 라이브 스트리밍' : (vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기'));
-        ytCol.setAttribute('aria-label', ytCol.title);
-        ytCol.onclick = (e) => e.stopPropagation();
-        
-        if (vid.isChzzk) {
-            if (vid.thumb) {
-                ytCol.innerHTML = `<img src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                cellBody.appendChild(ytCol);
-            } else if (vid.chzzkId) {
-                ytCol.innerHTML = `<span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                cellBody.appendChild(ytCol);
-                const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
-                fetch(`${workerUrl}/api/chzzk/video/${vid.chzzkId}`)
-                  .then(r => r.json())
-                  .then(data => {
-                      if(data?.content?.thumbnailImageUrl) {
-                          ytCol.innerHTML = `<img src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                      }
-                  }).catch(()=>{});
-            }
-        } else {
-            ytCol.innerHTML = `<img src="${safeUrl(vid.thumb || (vid.thumbnails && vid.thumbnails.default ? vid.thumbnails.default.url : ''))}" alt="replay"><span class="yt-play-icon"></span>`;
-            cellBody.appendChild(ytCol);
-        }
-    }
+    // 일반 일정표와 같은 우선순위와 표시 방식: 수동 입력 > 날짜별 다시보기.
+    // 달력 셀에는 썸네일을 넣지 않고 날짜 우상단의 다시보기 버튼만 표시한다.
+    const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(entries) || videoDateMap[dStr]);
 
     if (vid) {
       headerWrap.classList.add('has-replay');
@@ -2142,6 +2155,7 @@ async function renderCalendarMonth(){
     }
 
     c.appendChild(cellBody);
+    applyDesktopLineBudget(tagsWrap);
     c.addEventListener('click', ()=>openModal(cellDate));
     c.tabIndex = 0;
     c.setAttribute('role', 'button');

@@ -3237,3 +3237,79 @@ h1 span {
     text-overflow: clip !important;
   }
 }
+
+/* Fold outer-screen final layout. A seven-column calendar leaves roughly
+   48px per day at this viewport, so metadata is removed and titles use a
+   predictable multi-line clamp. This avoids both one-letter columns and
+   one-line labels that reveal only the first few characters. */
+@media (max-width: 420px) {
+  #scheduleGridSection .cell-tags-col {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    gap: 3px !important;
+    padding: 2px !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag,
+  #scheduleGridSection .cell-tags-col .tag.has-time {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 22px !important;
+    height: auto !important;
+    padding: 3px 2px !important;
+    font-size: 7.5px !important;
+    line-height: 1.12 !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag .tag-icon,
+  #scheduleGridSection .cell-tags-col .tag .tag-abbr,
+  #scheduleGridSection .cell-tags-col .tag .t-time,
+  #scheduleGridSection .cell-tags-col .tag .tag-inline-time {
+    display: none !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag .title-wrap,
+  #scheduleGridSection .cell-tags-col .tag.has-time .title-wrap,
+  #scheduleGridSection .cell-tags-col.desktop-line-budget .tag.is-line-clamped .title-wrap {
+    display: -webkit-box !important;
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    max-height: calc(3 * 1.12em) !important;
+    overflow: hidden !important;
+    white-space: normal !important;
+    text-overflow: ellipsis !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 3 !important;
+    text-align: center !important;
+    overflow-wrap: anywhere !important;
+    word-break: keep-all !important;
+  }
+
+  #scheduleGridSection .cell-tags-col.items-1 .tag .title-wrap {
+    max-height: calc(4 * 1.12em) !important;
+    -webkit-line-clamp: 4 !important;
+  }
+
+  #scheduleGridSection .cell-tags-col.items-3 .tag .title-wrap,
+  #scheduleGridSection .cell-tags-col.items-4 .tag .title-wrap {
+    max-height: calc(2 * 1.12em) !important;
+    -webkit-line-clamp: 2 !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag .tag-title,
+  #scheduleGridSection .cell-tags-col .tag.has-time .tag-title {
+    display: inline !important;
+    width: auto !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    overflow-wrap: anywhere !important;
+    word-break: keep-all !important;
+  }
+}

@@ -1273,8 +1273,8 @@ body.admin-page::after {
   display: none !important;
 }
 
-/* Fold outer-screen fallback: prevent one character per line when the
-   seven-column calendar becomes narrower than the normal phone breakpoint. */
+/* Fold outer-screen fallback. Calendar-card typography comes from the shared
+   schedule stylesheet so admin and public pages follow exactly one rule. */
 @media (max-width: 420px) {
   body.admin-page {
     padding-left: 7px !important;
@@ -1303,51 +1303,6 @@ body.admin-page::after {
     min-height: 104px !important;
     padding: 0 0 4px !important;
     border-radius: 10px !important;
-  }
-
-  #scheduleGridSection .cell-tags-col {
-    gap: 4px !important;
-  }
-
-  #scheduleGridSection .cell-tags-col .tag,
-  #scheduleGridSection .cell-tags-col .tag.has-time {
-    min-height: 23px !important;
-    padding: 3px 3px !important;
-    border-left-width: 2px !important;
-    border-radius: 7px !important;
-    font-size: 8px !important;
-    line-height: 1.1 !important;
-  }
-
-  #scheduleGridSection .cell-tags-col .tag .title-wrap,
-  #scheduleGridSection .cell-tags-col .tag.has-time .title-wrap {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    overflow: hidden !important;
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-    text-align: center !important;
-    line-height: 1.1 !important;
-  }
-
-  #scheduleGridSection .cell-tags-col .tag .tag-title,
-  #scheduleGridSection .cell-tags-col .tag.has-time .tag-title {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    text-align: center !important;
-  }
-
-  #scheduleGridSection .cell-tags-col .tag.has-time .tag-inline-time,
-  #scheduleGridSection .cell-tags-col .tag.has-time .t-time {
-    display: none !important;
   }
 
   #scheduleGridSection .cell > .cell-date-header {
