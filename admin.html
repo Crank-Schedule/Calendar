@@ -981,7 +981,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
   <link rel="stylesheet" href="schedule_css.css?v=20260811-91">
-  <link rel="stylesheet" href="admin_css.css?v=20260811-4">
+  <link rel="stylesheet" href="admin_css.css?v=20260811-6">
 </head>
 <body class="admin-page">
 <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
@@ -1005,25 +1005,23 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
       <h1 style="display:flex; align-items:center; gap:8px;">
         크랭크
         <button id="ghSettingsBtn" title="관리자 로그인" aria-label="관리자 로그인" style="width:24px; height:24px; padding:0; font-size:13px; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-strong); border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; vertical-align:middle;">🔒</button>
+        <span class="admin-month-nav" aria-label="월 이동">
+          <button id="prevBtn" aria-label="이전 달" title="이전 달">&lt;</button>
+          <span class="month-label" id="monthLabel"><span class="ml-full">2026년 6월</span><span class="ml-short">6월</span></span>
+          <button id="nextBtn" aria-label="다음 달" title="다음 달">&gt;</button>
+        </span>
       </h1>
     </div>
-    <div class="nav">
+    <div class="nav" hidden aria-hidden="true">
       <div class="view-toggle">
         <button id="monthViewBtn" class="active" title="달력 보기" aria-label="달력 보기">🗓️</button>
         <button id="weekViewBtn" title="리스트 보기" aria-label="리스트 보기">☰</button>
       </div>
       <button id="scheduleSearchToggle" title="연간 일정 검색" aria-label="연간 일정 검색" aria-expanded="false">🔍</button>
-      <button id="prevBtn" aria-label="이전 달" title="이전 달">‹</button>
-      <div class="month-label" id="monthLabel"><span class="ml-full">2026년 6월</span><span class="ml-short">6월</span></div>
-      <button id="nextBtn" aria-label="다음 달" title="다음 달">›</button>
       <button class="today-btn" id="todayBtn" aria-label="오늘로 이동">오늘</button>
       <button id="themeToggleBtn" class="theme-toggle-inline" style="margin-left:4px;" aria-label="라이트 모드로 전환" title="테마 전환">☀️</button>
     </div>
     </div>
-  </div>
-
-  <div class="admin-utility-bar">
-    <span id="saveStatus" data-state="clean" role="status" aria-live="polite">변경 없음</span>
   </div>
 
   <div class="schedule-search-backdrop" id="scheduleSearchBackdrop" hidden>
@@ -2237,9 +2235,7 @@ function currentViewPreferenceKey(){
   return `crank_view_mode_${currentViewBucket()}`;
 }
 function preferredViewForWidth(){
-  const saved = localStorage.getItem(currentViewPreferenceKey());
-  if(saved === 'calendar' || saved === 'list') return saved;
-  return currentViewBucket() === 'wide' ? 'calendar' : 'list';
+  return 'calendar';
 }
 let currentView = preferredViewForWidth();
 let hideEmptyDays = localStorage.getItem('crank_hide_empty_days') === '1';

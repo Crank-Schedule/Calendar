@@ -1375,3 +1375,105 @@ body.admin-page::after {
     font-size: 9px !important;
   }
 }
+
+/* Admin uses one compact calendar header only: title, login and month move. */
+.admin-page .header {
+  display: block !important;
+}
+
+.admin-page .header-left {
+  width: 100% !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+.admin-page .header-left .brand,
+.admin-page .header > .nav,
+.admin-page .admin-utility-bar {
+  display: none !important;
+}
+
+.admin-page .header-left h1 {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 7px !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+
+.admin-page .admin-month-nav {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  gap: 3px !important;
+  margin-left: 2px !important;
+  font-size: 13px !important;
+}
+
+.admin-page .admin-month-nav button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 9px !important;
+  background: var(--bg-panel) !important;
+  color: var(--text-primary) !important;
+  font: inherit !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+}
+
+.admin-page .admin-month-nav .month-label {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 34px !important;
+  padding: 0 1px !important;
+  color: var(--text-primary) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+.admin-page .admin-month-nav .ml-full {
+  display: none !important;
+}
+
+.admin-page .admin-month-nav .ml-short {
+  display: inline !important;
+}
+
+@media (max-width: 420px) {
+  .admin-page .top-sticky {
+    padding-bottom: 6px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .admin-page .header-left h1 {
+    font-size: 20px !important;
+    gap: 5px !important;
+  }
+
+  .admin-page .header-left h1 #ghSettingsBtn,
+  .admin-page .admin-month-nav button {
+    width: 25px !important;
+    min-width: 25px !important;
+    height: 25px !important;
+  }
+
+  .admin-page .admin-month-nav {
+    gap: 2px !important;
+    margin-left: 0 !important;
+  }
+
+  .admin-page .admin-month-nav .month-label {
+    min-width: 31px !important;
+    font-size: 12px !important;
+  }
+}
