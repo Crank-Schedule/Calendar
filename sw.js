@@ -2,11 +2,11 @@
 // 전략: HTML/JSON은 network-first(항상 최신, 오프라인 시 캐시 폴백),
 //       폰트/이미지/CSS 등 정적 자산은 stale-while-revalidate.
 // 관리자 페이지(admin.html)와 API 호출은 절대 캐시하지 않습니다.
-const CACHE = 'crank-schedule-v25';
+const CACHE = 'crank-schedule-v26';
 const APP_SHELL = [
   './crank_schedule.html',
   './replay.html',
-  './schedule_css.css?v=20260812-97',
+  './schedule_css.css?v=20260812-98',
   './admin_css.css?v=20260812-9',
   './schedule_core.js?v=20260811-3',
   './manifest.json',

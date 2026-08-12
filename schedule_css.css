@@ -3485,8 +3485,8 @@ h1 span {
   }
 
   #scheduleGridSection .cell-tags-col.items-1 .tag .title-wrap {
-    max-height: calc(4 * 1.12em) !important;
-    -webkit-line-clamp: 4 !important;
+    max-height: calc(5 * 1.12em) !important;
+    -webkit-line-clamp: 5 !important;
   }
 
   #scheduleGridSection .cell-tags-col.items-3 .tag .title-wrap,
@@ -3505,5 +3505,17 @@ h1 span {
     text-overflow: clip !important;
     overflow-wrap: anywhere !important;
     word-break: keep-all !important;
+  }
+}
+
+/* Apply the shared five-line budget on Fold/mobile widths as well. */
+@media (max-width: 420px) {
+  #scheduleGridSection .cell-tags-col.desktop-line-budget .tag.is-line-clamped .title-wrap {
+    display: -webkit-box !important;
+    max-height: calc(var(--desktop-title-lines) * 1.12em) !important;
+    overflow: hidden !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: var(--desktop-title-lines) !important;
+    text-overflow: ellipsis !important;
   }
 }

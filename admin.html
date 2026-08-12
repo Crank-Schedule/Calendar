@@ -980,7 +980,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script>
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20260811-91">
+  <link rel="stylesheet" href="schedule_css.css?v=20260812-98">
   <link rel="stylesheet" href="admin_css.css?v=20260812-9">
 </head>
 <body class="admin-page">
@@ -1959,7 +1959,6 @@ function buildTagEl(en){
 function applyDesktopLineBudget(tagsWrap) {
   if (!tagsWrap) return;
   const tags = Array.from(tagsWrap.querySelectorAll(':scope > .tag'));
-  const isDesktop = window.matchMedia('(min-width: 681px)').matches;
 
   tagsWrap.classList.remove('desktop-line-budget');
   tags.forEach(tag => {
@@ -1968,7 +1967,7 @@ function applyDesktopLineBudget(tagsWrap) {
     tag.style.removeProperty('display');
   });
 
-  if (!isDesktop || !tags.length) return;
+  if (!tags.length) return;
 
   requestAnimationFrame(() => {
     let remainingLines = 5;
@@ -1976,11 +1975,18 @@ function applyDesktopLineBudget(tagsWrap) {
       const wrap = tag.querySelector('.title-wrap');
       if (!wrap) return;
 
+      const previousInlineStyle = wrap.getAttribute('style');
+      wrap.style.setProperty('display', 'block', 'important');
+      wrap.style.setProperty('-webkit-line-clamp', 'unset', 'important');
+      wrap.style.setProperty('max-height', 'none', 'important');
+      wrap.style.setProperty('overflow', 'visible', 'important');
       const style = getComputedStyle(wrap);
       const parsedLineHeight = parseFloat(style.lineHeight);
       const fontSize = parseFloat(style.fontSize) || 9;
       const lineHeight = Number.isFinite(parsedLineHeight) ? parsedLineHeight : fontSize * 1.2;
       const naturalLines = Math.max(1, Math.ceil(wrap.scrollHeight / lineHeight));
+      if (previousInlineStyle === null) wrap.removeAttribute('style');
+      else wrap.setAttribute('style', previousInlineStyle);
       const linesReservedForLater = tags.length - index - 1;
       const linesAvailableForThis = Math.max(1, remainingLines - linesReservedForLater);
       const allowedLines = Math.min(naturalLines, linesAvailableForThis);
