@@ -981,18 +981,9 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
   <link rel="stylesheet" href="schedule_css.css?v=20260812-98">
-  <link rel="stylesheet" href="admin_css.css?v=20260812-10">
+  <link rel="stylesheet" href="admin_css.css?v=20260812-12">
 </head>
 <body class="admin-page">
-<a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
-  <img id="lbThumb" alt="" hidden>
-  <span class="lb-badge"><span class="lb-dot"></span>LIVE</span>
-  <div class="lb-info">
-    <div class="lb-title" id="lbTitle"></div>
-    <div class="lb-meta" id="lbMeta"></div>
-  </div>
-  <span class="lb-go">치지직에서 보기 ›</span>
-</a>
 <div class="wrap">
 
   <div class="top-sticky">
@@ -1005,6 +996,10 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
       <h1 style="display:flex; align-items:center; gap:8px;">
         크랭크
         <button id="ghSettingsBtn" title="관리자 로그인" aria-label="관리자 로그인" style="width:24px; height:24px; padding:0; font-size:13px; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-strong); border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; vertical-align:middle;">🔒</button>
+        <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener" aria-label="크랭크 치지직 생방송 보기">
+          <span class="lb-copy"><strong>크랭크</strong><span><i class="lb-dot"></i>생방송중</span></span>
+          <img id="lbThumb" alt="치지직 생방송 썸네일" hidden>
+        </a>
         <span class="admin-month-nav" aria-label="월 이동">
           <button id="prevBtn" aria-label="이전 달" title="이전 달">&lt;</button>
           <span class="month-label" id="monthLabel"><span class="ml-full">2026년 6월</span><span class="ml-short">6월</span></span>
@@ -3212,32 +3207,30 @@ document.addEventListener('click', (event)=>{
 const CHZZK_CHANNEL_ID = 'de27c33ee2364c4e5007867bb3b96001';
 const liveBanner = document.getElementById('liveBanner');
 const lbThumb = document.getElementById('lbThumb');
-const lbTitle = document.getElementById('lbTitle');
-const lbMeta = document.getElementById('lbMeta');
+const forceLivePreview = new URLSearchParams(location.search).get('testLive') === '1';
 
 function syncLiveBannerOffset(){
-  const height = liveBanner.classList.contains('show') ? Math.ceil(liveBanner.getBoundingClientRect().height) : 0;
-  document.documentElement.style.setProperty('--live-banner-height', `${height}px`);
+  document.documentElement.style.setProperty('--live-banner-height', '0px');
 }
-if(typeof ResizeObserver !== 'undefined') new ResizeObserver(syncLiveBannerOffset).observe(liveBanner);
-window.addEventListener('resize', syncLiveBannerOffset);
 
 async function checkChzzkLive(){
   try{
-    const res = await fetch(`${WORKER_URL}/api/chzzk/live/${CHZZK_CHANNEL_ID}`);
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    const live = json && json.content;
+    let live;
+    if(forceLivePreview){
+      live = { status:'OPEN', liveTitle:'로컬 생방송 미리보기', liveImageUrl:'https://i.ytimg.com/vi/F1IheoshEps/mqdefault.jpg' };
+    } else {
+      const res = await fetch(`${WORKER_URL}/api/chzzk/live/${CHZZK_CHANNEL_ID}`);
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      live = json && json.content;
+    }
     const nextLiveOpen = live?.status === 'OPEN';
     const nextLiveImage = nextLiveOpen ? String(live.liveImageUrl || '').replace('{type}', '480') : '';
     const liveStateChanged = nextLiveOpen !== chzzkLiveOpen || nextLiveImage !== chzzkLiveImageUrl;
     chzzkLiveOpen = nextLiveOpen;
     chzzkLiveImageUrl = nextLiveImage;
     if(live && live.status === 'OPEN'){
-      lbTitle.textContent = live.liveTitle || '방송 중';
-      const liveCategory = String(live.liveCategoryValue || '').trim();
-      lbMeta.textContent = liveCategory;
-      lbMeta.hidden = !liveCategory;
+      liveBanner.title = live.liveTitle || '크랭크 치지직 생방송 보기';
       lbThumb.src = chzzkLiveImageUrl;
       lbThumb.hidden = !lbThumb.src;
       liveBanner.classList.add('show');

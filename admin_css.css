@@ -1459,6 +1459,96 @@ body.admin-page > .wrap,
   display: none !important;
 }
 
+/* Live status belongs to the compact admin header, never above the page. */
+.admin-page .header-left h1 > .live-banner {
+  position: relative !important;
+  inset: auto !important;
+  display: none !important;
+  width: 160px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  flex: 0 0 160px !important;
+  margin-left: 5px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #00c982 !important;
+  border-radius: 10px !important;
+  background: #101817 !important;
+  text-decoration: none !important;
+  z-index: 8 !important;
+  transform: translateY(-14px) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .32) !important;
+}
+
+.admin-page .header-left h1 > .live-banner.show {
+  display: block !important;
+}
+
+.admin-page .header-left h1 > .live-banner.show:hover {
+  transform: translateY(-16px) !important;
+}
+
+.admin-page .header-left h1 > .live-banner img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  border-radius: inherit !important;
+  object-fit: cover !important;
+}
+
+.admin-page .header-left h1 > .live-banner .lb-copy {
+  position: absolute !important;
+  inset: auto 0 0 0 !important;
+  z-index: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 12px 5px 4px !important;
+  color: #fff !important;
+  background: linear-gradient(transparent, rgba(3, 10, 9, .94)) !important;
+  font: 800 8px/1 'Paperozi', sans-serif !important;
+}
+
+.admin-page .header-left h1 > .live-banner .lb-copy > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  color: #70ffb8 !important;
+}
+
+.admin-page .header-left h1 > .live-banner .lb-dot {
+  display: inline-block !important;
+  width: 5px !important;
+  height: 5px !important;
+  border-radius: 50% !important;
+  background: #00e693 !important;
+}
+
+@media (max-width: 520px) {
+  .admin-page .header-left h1 > .live-banner {
+    width: 72px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    flex-basis: 72px !important;
+    margin-left: 1px !important;
+    transform: translateY(-17px) !important;
+  }
+
+  .admin-page .header-left h1 > .live-banner.show:hover {
+    transform: translateY(-19px) !important;
+  }
+
+  .admin-page .header-left h1 > .live-banner .lb-copy {
+    padding: 10px 3px 3px !important;
+    font-size: 7px !important;
+  }
+
+  .admin-page .header-left h1 > .live-banner .lb-copy strong {
+    display: none !important;
+  }
+}
+
 @media (max-width: 300px) {
   .admin-page .admin-month-nav .ml-full {
     display: none !important;
