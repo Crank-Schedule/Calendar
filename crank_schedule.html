@@ -978,18 +978,9 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   // 사용자가 다크 모드를 선택하면 localStorage 값을 우선합니다.
   if(localStorage.getItem('crank_theme') !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20260811-91">
+  <link rel="stylesheet" href="schedule_css.css?v=20260812-97">
 </head>
 <body>
-<a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener">
-  <img id="lbThumb" alt="" hidden>
-  <span class="lb-badge"><span class="lb-dot"></span>LIVE</span>
-  <div class="lb-info">
-    <div class="lb-title" id="lbTitle"></div>
-    <div class="lb-meta" id="lbMeta"></div>
-  </div>
-  <span class="lb-go">치지직에서 보기 ›</span>
-</a>
 <div class="wrap">
 
   <div class="top-sticky">
@@ -1001,6 +992,10 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         </div>
         <h1><span class="h1-full">크랭크 <span>방송</span> 스케줄</span><span class="h1-short">크랭크</span></h1>
       </div>
+      <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener" aria-label="크랭크 치지직 생방송 보기">
+        <span class="lb-copy"><strong>크랭크</strong><span><i class="lb-dot"></i>생방송중</span></span>
+        <img id="lbThumb" alt="치지직 생방송 썸네일" hidden>
+      </a>
       <div class="nav">
         <div class="view-toggle">
           <button id="monthViewBtn" class="active" title="달력 보기" aria-label="달력 보기">🗓️</button>
@@ -2279,23 +2274,32 @@ document.addEventListener('click', (event)=>{
 const CHZZK_CHANNEL_ID = 'de27c33ee2364c4e5007867bb3b96001';
 const liveBanner = document.getElementById('liveBanner');
 const lbThumb = document.getElementById('lbThumb');
-const lbTitle = document.getElementById('lbTitle');
-const lbMeta = document.getElementById('lbMeta');
+const forceLivePreview = new URLSearchParams(location.search).get('testLive') === '1';
+
+function showLiveBanner(live = {}){
+  const imageUrl = String(live.liveImageUrl || '').replace('{type}', '480');
+  liveBanner.title = live.liveTitle || '크랭크 치지직 생방송 보기';
+  lbThumb.src = imageUrl || 'https://i.ytimg.com/vi/F1IheoshEps/mqdefault.jpg';
+  lbThumb.hidden = false;
+  liveBanner.classList.add('show');
+  document.body.classList.add('is-live-now');
+}
 
 async function checkChzzkLive(){
+  if(forceLivePreview){
+    showLiveBanner({ liveTitle: '로컬 생방송 알림 미리보기' });
+    return;
+  }
   try{
     const res = await fetch(`${WORKER_URL}/api/chzzk/live/${CHZZK_CHANNEL_ID}`);
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     const live = json && json.content;
     if(live && live.status === 'OPEN'){
-      lbTitle.textContent = live.liveTitle || '방송 중';
-      lbMeta.textContent = `${live.liveCategoryValue || ''} · 시청자 ${ (live.concurrentUserCount||0).toLocaleString() }명`;
-      lbThumb.src = (live.liveImageUrl || '').replace('{type}', '480');
-      lbThumb.hidden = !lbThumb.src;
-      liveBanner.classList.add('show');
+      showLiveBanner(live);
     } else {
       liveBanner.classList.remove('show');
+      document.body.classList.remove('is-live-now');
       lbThumb.hidden = true;
     }
   }catch(e){

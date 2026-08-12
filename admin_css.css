@@ -1452,14 +1452,22 @@ body.admin-page > .wrap,
 }
 
 .admin-page .admin-month-nav .ml-full {
-  display: none !important;
-}
-
-.admin-page .admin-month-nav .ml-short {
   display: inline !important;
 }
 
-@media (max-width: 420px) {
+.admin-page .admin-month-nav .ml-short {
+  display: none !important;
+}
+
+@media (max-width: 380px) {
+  .admin-page .admin-month-nav .ml-full {
+    display: none !important;
+  }
+
+  .admin-page .admin-month-nav .ml-short {
+    display: inline !important;
+  }
+
   .admin-page .top-sticky {
     padding-bottom: 6px !important;
     margin-bottom: 6px !important;
