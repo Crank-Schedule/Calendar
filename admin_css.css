@@ -1459,7 +1459,7 @@ body.admin-page > .wrap,
   display: none !important;
 }
 
-@media (max-width: 380px) {
+@media (max-width: 300px) {
   .admin-page .admin-month-nav .ml-full {
     display: none !important;
   }
