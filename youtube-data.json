@@ -561,6 +561,20 @@
         "t": "저그 워터밤",
         "done": false
       }
+    },
+    "2026-08-13": {
+      "a_video": {
+        "t": "[SEL3]변현우 김도우",
+        "done": true
+      },
+      "a_short": {
+        "t": "나이스 유닛",
+        "done": true
+      },
+      "b_video": {
+        "t": "엘리엇 일반 엔딩",
+        "done": true
+      }
     }
   },
   "sources": {
