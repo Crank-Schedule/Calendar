@@ -594,6 +594,10 @@
   "sources": {
     "a": [
       {
+        "t": "[Pig8.0] 260813 Serral vs Lambo [Pig8.0] 260813 SHIN vs Rogue [Pig8.0] 260813 Lambo vs Rogue [Pig8.0] 260813 Serral vs SHIN [Pig8.0] 260813 Rogue vs SHIN",
+        "used": null
+      },
+      {
         "t": "[와디먼데이] 260810 신희범 vs 김도욱",
         "used": null
       },
@@ -676,18 +680,6 @@
       {
         "t": "[SEL3]결승 김도욱vs김도우",
         "used": 1785819780504
-      },
-      {
-        "t": "[SEL3]준결승 김도욱vs강민수",
-        "used": 1785505199655
-      },
-      {
-        "t": "[SEL3]맥스팩스vs강민수",
-        "used": 1785505184103
-      },
-      {
-        "t": "[와디먼데이]7/20 3.이병렬 클렘",
-        "used": 1785505178806
       }
     ],
     "b": [
