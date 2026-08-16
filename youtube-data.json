@@ -611,15 +611,15 @@
     "2026-08-16": {
       "a_video": {
         "t": "pig 변현우 박한솔",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "하이돈부시",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 - 18",
-        "done": false
+        "done": true
       }
     }
   },
