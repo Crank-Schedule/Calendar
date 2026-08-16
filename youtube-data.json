@@ -602,6 +602,10 @@
       "b_short": {
         "t": "다리털",
         "done": false
+      },
+      "a_short": {
+        "t": "폭풍 원투",
+        "done": false
       }
     }
   },
