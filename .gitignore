@@ -1,0 +1,9 @@
+# Secrets & local Cloudflare state — never commit
+.env
+.env.*
+.dev.vars
+.wrangler/
+
+# Python cache
+__pycache__/
+*.pyc

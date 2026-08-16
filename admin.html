@@ -461,6 +461,9 @@
     font-size:11px; padding:5px 10px; border-radius: 4px; cursor:pointer;
     border:1px solid currentColor; opacity:0.85; background:transparent;
   }
+  .preset-chip .preset-time{
+    margin-right:4px; font-size:inherit; font-weight:800; opacity:0.78;
+  }
   .preset-chip:hover{opacity:1;}
 
   .form-row{margin-bottom:10px;}
@@ -2642,9 +2645,11 @@ function buildPresets(){
     const chip = document.createElement('button');
     chip.className='preset-chip';
     chip.style.color = getDisplayColor(p.color);
-    chip.innerHTML = withIcon(p);
+    const presetTime = typeof p.time === 'string' ? p.time.trim() : '';
+    chip.innerHTML = `${presetTime ? `<span class="preset-time">${escapeHtml(presetTime)}</span>` : ''}${withIcon(p)}`;
     chip.addEventListener('click', ()=>{
       titleInput.value = p.title;
+      timeInput.value = presetTime;
       pickedColor = p.color;
       if (p.icon !== undefined) pickedIcon = p.icon;
       else pickedIcon = 'auto';
@@ -2654,7 +2659,7 @@ function buildPresets(){
   });
 }
 
-function updateRecentPresets(title, color, icon) {
+function updateRecentPresets(title, color, icon, time) {
   let presets = [];
   try {
     const stored = localStorage.getItem('crank_recent_presets');
@@ -2667,7 +2672,8 @@ function updateRecentPresets(title, color, icon) {
   } catch(e) {}
   
   presets = presets.filter(p => p.title !== title);
-  presets.unshift({title, color, icon});
+  const normalizedTime = typeof time === 'string' ? time.trim() : '';
+  presets.unshift({title, color, icon, ...(normalizedTime ? {time: normalizedTime} : {})});
   presets = presets.slice(0, 10);
   
   try {
@@ -2830,7 +2836,12 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
   }
   markDirty();
   
-  updateRecentPresets(title, finalColor, pickedIcon === 'auto' ? undefined : pickedIcon);
+  updateRecentPresets(
+    title,
+    finalColor,
+    pickedIcon === 'auto' ? undefined : pickedIcon,
+    timeInput.value
+  );
   
 
   titleInput.value=''; timeInput.value=''; linkInput.value='';

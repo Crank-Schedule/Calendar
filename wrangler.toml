@@ -5,6 +5,13 @@ compatibility_date = "2026-07-11"
 [observability]
 enabled = true
 
+# Required encrypted secrets (do not put their values in this file):
+# - GITHUB_TOKEN
+# - ADMIN_PASSWORD          (CranK admin)
+# - ONSYDE_ADMIN_PASSWORD   (ONSYDE admin)
+# - SIGNING_SECRET
+# Configure with: npx wrangler secret put <NAME>
+
 # Cloudflare 환경변수(Secrets) 안내
 # 아래 세 가지 변수는 소스코드에 평문으로 남기지 않고,
 # 배포 전 Cloudflare Dashboard의 Worker Settings > Variables 항목이나
@@ -16,4 +23,4 @@ enabled = true
 [vars]
 GITHUB_OWNER = "crank-schedule"
 GITHUB_REPO = "Calendar"
-ALLOWED_ORIGINS = "https://crank-schedule.github.io,http://localhost:8080,http://127.0.0.1:8080"
+ALLOWED_ORIGINS = "https://crank-schedule.github.io,http://localhost:8080,http://127.0.0.1:8080,http://localhost:8879,http://127.0.0.1:8879"

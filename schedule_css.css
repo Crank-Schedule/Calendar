@@ -1512,6 +1512,109 @@ h1 span {
   }
 }
 
+/* ONSYDE team events use their own black/green card language instead of a
+   text prefix, so the event title keeps the full available width. */
+.tag.onsyde-tag,
+.schedule-tag.onsyde-tag,
+.agenda-tag.onsyde-tag {
+  position: relative !important;
+  border: 1px solid #39f27f !important;
+  border-left: 6px solid #b6f23d !important;
+  border-bottom-color: #1fbd5a !important;
+  border-radius: 3px 11px 3px 11px !important;
+  background:
+    linear-gradient(135deg, rgba(182, 242, 61, .18) 0 11px, transparent 11px),
+    repeating-linear-gradient(135deg, rgba(57, 242, 127, .035) 0 3px, transparent 3px 9px),
+    linear-gradient(100deg, #050a07 0%, #10251a 58%, #07110b 100%) !important;
+  color: #f7fff9 !important;
+  box-shadow: inset 0 0 0 1px rgba(182, 242, 61, .10) !important;
+}
+
+.tag.onsyde-tag::after,
+.schedule-tag.onsyde-tag::after,
+.agenda-tag.onsyde-tag::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #b6f23d;
+  border-right: 2px solid #39f27f;
+  opacity: .95;
+  pointer-events: none;
+}
+
+.tag.onsyde-tag .tag-inline-time,
+.tag.onsyde-tag .tag-icon,
+.tag.onsyde-tag .tag-abbr,
+.schedule-tag.onsyde-tag .tag-inline-time,
+.agenda-tag.onsyde-tag .tag-inline-time {
+  color: #b6f23d !important;
+}
+
+.tag.onsyde-tag .tag-title,
+.tag.onsyde-tag .title-wrap,
+.schedule-tag.onsyde-tag .marquee-text,
+.agenda-tag.onsyde-tag > span {
+  color: #f7fff9 !important;
+}
+
+.entry.onsyde-entry {
+  border: 1px solid #39f27f !important;
+  border-left: 6px solid #b6f23d !important;
+  border-radius: 3px 12px 3px 12px !important;
+  background:
+    repeating-linear-gradient(135deg, rgba(57, 242, 127, .035) 0 3px, transparent 3px 9px),
+    linear-gradient(100deg, #050a07, #10251a) !important;
+  color: #f7fff9 !important;
+  box-shadow: inset 0 0 0 1px rgba(182, 242, 61, .10) !important;
+}
+
+:root[data-theme="light"] .tag.onsyde-tag,
+:root[data-theme="light"] .schedule-tag.onsyde-tag,
+:root[data-theme="light"] .agenda-tag.onsyde-tag {
+  border-color: #20b957 !important;
+  border-left-color: #9bcc28 !important;
+  border-bottom-color: #148b41 !important;
+  background:
+    linear-gradient(135deg, rgba(182, 242, 61, .18) 0 11px, transparent 11px),
+    repeating-linear-gradient(135deg, rgba(57, 242, 127, .035) 0 3px, transparent 3px 9px),
+    linear-gradient(100deg, #050a07 0%, #10251a 58%, #07110b 100%) !important;
+  color: #f7fff9 !important;
+  box-shadow: inset 0 0 0 1px rgba(182, 242, 61, .10) !important;
+}
+
+:root[data-theme="light"] .entry.onsyde-entry {
+  border-color: #20b957 !important;
+  border-left-color: #9bcc28 !important;
+  background:
+    repeating-linear-gradient(135deg, rgba(57, 242, 127, .035) 0 3px, transparent 3px 9px),
+    linear-gradient(100deg, #050a07, #10251a) !important;
+  color: #f7fff9 !important;
+}
+
+/* At 1281px the header changes from stacked to side-by-side.  A fixed 600px
+   replay strip leaves too little room for the full title and controls, so
+   reserve a balanced middle-width track until the regular desktop layout fits. */
+@media (min-width: 1281px) and (max-width: 1365px) {
+  .top-sticky .video-cards {
+    width: clamp(512px, 40vw, 520px) !important;
+    max-width: 520px !important;
+    flex: 0 0 clamp(512px, 40vw, 520px) !important;
+  }
+
+  .top-sticky .header {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .top-sticky .header-left,
+  .top-sticky h1 {
+    min-width: 0 !important;
+  }
+}
+
 @media (max-width: 560px) {
   /* 아주 좁은 7열 달력에서는 잘린 문장 대신 의미 있는 약칭을 보여줍니다.
      전체 제목은 날짜 상세 모달과 title 속성에서 계속 확인할 수 있습니다. */
@@ -3191,6 +3294,116 @@ h1 span {
   }
 }
 
+/* Compact ONSYDE switch: match the surrounding controls at every breakpoint. */
+.schedule-switch-link {
+  --onsyde-switch-size: 34px;
+  --onsyde-logo-width: 42px;
+  --onsyde-logo-crop-height: 24px;
+  width: var(--onsyde-switch-size) !important;
+  height: var(--onsyde-switch-size) !important;
+  min-width: var(--onsyde-switch-size) !important;
+  padding: 0 !important;
+  border: 1px solid rgba(57, 242, 127, .48) !important;
+  border-radius: 11px !important;
+  background: rgba(57, 242, 127, .08) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  flex: 0 0 var(--onsyde-switch-size) !important;
+  text-decoration: none !important;
+}
+
+.schedule-switch-link:hover {
+  border-color: #39f27f !important;
+  background: rgba(57, 242, 127, .15) !important;
+  transform: translateY(-1px);
+}
+
+.schedule-switch-logo-crop {
+  position: relative;
+  display: block;
+  width: calc(var(--onsyde-logo-width) * .56);
+  height: var(--onsyde-logo-crop-height);
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.schedule-switch-logo {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--onsyde-logo-width);
+  max-width: none;
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.schedule-switch-logo-light { display: none; }
+:root[data-theme="light"] .schedule-switch-logo-dark { display: none; }
+:root[data-theme="light"] .schedule-switch-logo-light { display: block; }
+
+@media (max-width: 900px) {
+  .schedule-switch-link {
+    --onsyde-switch-size: 30px;
+    --onsyde-logo-width: 37px;
+    --onsyde-logo-crop-height: 21px;
+    border-radius: 9px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .schedule-switch-link {
+    --onsyde-switch-size: 32px;
+    --onsyde-logo-width: 40px;
+    --onsyde-logo-crop-height: 23px;
+  }
+}
+
+@media (max-width: 340px) {
+  .nav {
+    gap: 1px !important;
+  }
+
+  .nav button,
+  .nav .today-btn,
+  .theme-toggle-inline,
+  .view-toggle {
+    height: 28px !important;
+  }
+
+  .nav button,
+  .theme-toggle-inline {
+    width: 28px !important;
+  }
+
+  .view-toggle button,
+  .nav .today-btn {
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+  }
+
+  .month-label {
+    min-width: 56px !important;
+    margin: 0 !important;
+  }
+
+  #themeToggleBtn {
+    width: 28px !important;
+    height: 28px !important;
+    margin-left: 0 !important;
+  }
+
+  .schedule-switch-link {
+    --onsyde-switch-size: 28px;
+    --onsyde-logo-width: 35px;
+    --onsyde-logo-crop-height: 20px;
+    border-radius: 8px !important;
+  }
+}
+
 /* Protect two-digit dates when a narrow cell has both travel and replay
    actions. The date never shrinks; actions use the remaining column and wrap
    inside that column if the cell cannot fit them on one row. */
@@ -3518,4 +3731,123 @@ h1 span {
     -webkit-line-clamp: var(--desktop-title-lines) !important;
     text-overflow: ellipsis !important;
   }
+}
+
+/* Final ONSYDE skin: calendar/list responsive rules above must never turn a
+   team event back into a regular pastel personal-event card. */
+:root #scheduleGridSection .tag.onsyde-tag,
+:root .schedule-tag.onsyde-tag,
+:root .agenda-tag.onsyde-tag {
+  border: 1px solid #245b3a !important;
+  border-left: 6px solid #527a38 !important;
+  border-bottom-color: #1d4c30 !important;
+  border-radius: 3px 11px 3px 11px !important;
+  background:
+    linear-gradient(135deg, rgba(82, 122, 56, .13) 0 11px, transparent 11px),
+    repeating-linear-gradient(135deg, rgba(45, 105, 67, .025) 0 3px, transparent 3px 9px),
+    linear-gradient(100deg, #040705 0%, #09120d 62%, #050906 100%) !important;
+  color: #c8d3cb !important;
+  box-shadow: inset 0 0 0 1px rgba(82, 122, 56, .06) !important;
+}
+
+:root #scheduleGridSection .tag.onsyde-tag .tag-title,
+:root #scheduleGridSection .tag.onsyde-tag .title-wrap,
+:root .schedule-tag.onsyde-tag .marquee-text,
+:root .agenda-tag.onsyde-tag > span {
+  color: #c8d3cb !important;
+}
+
+:root #scheduleGridSection .tag.onsyde-tag .tag-inline-time,
+:root #scheduleGridSection .tag.onsyde-tag .tag-icon,
+:root #scheduleGridSection .tag.onsyde-tag .tag-abbr,
+:root .schedule-tag.onsyde-tag .tag-inline-time,
+:root .agenda-tag.onsyde-tag .tag-inline-time {
+  color: #789c55 !important;
+}
+
+:root .entry.onsyde-entry {
+  border: 1px solid #245b3a !important;
+  border-left: 6px solid #527a38 !important;
+  border-radius: 3px 12px 3px 12px !important;
+  background:
+    repeating-linear-gradient(135deg, rgba(45, 105, 67, .025) 0 3px, transparent 3px 9px),
+    linear-gradient(100deg, #040705, #09120d) !important;
+  color: #c8d3cb !important;
+  box-shadow: inset 0 0 0 1px rgba(82, 122, 56, .06) !important;
+}
+
+/* ONSYDE events use the team symbol rather than the generic StarCraft II icon.
+   Crop the wordmark from the source logo so it stays legible at tag size. */
+.onsyde-event-logo {
+  position: relative;
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  overflow: hidden;
+  flex: 0 0 13px;
+  vertical-align: -2px;
+}
+
+.onsyde-event-logo > img {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 22px !important;
+  height: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  transform: translateX(-50%);
+  object-fit: initial !important;
+  border-radius: 0 !important;
+}
+
+.tag.onsyde-tag .tag-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 13px;
+}
+
+/* A team match that is also on CranK's personal broadcast schedule gets the
+   full neon ONSYDE identity. Team-only events above intentionally stay muted. */
+:root #scheduleGridSection .tag.onsyde-personal-tag,
+:root .schedule-tag.onsyde-personal-tag {
+  border-color: #39f27f !important;
+  border-left-color: #b6f23d !important;
+  border-bottom-color: #1fbd5a !important;
+  background:
+    linear-gradient(225deg, #39f27f 0 7px, transparent 7px),
+    linear-gradient(135deg, rgba(182, 242, 61, .20) 0 11px, transparent 11px),
+    repeating-linear-gradient(135deg, rgba(57, 242, 127, .05) 0 3px, transparent 3px 9px),
+    linear-gradient(100deg, #030705 0%, #102b1c 60%, #06110a 100%) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(182, 242, 61, .13),
+    0 0 0 1px rgba(57, 242, 127, .12) !important;
+}
+
+:root #scheduleGridSection .tag.onsyde-personal-tag .tag-title,
+:root #scheduleGridSection .tag.onsyde-personal-tag .title-wrap,
+:root .schedule-tag.onsyde-personal-tag .marquee-text {
+  color: #f7fff9 !important;
+}
+
+:root #scheduleGridSection .tag.onsyde-personal-tag .tag-inline-time,
+:root #scheduleGridSection .tag.onsyde-personal-tag .tag-icon,
+:root #scheduleGridSection .tag.onsyde-personal-tag .tag-abbr,
+:root .schedule-tag.onsyde-personal-tag .tag-inline-time {
+  color: #b6f23d !important;
+}
+
+:root .entry.onsyde-personal-entry {
+  border-color: #39f27f !important;
+  border-left-color: #b6f23d !important;
+  border-bottom-color: #1fbd5a !important;
+  background:
+    linear-gradient(225deg, #39f27f 0 7px, transparent 7px),
+    repeating-linear-gradient(135deg, rgba(57, 242, 127, .05) 0 3px, transparent 3px 9px),
+    linear-gradient(100deg, #030705, #102b1c) !important;
+  color: #f7fff9 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(182, 242, 61, .13),
+    0 0 0 1px rgba(57, 242, 127, .12) !important;
 }
