@@ -593,19 +593,19 @@
     "2026-08-15": {
       "a_video": {
         "t": "도유컵 이신형 전태양",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 17",
-        "done": false
+        "done": true
       },
       "b_short": {
         "t": "다리털",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "폭풍 원투",
-        "done": false
+        "done": true
       }
     },
     "2026-08-16": {
