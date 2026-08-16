@@ -607,6 +607,20 @@
         "t": "폭풍 원투",
         "done": false
       }
+    },
+    "2026-08-16": {
+      "a_video": {
+        "t": "pig 변현우 박한솔",
+        "done": false
+      },
+      "a_short": {
+        "t": "하이돈부시",
+        "done": false
+      },
+      "b_video": {
+        "t": "자날 3회차 - 18",
+        "done": false
+      }
     }
   },
   "sources": {
