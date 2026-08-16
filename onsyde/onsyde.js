@@ -44,7 +44,16 @@
   const todayDate = new Date();
   let year = requestedMatch ? Number(requestedMatch[1]) : todayDate.getFullYear();
   let month = requestedMatch ? Number(requestedMatch[2]) : todayDate.getMonth() + 1;
-  let view = window.matchMedia("(max-width: 720px)").matches ? "agenda" : "calendar";
+  // 화면이 좁을 때 7열 달력을 억지로 줄이지 않고 리스트(agenda)를 기본으로 사용합니다. (기존 일정표와 동일)
+  const narrowViewMql = window.matchMedia("(max-width: 720px)");
+  const viewBucket = () => (narrowViewMql.matches ? "narrow" : "wide");
+  const viewPrefKey = () => `onsyde_view_mode_${viewBucket()}`;
+  function preferredView() {
+    const saved = localStorage.getItem(viewPrefKey());
+    if (saved === "calendar" || saved === "agenda") return saved;
+    return viewBucket() === "narrow" ? "agenda" : "calendar";
+  }
+  let view = preferredView();
   let crankMonthData = {};
   let crankCoveredEventIndexes = new Set();
   let crankCoverageRequest = 0;
@@ -256,8 +265,11 @@
     }
   }
 
-  function setView(nextView) {
+  function setView(nextView, persist) {
     view = nextView;
+    if (persist) {
+      try { localStorage.setItem(viewPrefKey(), nextView); } catch (e) {}
+    }
     calendarView.hidden = view !== "calendar";
     agendaView.hidden = view !== "agenda";
     document.querySelectorAll("[data-view]").forEach(button => button.classList.toggle("is-active", button.dataset.view === view));
@@ -291,7 +303,10 @@
     render();
   });
 
-  document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => setView(button.dataset.view)));
+  document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => setView(button.dataset.view, true)));
+
+  // 창 폭이 720px 경계를 넘나들 때 실시간으로 뷰를 전환합니다. (넓게 열었다가 좁혀도 달력이 잘리지 않도록)
+  narrowViewMql.addEventListener("change", () => setView(preferredView()));
 
   document.addEventListener("click", event => {
     const card = event.target.closest(".event-card");

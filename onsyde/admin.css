@@ -93,6 +93,15 @@
   background: var(--green); color: #031007; cursor: pointer; font-size: 11px; font-weight: 900;
 }
 
+/* 가로폭이 줄어들 때 박스와 폰트를 크랭크 admin과 같은 단계(980/720/560/480/340)로
+   점진적으로 줄입니다. max-width 블록은 큰 값 → 작은 값 순서를 지켜야 합니다. */
+@media(max-width:980px){
+  .admin-hero { min-height: 74px; padding: 13px 15px; }
+  .admin-day { min-height: clamp(90px, 11vh, 128px); }
+  .admin-day > header { height: 34px; }
+  .editor-heading h2 { font-size: 22px; }
+}
+
 @media(max-width:720px){
   .admin-shell { padding: 9px; }
   .admin-hero { padding: 12px; flex-wrap: wrap; row-gap: 10px; }
@@ -110,4 +119,34 @@
   .event-editor form { grid-template-columns: 1fr; padding: 18px; }
   .event-editor label { grid-column: 1!important; }
   .editor-heading, .editor-actions { grid-column: 1; }
+}
+
+@media(max-width:560px){
+  .admin-shell { padding: 8px; }
+  .admin-hero { padding: 11px; }
+  .admin-day { min-height: 70px; }
+  .admin-day > header { height: 32px; padding: 6px 9px; }
+  .admin-event { min-height: 28px; padding: 4px 7px; }
+  .admin-event span { font-size: 10px; }
+  .event-editor form { padding: 16px; gap: 10px; }
+  .editor-heading h2 { font-size: 21px; }
+  .editor-actions button { padding: 0 10px; }
+}
+
+@media(max-width:480px){
+  .admin-hero h1 { font-size: clamp(11px, 3.6vw, 13px); }
+  .admin-day { min-height: 66px; }
+  .admin-day > header { height: 30px; }
+  .day-add { width: 21px; height: 21px; }
+  .event-editor form { padding: 14px; gap: 9px; }
+  .editor-heading h2 { font-size: 20px; }
+  .editor-actions button { padding: 0 9px; font-size: 9px; }
+}
+
+@media(max-width:340px){
+  .admin-shell { padding: 6px; }
+  .admin-event span { font-size: 9px; }
+  .event-editor form { padding: 12px; }
+  .editor-heading h2 { font-size: 19px; }
+  .editor-actions { gap: 6px; }
 }
