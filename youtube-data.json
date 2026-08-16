@@ -589,6 +589,20 @@
         "t": "똑똑해진 리버",
         "done": true
       }
+    },
+    "2026-08-15": {
+      "a_video": {
+        "t": "pig 변현우 박한솔",
+        "done": false
+      },
+      "b_video": {
+        "t": "자날 3회차 17",
+        "done": false
+      },
+      "b_short": {
+        "t": "다리털",
+        "done": false
+      }
     }
   },
   "sources": {
