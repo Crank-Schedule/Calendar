@@ -551,15 +551,15 @@
     "2026-08-12": {
       "a_video": {
         "t": "[와디 먼데이]신희범 정재영",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 - 15",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "저그 워터밤",
-        "done": false
+        "done": true
       }
     },
     "2026-08-13": {
