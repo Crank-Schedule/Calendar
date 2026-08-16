@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050807">
+  <title>ONSYDE SC2 Schedule</title>
+  <link rel="stylesheet" href="onsyde.css?v=20260816-22">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="hero">
+      <div class="brand-block">
+        <span class="logo-symbol" aria-hidden="true">
+          <img class="logo-for-dark" src="assets/onsyde-logo-dark.png" alt="">
+          <img class="logo-for-light" src="assets/onsyde-logo-light.png" alt="">
+        </span>
+        <h1><span class="brand-name">ONSYDE</span><span class="schedule-name">SCHEDULE</span></h1>
+      </div>
+
+      <section class="toolbar" aria-label="Schedule controls">
+        <nav class="schedule-links" aria-label="Schedule links">
+          <a id="crankScheduleLink" class="schedule-link" href="../crank_schedule.html"><span class="schedule-link-full">CRANK</span><span class="schedule-link-short">C</span></a>
+        </nav>
+        <div class="view-switch" role="group" aria-label="Calendar view">
+          <button type="button" data-view="calendar" class="is-active" title="Calendar">▦</button>
+          <button type="button" data-view="agenda" title="Agenda">☷</button>
+        </div>
+        <div class="month-nav">
+          <button type="button" id="prevMonth" aria-label="Previous month">‹</button>
+          <div class="month-title">
+            <span id="monthLabel">March</span>
+            <strong id="yearLabel">2026</strong>
+          </div>
+          <button type="button" id="nextMonth" aria-label="Next month">›</button>
+          <button type="button" id="todayBtn" class="today-btn" data-i18n="today">Today</button>
+        </div>
+        <div class="settings-wrap">
+          <button type="button" id="settingsToggle" class="icon-button" aria-label="Settings" aria-haspopup="true" aria-expanded="false">⚙</button>
+          <div id="settingsPanel" class="settings-panel" hidden>
+            <div class="settings-row">
+              <span class="settings-label" data-i18n="settingsLanguage">Language</span>
+              <div class="settings-seg" role="group" aria-label="Language">
+                <button type="button" data-lang="ko" title="한국어">KR</button>
+                <button type="button" data-lang="en" title="English">EN</button>
+              </div>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label" data-i18n="settingsTheme">Theme</span>
+              <div class="settings-seg" role="group" aria-label="Theme">
+                <button type="button" data-theme-choice="dark" aria-label="Dark">☾</button>
+                <button type="button" data-theme-choice="light" aria-label="Light">☀</button>
+              </div>
+            </div>
+            <div class="settings-row settings-row-admin">
+              <span class="settings-label" data-i18n="settingsAdmin">Admin</span>
+              <a id="onsydeAdminLink" class="settings-admin-link" href="admin.html" data-i18n="adminLogin">Log in</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <main>
+
+      <div class="legend" aria-label="Color legend">
+        <span><i class="legend-dot tournament"></i><span data-i18n="typeTournament">TOURNAMENT</span></span>
+        <span><i class="legend-dot team"></i><span data-i18n="typeTeam">TEAM LEAGUE</span></span>
+        <span><i class="legend-dot match"></i><span data-i18n="typeMatch">MATCH</span></span>
+      </div>
+
+      <section id="calendarView" class="calendar-view">
+        <div class="weekdays" aria-hidden="true">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+      </section>
+
+      <section id="agendaView" class="agenda-view" hidden>
+        <div id="agendaList" class="agenda-list"></div>
+      </section>
+    </main>
+
+  </div>
+
+  <dialog id="eventDialog" class="event-dialog" aria-labelledby="eventDialogTitle">
+    <button type="button" class="dialog-close" aria-label="Close details">×</button>
+    <div class="dialog-meta">
+      <span id="eventDialogType"></span>
+      <time id="eventDialogDate"></time>
+    </div>
+    <h2 id="eventDialogTitle"></h2>
+    <p id="eventDialogTime" class="dialog-time"></p>
+    <p id="eventDialogDetail" class="dialog-detail"></p>
+  </dialog>
+
+  <script src="schedule-data.js?v=20260814-8"></script>
+  <script src="onsyde-store.js?v=20260816-5"></script>
+  <script src="onsyde.js?v=20260816-19"></script>
+</body>
+</html>

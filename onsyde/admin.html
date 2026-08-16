@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050807">
+  <title>ONSYDE Schedule Admin</title>
+  <link rel="stylesheet" href="onsyde.css?v=20260816-22">
+  <link rel="stylesheet" href="admin.css?v=20260816-6">
+</head>
+<body class="admin-page auth-pending">
+  <section id="adminAuthGate" class="admin-auth-gate" aria-live="polite">
+    <div class="admin-auth-card">
+      <img class="logo-for-dark" src="assets/onsyde-logo-dark.png" alt="ONSYDE">
+      <img class="logo-for-light" src="assets/onsyde-logo-light.png" alt="ONSYDE">
+      <h2>ONSYDE ADMIN</h2>
+      <p id="adminAuthMessage">Authentication is required.</p>
+      <button type="button" id="retryAdminLogin">UNLOCK</button>
+    </div>
+  </section>
+  <div class="admin-shell">
+    <header class="admin-hero">
+      <div class="brand-block">
+        <span class="logo-symbol" aria-hidden="true">
+          <img class="logo-for-dark" src="assets/onsyde-logo-dark.png" alt="">
+          <img class="logo-for-light" src="assets/onsyde-logo-light.png" alt="">
+        </span>
+        <h1><span class="brand-name">ONSYDE</span><span class="schedule-name">ADMIN</span></h1>
+        <span class="admin-status">SIGNED IN</span>
+      </div>
+      <div class="month-nav">
+        <button type="button" id="prevMonth" aria-label="Previous month">‹</button>
+        <div class="month-title"><span id="monthLabel">March</span><strong id="yearLabel">2026</strong></div>
+        <button type="button" id="nextMonth" aria-label="Next month">›</button>
+        <button type="button" id="todayBtn" class="today-btn" title="Today">Today</button>
+      </div>
+      <div class="admin-actions">
+        <a id="publicScheduleLink" class="schedule-link" href="index.html" title="ONSYDE schedule"><span class="action-wide">SCHEDULE</span><span class="action-short">S</span></a>
+        <button type="button" id="lockAdmin" class="icon-button" title="Log out" aria-label="Log out">🔓</button>
+        <button type="button" id="themeToggle" class="icon-button" aria-label="Toggle color theme">☼</button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <div class="weekdays" aria-hidden="true">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div id="adminGrid" class="admin-grid"></div>
+    </main>
+  </div>
+
+  <dialog id="eventEditor" class="event-editor" aria-labelledby="editorTitle">
+    <form id="eventForm" method="dialog">
+      <div class="editor-heading">
+        <div><span>ONSYDE SCHEDULE</span><h2 id="editorTitle">Add event</h2></div>
+        <button type="button" id="closeEditor" class="dialog-close" aria-label="Close">×</button>
+      </div>
+      <input id="eventIndex" type="hidden">
+      <label>Date (KST)<input id="eventDate" name="date" type="date" required></label>
+      <label>Type<select id="eventType" name="type"><option value="team">Team league</option><option value="match">Match</option><option value="tournament">Tournament</option></select></label>
+      <label>Title<input id="eventTitle" name="title" type="text" maxlength="140" required placeholder="WardiTV Summer Cup · Group B"></label>
+      <label>Details<textarea id="eventDetail" name="detail" rows="3" maxlength="300" placeholder="SHIN vs ..."></textarea></label>
+      <label>Compact label<input id="eventShort" name="short" type="text" maxlength="80" placeholder="SHIN · WardiTV"></label>
+      <label>Start time (KST · 24h)<span class="time-fields"><select id="eventHour"></select><span class="time-colon">:</span><select id="eventMinute"></select></span></label>
+      <div class="editor-actions">
+        <button type="button" id="deleteEvent" class="delete-event">DELETE</button>
+        <span></span>
+        <button type="button" id="cancelEditor">CANCEL</button>
+        <button type="submit" class="save-event">SAVE</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="adminToast" class="admin-toast" role="status" aria-live="polite"></div>
+
+  <script src="schedule-data.js?v=20260814-8"></script>
+  <script src="onsyde-store.js?v=20260816-5"></script>
+  <script src="admin.js?v=20260816-10"></script>
+</body>
+</html>

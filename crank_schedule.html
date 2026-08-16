@@ -971,6 +971,11 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
     outline:2px solid var(--neon-cyan); outline-offset:2px;
   }
+  .tag.onsyde-tag, .schedule-tag.onsyde-tag, .agenda-tag.onsyde-tag{
+    border-color:#39f27f !important; background:linear-gradient(135deg,rgba(57,242,127,.17),rgba(11,33,20,.12)) !important;
+    box-shadow:inset 3px 0 0 #39f27f;
+  }
+  .entry.onsyde-entry{border-color:rgba(57,242,127,.45); background:rgba(57,242,127,.08);}
 </style>
 
 <script>
@@ -978,7 +983,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   // 사용자가 다크 모드를 선택하면 localStorage 값을 우선합니다.
   if(localStorage.getItem('crank_theme') !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20260812-98">
+  <link rel="stylesheet" href="schedule_css.css?v=20260815-107">
 </head>
 <body>
 <div class="wrap">
@@ -1006,6 +1011,12 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         <button id="nextBtn" aria-label="다음 달" title="다음 달">›</button>
         <button class="today-btn" id="todayBtn" aria-label="오늘로 이동">오늘</button>
         <button id="themeToggleBtn" class="theme-toggle-inline" style="margin-left:4px;" aria-label="라이트 모드로 전환" title="테마 전환">☀️</button>
+        <a id="onsydeScheduleLink" class="schedule-switch-link" href="onsyde/index.html" aria-label="ONSYDE 일정표로 이동" title="ONSYDE 일정표">
+          <span class="schedule-switch-logo-crop" aria-hidden="true">
+            <img class="schedule-switch-logo schedule-switch-logo-dark" src="onsyde/assets/onsyde-logo-dark.png" alt="">
+            <img class="schedule-switch-logo schedule-switch-logo-light" src="onsyde/assets/onsyde-logo-light.png" alt="">
+          </span>
+        </a>
       </div>
     </div>
     <div class="video-cards" id="videoCards"></div>
@@ -1079,6 +1090,8 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   </div>
 </div>
 
+<script src="onsyde/schedule-data.js?v=20260814-8"></script>
+<script src="onsyde/onsyde-store.js?v=20260816-5"></script>
 <script>
 
 // ===== 보안: 일정 제목/링크는 외부(저장소 JSON) 데이터이므로 항상 이스케이프해서 출력 =====
@@ -1199,6 +1212,7 @@ function parseTitle(en) {
     
     if(explicitIcon === 'lol') { iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'sc2') { iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'onsyde') { iconHtml = `<span class="onsyde-event-logo" aria-hidden="true"><img src="onsyde/assets/onsyde-logo-dark.png" alt=""></span>`; customIcon=true;}
     else if(explicitIcon === 'sc1') { iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'er') { iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'mk') { iconHtml = `<img src="assets/images/mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
@@ -1356,7 +1370,11 @@ function withIcon(en){
 
 
 let savedDate = sessionStorage.getItem('viewingDate');
-let current = savedDate ? new Date(savedDate) : new Date(); // 오늘 날짜를 기본 기준으로 사용
+const requestedMonthParam = new URLSearchParams(location.search).get('month');
+const requestedMonthMatch = /^(\d{4})-(\d{2})$/.exec(requestedMonthParam || '');
+let current = requestedMonthMatch && Number(requestedMonthMatch[2]) >= 1 && Number(requestedMonthMatch[2]) <= 12
+  ? new Date(Number(requestedMonthMatch[1]), Number(requestedMonthMatch[2]) - 1, 1)
+  : (savedDate ? new Date(savedDate) : new Date()); // 오늘 날짜를 기본 기준으로 사용
 let activeDate = null; // 모달에서 다루는 날짜 (Date 객체)
 let lastModalFocus = null;
 let cache = {};
@@ -1454,6 +1472,97 @@ async function loadMonth(d){
 }
 // saveMonth removed
 
+function getOnsydeEntriesForDate(dateObj){
+  if(!window.ONSYDE_STORE) return [];
+  return window.ONSYDE_STORE.eventsForDate(dateObj).map(window.ONSYDE_STORE.toCrankEntry);
+}
+
+function scheduleSeriesKey(entry){
+  const onsydeEvent = entry && entry.__onsydeEvent;
+  const source = [entry?.title, onsydeEvent?.title, onsydeEvent?.short]
+    .filter(Boolean).join(' ').toUpperCase();
+  const compact = source.replace(/[^A-Z0-9가-힣]/g, '');
+  if(compact.includes('PIGFEST8') || compact.includes('PIG8')) return 'pig8';
+  if(compact.includes('WARDITV') && compact.includes('SUMMER')) return 'warditv-summer';
+  if(compact.includes('WARDITV') && compact.includes('SPRING')) return 'warditv-spring';
+  if(compact.includes('WARDITV') && compact.includes('WINTER')) return 'warditv-winter';
+  if(compact.includes('GSLCK')) return 'gsl-ck';
+  if(compact.includes('GSTL')) return 'gstl';
+  if(compact.includes('RSL')) return 'rsl';
+  if(compact.includes('MOG2')) return 'mog2';
+  if(compact.includes('HOMESTORY') || compact.includes('HSC')) return 'hsc';
+  if(compact.includes('DOUYU')) return 'douyu';
+  if(compact.includes('TLMC')) return 'tlmc';
+  if(compact.includes('WARDI') && compact.includes('TEAMLEAGUE')) return 'wardi-team-league';
+  if(compact.includes('GSL')) return 'gsl';
+  return compact.length >= 5 ? compact : '';
+}
+
+function onsydePlayerNames(entry){
+  const event = entry?.__onsydeEvent || {};
+  const source = `${event.detail || ''} ${event.short || ''}`;
+  return ['Maru', 'Zoun', 'Krystianer', 'Ryung', 'Rex', 'Neeb', 'SHIN']
+    .filter(name => new RegExp(`\\b${name}\\b`, 'i').test(source));
+}
+
+function personalTitleContainsPlayer(title, player){
+  const aliases = {
+    Maru: /Maru|조성주/i,
+    Zoun: /Zoun|박한솔/i,
+    Krystianer: /Krystianer/i,
+    Ryung: /Ryung|김동원/i,
+    Rex: /Rex/i,
+    Neeb: /Neeb/i,
+    SHIN: /SHIN|신희범/i
+  };
+  return aliases[player]?.test(String(title || ''));
+}
+
+function mergePersonalOnsydeEntry(personalEntry, onsydeEntry){
+  const players = onsydePlayerNames(onsydeEntry)
+    .filter(player => !personalTitleContainsPlayer(personalEntry.title, player));
+  return {
+    ...personalEntry,
+    title: players.length ? `${personalEntry.title} · ${players.join('/')}` : personalEntry.title,
+    // A merged card represents the actual team match, so its official match
+    // time takes precedence over an outdated personal-calendar time.
+    time: onsydeEntry.time || personalEntry.time || '',
+    icon: 'onsyde',
+    color: onsydeEntry.color,
+    __onsyde: true,
+    __onsydeMerged: true,
+    __onsydeEvent: onsydeEntry.__onsydeEvent,
+    __personalEntry: personalEntry
+  };
+}
+
+function mergePersonalAndOnsydeEntries(dateObj, personalEntries){
+  const remainingOnsyde = getOnsydeEntriesForDate(dateObj);
+  const personal = (personalEntries || []).map(personalEntry => {
+    const personalKey = scheduleSeriesKey(personalEntry);
+    if(!personalKey) return personalEntry;
+    const matchIndex = remainingOnsyde.findIndex(teamEntry => scheduleSeriesKey(teamEntry) === personalKey);
+    if(matchIndex < 0) return personalEntry;
+    const [teamEntry] = remainingOnsyde.splice(matchIndex, 1);
+    return mergePersonalOnsydeEntry(personalEntry, teamEntry);
+  });
+  return { personal, onsyde: remainingOnsyde, entries: [...personal, ...remainingOnsyde] };
+}
+
+function getMergedEntries(dateObj, personalEntries){
+  return mergePersonalAndOnsydeEntries(dateObj, personalEntries).entries;
+}
+
+function getCalendarEntries(personalRegulars, onsydeEntries, limit = 4){
+  const teamItems = onsydeEntries.slice(0, limit);
+  const personalSlots = Math.max(0, limit - teamItems.length);
+  const shownPersonal = personalRegulars.slice(0, personalSlots);
+  return {
+    entries: [...shownPersonal, ...teamItems],
+    hidden: Math.max(0, personalRegulars.length - shownPersonal.length) + Math.max(0, onsydeEntries.length - teamItems.length)
+  };
+}
+
 
 function getFirstChar(title) {
   if(!title) return '';
@@ -1466,7 +1575,7 @@ function getFirstChar(title) {
 function buildTagEl(en){
   const parsed = parseTitle(en);
   const t = document.createElement('div');
-  t.className='tag' + (parsed.customIcon ? ' tag-custom-icon' : '') + (en.time ? ' has-time' : '');
+  t.className='tag' + (parsed.customIcon ? ' tag-custom-icon' : '') + (en.time ? ' has-time' : '') + (en.__onsyde ? ' onsyde-tag' : '') + (en.__onsydeMerged ? ' onsyde-personal-tag' : '');
   t.setAttribute('data-first-char', getFirstChar(parsed.displayTitle));
   t.style.borderColor = getDisplayColor(en.color);
   t.style.setProperty('--tag-color', getDisplayColor(en.color));
@@ -1688,7 +1797,11 @@ async function renderCalendarMonth(){
   }
   for(let day=1; day<=daysInMonth; day++){
     const cellDate = new Date(current.getFullYear(), current.getMonth(), day);
-    const entries = data[day] || [];
+    const rawPersonalEntries = data[day] || [];
+    const mergedDay = mergePersonalAndOnsydeEntries(cellDate, rawPersonalEntries);
+    const personalEntries = mergedDay.personal;
+    const onsydeEntries = mergedDay.onsyde;
+    const entries = mergedDay.entries;
     
     const c = document.createElement('div');
     c.className='cell';
@@ -1711,8 +1824,9 @@ async function renderCalendarMonth(){
 
     const specialKeywords = ['휴방', '출국', '출장', '귀국', '입국', '결방', '올출', '올귀'];
     const specials = entries.filter(e => specialKeywords.some(k => e.title.includes(k)));
-    const regulars = entries.filter(e => !specialKeywords.some(k => e.title.includes(k)));
-    const displayRegulars = regulars;
+    const regulars = personalEntries.filter(e => !specialKeywords.some(k => e.title.includes(k)));
+    const calendarEntries = getCalendarEntries(regulars, onsydeEntries);
+    const displayRegulars = calendarEntries.entries;
     let hasRest = false;
 
     if(specials.length > 0){
@@ -1763,17 +1877,17 @@ async function renderCalendarMonth(){
     const tagsWrap = document.createElement('div');
     tagsWrap.className='tags cell-tags-col';
     tagsWrap.classList.add('items-' + Math.min(displayRegulars.length, 4));
-    displayRegulars.slice(0,4).forEach(en=> tagsWrap.appendChild(buildTagEl(en)));
-    if(displayRegulars.length>4){
+    displayRegulars.forEach(en=> tagsWrap.appendChild(buildTagEl(en)));
+    if(calendarEntries.hidden>0){
       const more = document.createElement('div');
-      more.className='more'; more.textContent='+'+(displayRegulars.length-4)+'개';
+      more.className='more'; more.textContent='+'+calendarEntries.hidden+'개';
       tagsWrap.appendChild(more);
     }
     cellBody.appendChild(tagsWrap);
 
     const dStr = `${cellDate.getFullYear()}-${cellDate.getMonth()+1}-${cellDate.getDate()}`;
     // 최종 우선순위: 수동 입력 > 날짜가 맞는 YouTube > 치지직
-    const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(entries) || videoDateMap[dStr]);
+    const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(personalEntries) || videoDateMap[dStr]);
     if (vid) {
         headerWrap.classList.add('has-replay');
         headerActions.classList.add('has-replay');
@@ -1825,7 +1939,7 @@ async function renderCalendarMonth(){
       tagsBlock.className = 'agenda-tags';
       entries.forEach(en=>{
         const t = document.createElement('span');
-        t.className='agenda-tag';
+        t.className='agenda-tag' + (en.__onsyde ? ' onsyde-tag' : '');
         t.style.setProperty('--tag-color', getDisplayColor(en.color));
         const parsed = parseTitle(en);
         const label = document.createElement('span');
@@ -1892,6 +2006,8 @@ async function render(){
   const m = current.getMonth();
   const monthLabel = document.getElementById('monthLabel');
   if(monthLabel) monthLabel.innerHTML = `<span class="ml-full">${y}년 ${m+1}월</span><span class="ml-short">${m+1}월</span>`;
+  const onsydeLink = document.getElementById('onsydeScheduleLink');
+  if(onsydeLink) onsydeLink.href = `onsyde/index.html?month=${y}-${String(m+1).padStart(2,'0')}`;
 
   const gridSec = document.getElementById('scheduleGridSection');
   const listSec = document.getElementById('scheduleListSection');
@@ -1936,7 +2052,8 @@ async function renderListMonth(){
     if(!cache[sk]) {
         await loadMonth(dt);
     }
-    const entries = (cache[sk] && cache[sk][dt.getDate()]) || [];
+    const personalEntries = (cache[sk] && cache[sk][dt.getDate()]) || [];
+    const entries = getMergedEntries(dt, personalEntries);
     
     const dtZero = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
     const todayZero = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -1976,10 +2093,10 @@ async function renderListMonth(){
     } else {
         entries.forEach(en => {
             const t = document.createElement('span');
-            t.className = 'schedule-tag';
+            t.className = 'schedule-tag' + (en.__onsyde ? ' onsyde-tag' : '') + (en.__onsydeMerged ? ' onsyde-personal-tag' : '');
             t.style.borderColor = getDisplayColor(en.color);
             t.style.setProperty('--schedule-color', getDisplayColor(en.color));
-            t.innerHTML = `<span class="marquee-text" style="display:inline-block; white-space:nowrap; flex-shrink:0;">${withIcon(en.title)} ${en.time ? '· '+escapeHtml(en.time) : ''}</span>`;
+            t.innerHTML = `<span class="marquee-text" style="display:inline-block; white-space:nowrap; flex-shrink:0;">${withIcon(en)} ${en.time ? '· '+escapeHtml(en.time) : ''}</span>`;
             if(en.link && safeUrl(en.link)) {
                 t.innerHTML += ` <a href="${safeUrl(en.link)}" target="_blank" rel="noopener" style="margin-left:4px; flex-shrink:0;" onclick="event.stopPropagation()">🔗</a>`;
             }
@@ -2010,7 +2127,7 @@ async function renderListMonth(){
     if (isPast) {
         const dStr = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
         // 최종 우선순위: 수동 입력 > 날짜가 맞는 YouTube > 치지직
-        const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(entries) || videoDateMap[dStr]);
+        const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(personalEntries) || videoDateMap[dStr]);
         
         if (vid) {
             const ytCol = document.createElement('a');
@@ -2044,7 +2161,7 @@ async function renderListMonth(){
                 ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon"></span>`;
                 item.appendChild(ytCol);
             }
-        } else if (entries.length > 0 && !entries[0].title.includes("휴방")) {
+        } else if (personalEntries.length > 0 && !personalEntries[0].title.includes("휴방")) {
             const emptyCol = document.createElement('div');
             emptyCol.className = 'timeline-yt-empty';
             
@@ -2087,7 +2204,7 @@ async function renderListMonth(){
 
 function renderEntries(dateObj){
   const data = cache[storageKey(dateObj)];
-  const entries = data[dateObj.getDate()] || [];
+  const entries = getMergedEntries(dateObj, data[dateObj.getDate()] || []);
   entryList.innerHTML='';
   if(entries.length===0){
     const p = document.createElement('div');
@@ -2097,9 +2214,9 @@ function renderEntries(dateObj){
   }
   entries.forEach((en,idx)=>{
     const row = document.createElement('div');
-    row.className='entry';
+    row.className='entry' + (en.__onsyde ? ' onsyde-entry' : '') + (en.__onsydeMerged ? ' onsyde-personal-entry' : '');
     let html = `<span class="swatch" style="background:${getDisplayColor(en.color)}"></span>
-      <span class="e-title">${withIcon(en.title)}</span>
+      <span class="e-title">${withIcon(en)}</span>
       <span class="e-time">${escapeHtml(en.time||'')}</span>`;
     if(en.link && safeUrl(en.link)){
       html += `<a class="e-link" href="${safeUrl(en.link)}" target="_blank" rel="noopener">🔗</a>`;
@@ -2163,6 +2280,17 @@ if(emptyFilterBtn) emptyFilterBtn.addEventListener('click', ()=>{
   render();
 });
 updateEmptyFilterButton();
+
+window.addEventListener('storage', (event) => {
+  if(event.key === window.ONSYDE_STORE?.storageKey) render();
+});
+window.addEventListener('onsyde-schedule-changed', () => render());
+
+if (window.ONSYDE_STORE?.loadRemoteEvents) {
+  window.ONSYDE_STORE.loadRemoteEvents().then(remote => {
+    if (Array.isArray(remote) && remote.length) window.ONSYDE_STORE.saveEvents(remote);
+  }).catch(() => {});
+}
 
 // Admin UI events removed
 

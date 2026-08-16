@@ -2,6 +2,8 @@ const DEFAULT_ALLOWED_ORIGINS = [
   'https://crank-schedule.github.io',
   'http://localhost:8080',
   'http://127.0.0.1:8080',
+  'http://localhost:8879',
+  'http://127.0.0.1:8879',
 ];
 
 const JSON_HEADERS = {
@@ -87,9 +89,9 @@ async function signToken(payload, secret) {
 
 async function verifyToken(token, secret) {
   try {
-    if (!token || !secret) return false;
+    if (!token || !secret) return null;
     const parts = token.split('.');
-    if (parts.length !== 2) return false;
+    if (parts.length !== 2) return null;
     const key = await importSigningKey(secret, ['verify']);
     const valid = await crypto.subtle.verify(
       'HMAC',
@@ -97,11 +99,12 @@ async function verifyToken(token, secret) {
       fromBase64Url(parts[1]),
       new TextEncoder().encode(parts[0]),
     );
-    if (!valid) return false;
+    if (!valid) return null;
     const payload = JSON.parse(new TextDecoder().decode(fromBase64Url(parts[0])));
-    return payload.auth === true && Number.isFinite(payload.exp) && Date.now() < payload.exp;
+    if (payload.auth !== true || !Number.isFinite(payload.exp) || Date.now() >= payload.exp) return null;
+    return payload;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -118,12 +121,12 @@ function clientAddress(request) {
   return request.headers.get('CF-Connecting-IP') || 'unknown';
 }
 
-function rateLimitRequest(request) {
-  return new Request(`https://rate-limit.invalid/login/${encodeURIComponent(clientAddress(request))}`);
+function rateLimitRequest(request, scope = 'crank') {
+  return new Request(`https://rate-limit.invalid/login/${encodeURIComponent(scope)}/${encodeURIComponent(clientAddress(request))}`);
 }
 
-async function loginAttempts(request) {
-  const cached = await caches.default.match(rateLimitRequest(request));
+async function loginAttempts(request, scope) {
+  const cached = await caches.default.match(rateLimitRequest(request, scope));
   if (!cached) return { count: 0, resetAt: Date.now() + 10 * 60 * 1000 };
   try {
     return await cached.json();
@@ -132,21 +135,21 @@ async function loginAttempts(request) {
   }
 }
 
-async function recordFailedLogin(request, current) {
+async function recordFailedLogin(request, scope, current) {
   const state = {
     count: current.count + 1,
     resetAt: current.resetAt > Date.now() ? current.resetAt : Date.now() + 10 * 60 * 1000,
   };
   await caches.default.put(
-    rateLimitRequest(request),
+    rateLimitRequest(request, scope),
     new Response(JSON.stringify(state), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=600' },
     }),
   );
 }
 
-async function clearFailedLogins(request) {
-  await caches.default.delete(rateLimitRequest(request));
+async function clearFailedLogins(request, scope) {
+  await caches.default.delete(rateLimitRequest(request, scope));
 }
 
 function bearerToken(request) {
@@ -154,8 +157,11 @@ function bearerToken(request) {
   return header.startsWith('Bearer ') ? header.slice(7).trim() : '';
 }
 
-async function requireAuth(request, env) {
-  return verifyToken(bearerToken(request), env.SIGNING_SECRET);
+async function requireAuth(request, env, expectedScope = 'crank') {
+  const payload = await verifyToken(bearerToken(request), env.SIGNING_SECRET);
+  if (!payload) return false;
+  // Tokens issued before scoped authentication existed belong to CranK admin.
+  return (payload.scope || 'crank') === expectedScope;
 }
 
 function githubHeaders(env) {
@@ -243,10 +249,19 @@ export default {
     }
 
     if (request.method === 'POST' && url.pathname === '/api/login') {
-      if (!env.ADMIN_PASSWORD || !env.SIGNING_SECRET) {
+      let body;
+      try {
+        body = await request.json();
+      } catch {
+        return jsonResponse(request, env, { error: '잘못된 요청입니다.' }, 400);
+      }
+      const scope = body.scope == null || body.scope === 'crank' ? 'crank' : body.scope === 'onsyde' ? 'onsyde' : '';
+      if (!scope) return jsonResponse(request, env, { error: '지원하지 않는 관리자 영역입니다.' }, 400);
+      const configuredPassword = scope === 'onsyde' ? env.ONSYDE_ADMIN_PASSWORD : env.ADMIN_PASSWORD;
+      if (!configuredPassword || !env.SIGNING_SECRET) {
         return jsonResponse(request, env, { error: '관리자 인증이 설정되지 않았습니다.' }, 503);
       }
-      const attempts = await loginAttempts(request);
+      const attempts = await loginAttempts(request, scope);
       if (attempts.resetAt > Date.now() && attempts.count >= 10) {
         return jsonResponse(
           request,
@@ -257,16 +272,15 @@ export default {
         );
       }
       try {
-        const body = await request.json();
-        if (!safeEqual(body.password, env.ADMIN_PASSWORD)) {
-          await recordFailedLogin(request, attempts);
+        if (!safeEqual(body.password, configuredPassword)) {
+          await recordFailedLogin(request, scope, attempts);
           return jsonResponse(request, env, { error: '비밀번호가 올바르지 않습니다.' }, 401);
         }
-        await clearFailedLogins(request);
+        await clearFailedLogins(request, scope);
         const expiresIn = 30 * 24 * 60 * 60; // 개인 기기 자동 로그인: 30일
         const now = Date.now();
-        const token = await signToken({ auth: true, iat: now, exp: now + expiresIn * 1000 }, env.SIGNING_SECRET);
-        return jsonResponse(request, env, { token, expiresIn });
+        const token = await signToken({ auth: true, scope, iat: now, exp: now + expiresIn * 1000 }, env.SIGNING_SECRET);
+        return jsonResponse(request, env, { token, expiresIn, scope });
       } catch {
         return jsonResponse(request, env, { error: '잘못된 요청입니다.' }, 400);
       }
@@ -284,6 +298,19 @@ export default {
         console.error('Schedule update failed', error);
         const status = error instanceof RangeError ? 413 : 500;
         return jsonResponse(request, env, { error: '일정 저장에 실패했습니다.' }, status);
+      }
+    }
+
+    if (request.method === 'PUT' && url.pathname === '/api/onsyde-schedule') {
+      if (!(await requireAuth(request, env, 'onsyde'))) return jsonResponse(request, env, { error: '인증이 만료되었습니다.' }, 401);
+      try {
+        const content = await readJsonBody(request);
+        await updateGithubFile(env, 'data/onsyde-schedule.json', content, 'Update ONSYDE schedule via Admin');
+        return jsonResponse(request, env, { success: true });
+      } catch (error) {
+        console.error('ONSYDE schedule update failed', error);
+        const status = error instanceof RangeError ? 413 : 500;
+        return jsonResponse(request, env, { error: 'ONSYDE 일정 저장에 실패했습니다.' }, status);
       }
     }
 
