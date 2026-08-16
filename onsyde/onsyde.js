@@ -44,14 +44,21 @@
   const todayDate = new Date();
   let year = requestedMatch ? Number(requestedMatch[1]) : todayDate.getFullYear();
   let month = requestedMatch ? Number(requestedMatch[2]) : todayDate.getMonth() + 1;
-  // 화면이 좁을 때 7열 달력을 억지로 줄이지 않고 리스트(agenda)를 기본으로 사용합니다. (기존 일정표와 동일)
-  const narrowViewMql = window.matchMedia("(max-width: 720px)");
-  const viewBucket = () => (narrowViewMql.matches ? "narrow" : "wide");
+  // 크랭크 일정표와 완전히 동일한 전환 규칙: 폭이 1050px 이하이면 7열 달력을 억지로
+  // 줄이지 않고 리스트(agenda)를 기본으로 보여줍니다. 폭 구간(모바일/컴팩트/와이드)별로
+  // 사용자가 직접 고른 뷰를 따로 기억합니다.
+  const mobileViewMql = window.matchMedia("(max-width: 680px)");
+  const compactViewMql = window.matchMedia("(max-width: 1050px)");
+  function viewBucket() {
+    if (mobileViewMql.matches) return "mobile";
+    if (compactViewMql.matches) return "compact";
+    return "wide";
+  }
   const viewPrefKey = () => `onsyde_view_mode_${viewBucket()}`;
   function preferredView() {
     const saved = localStorage.getItem(viewPrefKey());
     if (saved === "calendar" || saved === "agenda") return saved;
-    return viewBucket() === "narrow" ? "agenda" : "calendar";
+    return viewBucket() === "wide" ? "calendar" : "agenda";
   }
   let view = preferredView();
   let crankMonthData = {};
@@ -305,8 +312,9 @@
 
   document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => setView(button.dataset.view, true)));
 
-  // 창 폭이 720px 경계를 넘나들 때 실시간으로 뷰를 전환합니다. (넓게 열었다가 좁혀도 달력이 잘리지 않도록)
-  narrowViewMql.addEventListener("change", () => setView(preferredView()));
+  // 창 폭이 680/1050px 경계를 넘나들 때 실시간으로 뷰를 전환합니다. (크랭크 일정표와 동일)
+  mobileViewMql.addEventListener("change", () => setView(preferredView()));
+  compactViewMql.addEventListener("change", () => setView(preferredView()));
 
   document.addEventListener("click", event => {
     const card = event.target.closest(".event-card");
