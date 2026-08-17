@@ -7,6 +7,7 @@
       timeTBA: "Time TBA",
       detailTBA: "More details will be announced.",
       emptyMonth: "No scheduled events for this month.",
+      noSchedule: "No schedule",
       sourceSheet: "Source sheet ↗",
       settingsLanguage: "Language", settingsTheme: "Theme",
       settingsAdmin: "Admin", adminLogin: "Log in",
@@ -17,6 +18,7 @@
       timeTBA: "시간 미정",
       detailTBA: "상세 정보가 곧 공개됩니다.",
       emptyMonth: "이번 달 일정이 없습니다.",
+      noSchedule: "일정 없음",
       sourceSheet: "원본 시트 ↗",
       settingsLanguage: "언어", settingsTheme: "테마",
       settingsAdmin: "관리자", adminLogin: "로그인",
@@ -236,22 +238,25 @@
   }
 
   function renderAgenda() {
-    const monthEvents = source.events.filter(event => {
-      const date = new Date(`${event.date}T00:00:00`);
-      return date.getFullYear() === year && date.getMonth() + 1 === month;
-    });
-    const grouped = monthEvents.reduce((result, event) => {
-      (result[event.date] ||= []).push(event);
-      return result;
-    }, {});
-
-    agenda.innerHTML = Object.entries(grouped).map(([date, events]) => {
+    // 개인일정(크랭크)과 동일하게 그 달의 모든 날짜를 순서대로 나열합니다.
+    // 일정이 없는 날도 "일정 없음" 행으로 표시합니다.
+    const daysInMonth = new Date(year, month, 0).getDate();
+    let html = "";
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = dateKey(day);
       const value = new Date(`${date}T00:00:00`);
-      return `<section class="agenda-day${date === todayKey ? " is-today" : ""}">
-        <div class="agenda-date"><strong>${value.getDate()}</strong><span>${value.toLocaleDateString(locale, { weekday: "short" })}</span></div>
-        <div class="agenda-events">${events.map(eventCard).join("")}</div>
+      const events = eventsForDay(day);
+      const dow = value.getDay();
+      const weekendClass = dow === 0 ? " is-sun" : dow === 6 ? " is-sat" : "";
+      const body = events.length
+        ? `<div class="agenda-events">${events.map(eventCard).join("")}</div>`
+        : `<div class="agenda-events agenda-empty"><span class="agenda-empty-label">${escapeHtml(T("noSchedule"))}</span></div>`;
+      html += `<section class="agenda-day${events.length ? "" : " is-empty"}${weekendClass}${date === todayKey ? " is-today" : ""}">
+        <div class="agenda-date"><strong>${day}</strong><span>${value.toLocaleDateString(locale, { weekday: "short" })}</span></div>
+        ${body}
       </section>`;
-    }).join("") || `<p class="empty-state">${escapeHtml(T("emptyMonth"))}</p>`;
+    }
+    agenda.innerHTML = html;
   }
 
   function updateHeader() {
