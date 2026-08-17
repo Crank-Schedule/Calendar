@@ -112,18 +112,21 @@
 
 @media(max-width:720px){
   .admin-shell { padding: 9px; }
-  .admin-hero { padding: 12px; flex-wrap: wrap; row-gap: 10px; }
+  .admin-hero { padding: 12px; }
   .admin-hero h1 { font-size: 12px; }
   .admin-status { display: none; }
-  .admin-hero .month-nav { order: 3; width: 100%; justify-content: center; }
   .admin-actions .schedule-link { width: 34px; padding: 0; }
   .action-wide { display: none; }
   .action-short { display: inline; }
-  .admin-main .weekdays { display: none; }
-  .admin-grid { grid-template-columns: 1fr; gap: 8px; }
-  .admin-day { min-height: 76px; }
-  .admin-day.is-outside { display: none; }
-  .admin-events { grid-template-columns: 1fr; }
+  /* 공개 캘린더와 동일하게 좁아져도 7열을 유지하며 화면 폭에 맞춰 줄입니다(리스트로 무너지지 않게). */
+  .admin-grid { gap: 5px; }
+  .admin-day { min-height: 92px; border-radius: 10px; }
+  .admin-day > header { height: 24px; padding: 3px 5px; font-size: 12px; }
+  .day-add { width: 18px; height: 18px; border-radius: 5px; }
+  .admin-events { padding: 4px; gap: 4px; }
+  .admin-event { min-height: 24px; padding: 3px 4px; border-radius: 6px; flex-direction: column; align-items: stretch; gap: 1px; }
+  .admin-event time { font-size: 8px; }
+  .admin-event span { font-size: 8px; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .event-editor form { grid-template-columns: 1fr; padding: 18px; }
   .event-editor label { grid-column: 1!important; }
   .editor-heading, .editor-actions { grid-column: 1; }
@@ -132,10 +135,14 @@
 @media(max-width:560px){
   .admin-shell { padding: 8px; }
   .admin-hero { padding: 11px; }
-  .admin-day { min-height: 70px; }
-  .admin-day > header { height: 32px; padding: 6px 9px; }
-  .admin-event { min-height: 28px; padding: 4px 7px; }
-  .admin-event span { font-size: 10px; }
+  .admin-grid { gap: 4px; }
+  .admin-day { min-height: 86px; border-radius: 9px; }
+  .admin-day > header { height: 22px; padding: 2px 4px; font-size: 11px; }
+  .day-add { width: 17px; height: 17px; }
+  .admin-events { padding: 3px; gap: 3px; }
+  .admin-event { padding: 3px; }
+  .admin-event time,
+  .admin-event span { font-size: 8px; }
   .event-editor form { padding: 16px; gap: 10px; }
   .editor-heading h2 { font-size: 21px; }
   .editor-actions button { padding: 0 10px; }
@@ -143,9 +150,11 @@
 
 @media(max-width:480px){
   .admin-hero h1 { font-size: clamp(11px, 3.6vw, 13px); }
-  .admin-day { min-height: 66px; }
-  .admin-day > header { height: 30px; }
-  .day-add { width: 21px; height: 21px; }
+  .admin-day { min-height: 80px; }
+  .admin-day > header { height: 20px; }
+  .day-add { width: 16px; height: 16px; }
+  .admin-event time,
+  .admin-event span { font-size: 7px; }
   .event-editor form { padding: 14px; gap: 9px; }
   .editor-heading h2 { font-size: 20px; }
   .editor-actions button { padding: 0 9px; font-size: 9px; }
@@ -153,7 +162,7 @@
 
 @media(max-width:340px){
   .admin-shell { padding: 6px; }
-  .admin-event span { font-size: 9px; }
+  .admin-day { min-height: 74px; }
   .event-editor form { padding: 12px; }
   .editor-heading h2 { font-size: 19px; }
   .editor-actions { gap: 6px; }

@@ -137,9 +137,9 @@ main { margin-top: 14px; }
   cursor: pointer;
 }
 .month-nav button, .icon-button { width: 36px; height: 36px; font-size: 20px; }
-.month-title { min-width: 128px; display: flex; align-items: baseline; justify-content: center; gap: 6px; font-family: 'Paperozi', sans-serif; }
-.month-title span { font-weight: 700; font-size: 19px; }
-.month-title strong { color: var(--green); font-size: 12px; }
+.month-title { min-width: 128px; display: flex; align-items: baseline; justify-content: center; gap: 6px; font-family: 'Paperozi', sans-serif; white-space: nowrap; }
+.month-title span { font-weight: 700; font-size: 19px; white-space: nowrap; }
+.month-title strong { color: var(--green); font-size: 12px; white-space: nowrap; }
 .month-nav .today-btn {
   width: auto;
   height: 36px;
@@ -360,7 +360,8 @@ main { margin-top: 14px; }
   .day-events .event-card { min-height: 26px; padding: 3px 5px; border-radius: 6px; flex-direction: column; align-items: stretch; gap: 1px; }
   .day-events .event-card time { font-size: 9px; }
   .day-events .event-card time::after { content: ""; }
-  .day-events .event-card__summary { font-size: 9px; white-space: normal; line-height: 1.15; }
+  /* 셀이 세로로 과하게 늘어나 정렬이 어긋나지 않도록 제목을 최대 2줄로 제한합니다. */
+  .day-events .event-card__summary { font-size: 9px; white-space: normal; line-height: 1.15; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .agenda-day { grid-template-columns: 55px 1fr; }
 }
 
