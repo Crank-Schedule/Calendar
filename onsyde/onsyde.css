@@ -85,9 +85,9 @@ button { color: inherit; }
 }
 .logo-symbol img {
   position: absolute;
-  width: 68px;
+  width: 76px;
   height: auto;
-  top: 1px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -322,7 +322,10 @@ main { margin-top: 14px; }
 }
 
 @media (max-width: 900px) {
-  .hero { min-height: 80px; padding: 15px 16px; gap: 16px; }
+  /* 개인일정처럼 한 줄에 다 안 들어가기 전에 툴바를 두 번째 줄로 내려 제목/버튼이 겹치지 않게 합니다. */
+  .hero { min-height: 0; padding: 15px 16px; gap: 14px 16px; flex-wrap: wrap; align-items: center; }
+  .brand-block { flex: 1 1 auto; min-width: 0; }
+  .toolbar { flex: 1 0 100%; width: 100%; justify-content: flex-end; margin-left: 0; padding-top: 12px; border-top: 1px solid var(--line); }
   .day-cell { min-height: 110px; }
   .event-card { min-height: 28px; }
 }
@@ -332,7 +335,7 @@ main { margin-top: 14px; }
   .hero { position: relative; min-height: 116px; padding: 13px 14px; border-radius: 16px; flex-wrap: wrap; align-content: center; row-gap: 11px; }
   .brand-block { width: calc(100% - 78px); }
   .logo-symbol { width: 48px; height: 40px; flex-basis: 48px; }
-  .logo-symbol img { width: 64px; }
+  .logo-symbol img { width: 70px; }
   h1 { gap: 7px; font-size: clamp(12px, 3.75vw, 15px); }
   .toolbar { width: 100%; justify-content: space-between; margin-left: 0; padding-top: 10px; border-top: 1px solid var(--line); }
   .schedule-link { width: 34px; min-width: 34px; padding: 0; }
@@ -403,7 +406,7 @@ main { margin-top: 14px; }
 
 @media (max-width: 340px) {
   .logo-symbol { width: 44px; height: 38px; flex-basis: 44px; }
-  .logo-symbol img { width: 58px; }
+  .logo-symbol img { width: 66px; }
   h1 { font-size: 11px; }
   .month-nav button { width: 30px; height: 34px; }
   .view-switch button { width: 28px; }
