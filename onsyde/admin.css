@@ -103,11 +103,12 @@
 }
 
 @media(max-width:900px){
-  /* 한 줄에 다 안 들어가기 전에 월 네비게이션을 두 번째 줄로 내려 겹침을 방지합니다. */
-  .admin-hero { min-height: 0; flex-wrap: wrap; row-gap: 12px; align-items: center; }
-  .admin-hero .brand-block { flex: 1 1 auto; min-width: 0; }
-  .admin-hero .admin-actions { flex: 0 0 auto; }
-  .admin-hero .month-nav { order: 3; flex: 1 0 100%; width: 100%; justify-content: center; padding-top: 12px; border-top: 1px solid var(--line); }
+  /* flex-wrap은 좁은 폭에서 브랜드가 늘어나 버튼을 밀어내므로 Grid로 확정 배치합니다.
+     1행: 브랜드(왼쪽) + 액션 버튼(오른쪽), 2행: 월 네비게이션(가운데). */
+  .admin-hero { min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "brand actions" "nav nav"; align-items: center; row-gap: 12px; column-gap: 16px; }
+  .admin-hero .brand-block { grid-area: brand; min-width: 0; }
+  .admin-hero .admin-actions { grid-area: actions; justify-self: end; }
+  .admin-hero .month-nav { grid-area: nav; justify-content: center; padding-top: 12px; border-top: 1px solid var(--line); }
 }
 
 @media(max-width:720px){
