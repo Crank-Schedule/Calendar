@@ -150,7 +150,9 @@
 }
 
 @media(max-width:480px){
-  .admin-hero h1 { font-size: clamp(11px, 3.6vw, 13px); }
+  /* 폴드 외부화면처럼 아주 좁으면 "ONSYDE ADMIN"이 우측 버튼과 겹치므로, 자리가 부족할 때만
+     두 단어를 두 줄로 줄바꿈시킵니다(넓으면 한 줄 유지). */
+  .admin-hero h1 { font-size: clamp(11px, 3.6vw, 13px); min-width: 0; flex-wrap: wrap; row-gap: 0; line-height: 1.08; }
   .admin-day { min-height: 80px; }
   .admin-day > header { height: 20px; }
   .day-add { width: 16px; height: 16px; }
