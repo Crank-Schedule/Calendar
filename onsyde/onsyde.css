@@ -354,10 +354,10 @@ main { margin-top: 14px; }
   .calendar-view { overflow-x: visible; padding-bottom: 0; }
   .weekdays, .calendar-grid { min-width: 0; gap: 5px; }
   .weekdays span { padding: 6px 2px; font-size: 10px; letter-spacing: .02em; text-align: center; }
-  .day-cell { min-height: 96px; border-radius: 12px; }
+  .day-cell { min-height: 96px; border-radius: 10px; }
   .day-cell > header { height: 24px; padding: 3px 6px; font-size: 12px; }
-  .day-events { gap: 4px; padding: 4px; }
-  .day-events .event-card { min-height: 26px; padding: 3px 5px; flex-direction: column; align-items: stretch; gap: 1px; }
+  .day-events { gap: 4px; padding: 5px; }
+  .day-events .event-card { min-height: 26px; padding: 3px 5px; border-radius: 6px; flex-direction: column; align-items: stretch; gap: 1px; }
   .day-events .event-card time { font-size: 9px; }
   .day-events .event-card time::after { content: ""; }
   .day-events .event-card__summary { font-size: 9px; white-space: normal; line-height: 1.15; }
@@ -371,9 +371,9 @@ main { margin-top: 14px; }
   .month-nav .today-btn { padding: 0 8px; }
   .view-switch button { width: 29px; height: 27px; font-size: 15px; }
   .legend { gap: 12px; font-size: 10px; }
-  .day-cell { min-height: 90px; border-radius: 11px; }
+  .day-cell { min-height: 90px; border-radius: 9px; }
   .day-cell > header { height: 22px; padding: 2px 5px; font-size: 11px; }
-  .day-events { gap: 3px; padding: 3px; }
+  .day-events { gap: 3px; padding: 4px; }
   .day-events .event-card { padding: 3px 4px; }
   .day-events .event-card time,
   .day-events .event-card__summary { font-size: 8px; }
