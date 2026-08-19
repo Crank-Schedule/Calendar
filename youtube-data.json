@@ -642,6 +642,10 @@
       "b_video": {
         "t": "자날 3회차 - 19",
         "done": false
+      },
+      "a_video": {
+        "t": "PiG 8.0 16강 C조 강민수 김준호",
+        "done": false
       }
     }
   },
