@@ -664,19 +664,15 @@
   "sources": {
     "a": [
       {
+        "t": "[Pig8.0] 260816 Reynor vs trigger",
+        "used": null
+      },
+      {
         "t": "[Pig8.0] 260816 Shameless vs Maru",
         "used": null
       },
       {
-        "t": "[Pig8.0] 260816 Maru vs Reynor",
-        "used": 1787129960622
-      },
-      {
         "t": "[Pig8.0] 260816 Shameless vs trigger",
-        "used": null
-      },
-      {
-        "t": "[Pig8.0] 260816 Reynor vs trigger",
         "used": null
       },
       {
@@ -774,6 +770,10 @@
       {
         "t": "[유서멀 팀플 대회] 클렘, 스킬러스 vs 세랄, 히어로마린",
         "used": null
+      },
+      {
+        "t": "[Pig8.0] 260816 Maru vs Reynor",
+        "used": 1787129960622
       },
       {
         "t": "[도유컵]이신형vs전태양",
