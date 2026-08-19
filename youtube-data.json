@@ -645,11 +645,15 @@
     "2026-08-17": {
       "b_video": {
         "t": "자날 3회차 - 19",
-        "done": false
+        "done": true
       },
       "a_video": {
         "t": "PiG 8.0 16강 C조 강민수 김준호",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "자신이 너무 넘친 프로토스",
+        "done": true
       }
     }
   },
