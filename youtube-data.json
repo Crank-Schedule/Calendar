@@ -635,11 +635,15 @@
     "2026-08-18": {
       "b_video": {
         "t": "자날 3회차 - 20",
-        "done": false
+        "done": true
       },
       "a_video": {
         "t": "PiG 8.0 16강 D조 조성주 레이너",
-        "done": false
+        "done": true
+      },
+      "a_short": {
+        "t": "김준호는 도대체 뭘까?",
+        "done": true
       }
     },
     "2026-08-17": {
