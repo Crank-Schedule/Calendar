@@ -667,19 +667,19 @@
     "2026-08-20": {
       "a_video": {
         "t": "김도욱 김준호",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "터진김에 일꾼잡기",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 - 22",
-        "done": false
+        "done": true
       },
       "b_short": {
         "t": "르세라핌",
-        "done": false
+        "done": true
       }
     }
   },
