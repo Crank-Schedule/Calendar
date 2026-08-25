@@ -723,6 +723,20 @@
         "t": "자날 3회차 - 25",
         "done": false
       }
+    },
+    "2026-08-25": {
+      "a_video": {
+        "t": "김준호히마",
+        "done": false
+      },
+      "a_short": {
+        "t": "못잡겠죠?",
+        "done": false
+      },
+      "b_video": {
+        "t": "자날 3회차 27",
+        "done": false
+      }
     }
   },
   "sources": {
