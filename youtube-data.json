@@ -727,15 +727,15 @@
     "2026-08-25": {
       "a_video": {
         "t": "김준호히마",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "못잡겠죠?",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 27",
-        "done": false
+        "done": true
       }
     },
     "2026-08-24": {
