@@ -768,6 +768,10 @@
   "sources": {
     "a": [
       {
+        "t": "[패치스#2]260820변현우 맥팩",
+        "used": null
+      },
+      {
         "t": "[Pig8.0] 260816 Reynor vs trigger",
         "used": null
       },
