@@ -772,14 +772,6 @@
         "used": null
       },
       {
-        "t": "[Pig8.0] 260816 Maru vs Shameless",
-        "used": 1787664945376
-      },
-      {
-        "t": "[Pig8.0] 260815 Cure vs herO",
-        "used": null
-      },
-      {
         "t": "[Pig8.0] 260816 Shameless vs trigger",
         "used": null
       },
@@ -801,7 +793,7 @@
       },
       {
         "t": "[Pig8.0] 260814 HeRoMaRinE vs ByuN",
-        "used": null
+        "used": 1787664976275
       },
       {
         "t": "[Pig8.0] 260814 ByuN vs Zoun",
@@ -866,6 +858,14 @@
       {
         "t": "[유서멀 팀플 대회] 클렘, 스킬러스 vs 세랄, 히어로마린",
         "used": null
+      },
+      {
+        "t": "[Pig8.0] 260815 Cure vs herO",
+        "used": 1787664947175
+      },
+      {
+        "t": "[Pig8.0] 260816 Maru vs Shameless",
+        "used": 1787664945376
       },
       {
         "t": "[Pig8.0] 260816 Shameless vs Maru",
