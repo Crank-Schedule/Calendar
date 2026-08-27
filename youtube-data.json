@@ -755,15 +755,15 @@
     "2026-08-26": {
       "a_video": {
         "t": "[패치스]변현우 레이너",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "돌던졌는데 머리 터짐",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 28",
-        "done": false
+        "done": true
       }
     },
     "2026-08-27": {
