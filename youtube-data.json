@@ -784,6 +784,10 @@
       "a_video": {
         "t": "[pig8.0]조성주 박한솔",
         "done": false
+      },
+      "b_video": {
+        "t": "자날 3회차 - 완",
+        "done": false
       }
     }
   },
