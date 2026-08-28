@@ -783,15 +783,15 @@
     "2026-08-28": {
       "a_video": {
         "t": "[pig8.0]조성주 박한솔",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "자날 3회차 - 완",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "참쉽죠",
-        "done": false
+        "done": true
       }
     }
   },
