@@ -983,7 +983,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   // 사용자가 다크 모드를 선택하면 localStorage 값을 우선합니다.
   if(localStorage.getItem('crank_theme') !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20260815-107">
+  <link rel="stylesheet" href="schedule_css.css?v=20260828-113">
 </head>
 <body>
 <div class="wrap">
@@ -998,7 +998,11 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         <h1><span class="h1-full">크랭크 <span>방송</span> 스케줄</span><span class="h1-short">크랭크</span></h1>
       </div>
       <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener" aria-label="크랭크 치지직 생방송 보기">
-        <span class="lb-copy"><strong>크랭크</strong><span><i class="lb-dot"></i>생방송중</span></span>
+        <span class="lb-copy">
+          <span class="lb-status"><i class="lb-dot"></i>CHZZK LIVE</span>
+          <strong><span class="lb-full">크랭크 생방송 중</span><span class="lb-short">생방송 중</span></strong>
+          <span class="lb-title" id="lbTitle">지금 방송을 시청하세요</span>
+        </span>
         <img id="lbThumb" alt="치지직 생방송 썸네일" hidden>
       </a>
       <div class="nav">
@@ -2408,11 +2412,13 @@ document.addEventListener('click', (event)=>{
 const CHZZK_CHANNEL_ID = 'de27c33ee2364c4e5007867bb3b96001';
 const liveBanner = document.getElementById('liveBanner');
 const lbThumb = document.getElementById('lbThumb');
+const lbTitle = document.getElementById('lbTitle');
 const forceLivePreview = new URLSearchParams(location.search).get('testLive') === '1';
 
 function showLiveBanner(live = {}){
   const imageUrl = String(live.liveImageUrl || '').replace('{type}', '480');
   liveBanner.title = live.liveTitle || '크랭크 치지직 생방송 보기';
+  lbTitle.textContent = live.liveTitle || '지금 방송을 시청하세요';
   lbThumb.src = imageUrl || 'https://i.ytimg.com/vi/F1IheoshEps/mqdefault.jpg';
   lbThumb.hidden = false;
   liveBanner.classList.add('show');
