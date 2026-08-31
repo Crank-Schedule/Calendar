@@ -821,6 +821,20 @@
         "t": "마인드 호크-1",
         "done": false
       }
+    },
+    "2026-08-31": {
+      "a_video": {
+        "t": "[쿵푸컵]정재영 김준호",
+        "done": false
+      },
+      "a_short": {
+        "t": "팡팡팡",
+        "done": false
+      },
+      "b_video": {
+        "t": "마인드호크-2",
+        "done": false
+      }
     }
   },
   "sources": {
