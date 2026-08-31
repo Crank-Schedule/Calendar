@@ -983,8 +983,8 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script>
   if(localStorage.getItem('crank_theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20260812-98">
-  <link rel="stylesheet" href="admin_css.css?v=20260812-12">
+  <link rel="stylesheet" href="schedule_css.css?v=20260828-113">
+  <link rel="stylesheet" href="admin_css.css?v=20260831-13">
 </head>
 <body class="admin-page">
 <div class="wrap">
@@ -996,19 +996,23 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
         <span class="dot" style="background:#3B9EFF;"></span><span class="brand-text" style="color:#3B9EFF;"><span class="bt-full">ADMIN PAGE</span><span class="bt-short">ADMIN</span></span>
         <span class="mode-badge" id="modeBadge">관리자 모드</span>
       </div>
-      <h1 style="display:flex; align-items:center; gap:8px;">
-        크랭크
-        <button id="ghSettingsBtn" title="관리자 로그인" aria-label="관리자 로그인" style="width:24px; height:24px; padding:0; font-size:13px; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-strong); border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; vertical-align:middle;">🔒</button>
-        <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener" aria-label="크랭크 치지직 생방송 보기">
-          <span class="lb-copy"><strong>크랭크</strong><span><i class="lb-dot"></i>생방송중</span></span>
-          <img id="lbThumb" alt="치지직 생방송 썸네일" hidden>
-        </a>
-        <span class="admin-month-nav" aria-label="월 이동">
-          <button id="prevBtn" aria-label="이전 달" title="이전 달">&lt;</button>
-          <span class="month-label" id="monthLabel"><span class="ml-full">2026년 6월</span><span class="ml-short">6월</span></span>
-          <button id="nextBtn" aria-label="다음 달" title="다음 달">&gt;</button>
-        </span>
-      </h1>
+      <h1>크랭크</h1>
+    </div>
+    <a class="live-banner" id="liveBanner" href="https://chzzk.naver.com/live/de27c33ee2364c4e5007867bb3b96001" target="_blank" rel="noopener" aria-label="크랭크 치지직 생방송 보기">
+      <span class="lb-copy">
+        <span class="lb-status"><i class="lb-dot"></i>CHZZK LIVE</span>
+        <strong><span class="lb-full">크랭크 생방송 중</span><span class="lb-short">생방송 중</span></strong>
+        <span class="lb-title" id="lbTitle">지금 방송을 시청하세요</span>
+      </span>
+      <img id="lbThumb" alt="치지직 생방송 썸네일" hidden>
+    </a>
+    <div class="admin-header-controls">
+      <button id="ghSettingsBtn" title="관리자 로그인" aria-label="관리자 로그인">🔒</button>
+      <span class="admin-month-nav" aria-label="월 이동">
+        <button id="prevBtn" aria-label="이전 달" title="이전 달">&lt;</button>
+        <span class="month-label" id="monthLabel"><span class="ml-full">2026년 6월</span><span class="ml-short">6월</span></span>
+        <button id="nextBtn" aria-label="다음 달" title="다음 달">&gt;</button>
+      </span>
     </div>
     <div class="nav" hidden aria-hidden="true">
       <div class="view-toggle">
@@ -1177,6 +1181,8 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   </div>
 </div>
 
+<script src="onsyde/schedule-data.js?v=20260814-8"></script>
+<script src="onsyde/onsyde-store.js?v=20260816-5"></script>
 <script src="schedule_core.js?v=20260811-3"></script>
 <script>
 
@@ -1405,6 +1411,81 @@ async function loadMonth(d){
   }
   
   return cache[key];
+}
+
+function getOnsydeEntriesForDate(dateObj){
+  if(!window.ONSYDE_STORE) return [];
+  return window.ONSYDE_STORE.eventsForDate(dateObj).map(window.ONSYDE_STORE.toCrankEntry);
+}
+
+function scheduleSeriesKey(entry){
+  const onsydeEvent = entry && entry.__onsydeEvent;
+  const source = [entry?.title, onsydeEvent?.title, onsydeEvent?.short]
+    .filter(Boolean).join(' ').toUpperCase();
+  const compact = source.replace(/[^A-Z0-9가-힣]/g, '');
+  if(compact.includes('PIGFEST8') || compact.includes('PIG8')) return 'pig8';
+  if(compact.includes('WARDITV') && compact.includes('SUMMER')) return 'warditv-summer';
+  if(compact.includes('WARDITV') && compact.includes('SPRING')) return 'warditv-spring';
+  if(compact.includes('WARDITV') && compact.includes('WINTER')) return 'warditv-winter';
+  if(compact.includes('GSLCK')) return 'gsl-ck';
+  if(compact.includes('GSTL')) return 'gstl';
+  if(compact.includes('RSL')) return 'rsl';
+  if(compact.includes('MOG2')) return 'mog2';
+  if(compact.includes('HOMESTORY') || compact.includes('HSC')) return 'hsc';
+  if(compact.includes('DOUYU')) return 'douyu';
+  if(compact.includes('TLMC')) return 'tlmc';
+  if(compact.includes('WARDI') && compact.includes('TEAMLEAGUE')) return 'wardi-team-league';
+  if(compact.includes('GSL')) return 'gsl';
+  return compact.length >= 5 ? compact : '';
+}
+
+function onsydePlayerNames(entry){
+  const event = entry?.__onsydeEvent || {};
+  const source = `${event.detail || ''} ${event.short || ''}`;
+  return ['Maru', 'Zoun', 'Krystianer', 'Ryung', 'Rex', 'Neeb', 'SHIN']
+    .filter(name => new RegExp(`\\b${name}\\b`, 'i').test(source));
+}
+
+function personalTitleContainsPlayer(title, player){
+  const aliases = {
+    Maru: /Maru|조성주/i,
+    Zoun: /Zoun|박한솔/i,
+    Krystianer: /Krystianer/i,
+    Ryung: /Ryung|김동원/i,
+    Rex: /Rex/i,
+    Neeb: /Neeb/i,
+    SHIN: /SHIN|신희범/i
+  };
+  return aliases[player]?.test(String(title || ''));
+}
+
+function mergePersonalOnsydeEntry(personalEntry, onsydeEntry){
+  const players = onsydePlayerNames(onsydeEntry)
+    .filter(player => !personalTitleContainsPlayer(personalEntry.title, player));
+  return {
+    ...personalEntry,
+    title: players.length ? `${personalEntry.title} · ${players.join('/')}` : personalEntry.title,
+    time: onsydeEntry.time || personalEntry.time || '',
+    icon: 'onsyde',
+    color: onsydeEntry.color,
+    __onsyde: true,
+    __onsydeMerged: true,
+    __onsydeEvent: onsydeEntry.__onsydeEvent,
+    __personalEntry: personalEntry
+  };
+}
+
+function mergePersonalAndOnsydeEntries(dateObj, personalEntries){
+  const remainingOnsyde = getOnsydeEntriesForDate(dateObj);
+  const personal = (personalEntries || []).map(personalEntry => {
+    const personalKey = scheduleSeriesKey(personalEntry);
+    if(!personalKey) return personalEntry;
+    const matchIndex = remainingOnsyde.findIndex(teamEntry => scheduleSeriesKey(teamEntry) === personalKey);
+    if(matchIndex < 0) return personalEntry;
+    const [teamEntry] = remainingOnsyde.splice(matchIndex, 1);
+    return mergePersonalOnsydeEntry(personalEntry, teamEntry);
+  });
+  return { personal, onsyde: remainingOnsyde, entries: [...personal, ...remainingOnsyde] };
 }
 
 async function saveMonth(d, _retried){
@@ -1904,7 +1985,7 @@ function initGridDragDrop() {
 function buildTagEl(en){
   const parsed = parseTitle(en);
   const t = document.createElement('div');
-  t.className='tag draggable-item' + (parsed.customIcon ? ' tag-custom-icon' : '') + (en.time ? ' has-time' : '');
+  t.className='tag' + (!en.__onsyde || en.__onsydeMerged ? ' draggable-item' : '') + (parsed.customIcon ? ' tag-custom-icon' : '') + (en.time ? ' has-time' : '') + (en.__onsyde ? ' onsyde-tag' : '') + (en.__onsydeMerged ? ' onsyde-personal-tag' : '');
   t.setAttribute('data-first-char', getFirstChar(parsed.displayTitle));
   t.style.borderColor = getDisplayColor(en.color);
   t.style.setProperty('--tag-color', getDisplayColor(en.color));
@@ -1945,7 +2026,7 @@ function buildTagEl(en){
   t.ontouchend = stopMarquee;
 
   // 데스크탑에서만 커스텀 드래그 사용 (데이터 속성만 남김)
-  if (window.innerWidth > 900 && en.__day !== undefined) {
+  if (window.innerWidth > 900 && en.__day !== undefined && (!en.__onsyde || en.__onsydeMerged)) {
     t.dataset.dragDay = en.__day;
     t.dataset.dragIdx = en.__idx;
     // t.draggable = true; 제거 (HTML5 D&D 비활성화)
@@ -2027,7 +2108,10 @@ async function renderCalendarMonth(){
   }
   for(let day=1; day<=daysInMonth; day++){
     const cellDate = new Date(current.getFullYear(), current.getMonth(), day);
-    const entries = data[day] || [];
+    const rawPersonalEntries = data[day] || [];
+    const personalWithSource = rawPersonalEntries.map((entry, index) => ({...entry, __day: day, __idx: index}));
+    const mergedDay = mergePersonalAndOnsydeEntries(cellDate, personalWithSource);
+    const entries = mergedDay.entries;
     
     const c = document.createElement('div');
     c.className='cell';
@@ -2091,7 +2175,7 @@ async function renderCalendarMonth(){
         // 드래그 데이터 속성 추가
         if (window.innerWidth > 900) {
           s.dataset.dragDay = day;
-          s.dataset.dragIdx = entries.indexOf(sp);
+          s.dataset.dragIdx = sp.__idx;
         }
         
         spWrap.appendChild(s);
@@ -2113,9 +2197,7 @@ async function renderCalendarMonth(){
     const calendarTagLimit = 4;
     tagsWrap.classList.add('items-' + Math.min(regulars.length, calendarTagLimit));
     // __day, __idx 주입 (드래그 용)
-    regulars.slice(0, calendarTagLimit).forEach((en, i) => {
-      en.__day = day;
-      en.__idx = entries.indexOf(en);
+    regulars.slice(0, calendarTagLimit).forEach((en) => {
       tagsWrap.appendChild(buildTagEl(en));
     });
     if(regulars.length > calendarTagLimit){
@@ -2455,7 +2537,8 @@ async function renderListMonth(){
     if(!cache[sk]) {
         await loadMonth(dt);
     }
-    const entries = (cache[sk] && cache[sk][dt.getDate()]) || [];
+    const personalEntries = (cache[sk] && cache[sk][dt.getDate()]) || [];
+    const entries = mergePersonalAndOnsydeEntries(dt, personalEntries).entries;
     
     const dtZero = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
     const todayZero = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -2495,7 +2578,7 @@ async function renderListMonth(){
     } else {
         entries.forEach(en => {
             const t = document.createElement('span');
-            t.className = 'schedule-tag';
+            t.className = 'schedule-tag' + (en.__onsyde ? ' onsyde-tag' : '') + (en.__onsydeMerged ? ' onsyde-personal-tag' : '');
             t.style.borderColor = getDisplayColor(en.color);
             t.innerHTML = `<span class="marquee-text" style="display:inline-block; white-space:nowrap; flex-shrink:0;">${withIcon(en)} ${en.time ? '· '+escapeHtml(en.time) : ''}</span>`;
             if(en.link && safeUrl(en.link)) {
@@ -2920,6 +3003,17 @@ if(emptyFilterBtn) emptyFilterBtn.addEventListener('click', ()=>{
 });
 updateEmptyFilterButton();
 
+window.addEventListener('storage', (event) => {
+  if(event.key === window.ONSYDE_STORE?.storageKey) render();
+});
+window.addEventListener('onsyde-schedule-changed', () => render());
+
+if (window.ONSYDE_STORE?.loadRemoteEvents) {
+  window.ONSYDE_STORE.loadRemoteEvents().then(remote => {
+    if (Array.isArray(remote) && remote.length) window.ONSYDE_STORE.saveEvents(remote);
+  }).catch(() => {});
+}
+
 // PIN logic removed
 const defaultTournaments = [
   { badge:'StarCraft II', name:'CranK Gathers Season 4', url:'https://liquipedia.net/starcraft2/CranK_Gathers/Season_4' },
@@ -3218,6 +3312,7 @@ document.addEventListener('click', (event)=>{
 const CHZZK_CHANNEL_ID = 'de27c33ee2364c4e5007867bb3b96001';
 const liveBanner = document.getElementById('liveBanner');
 const lbThumb = document.getElementById('lbThumb');
+const lbTitle = document.getElementById('lbTitle');
 const forceLivePreview = new URLSearchParams(location.search).get('testLive') === '1';
 
 function syncLiveBannerOffset(){
@@ -3242,12 +3337,15 @@ async function checkChzzkLive(){
     chzzkLiveImageUrl = nextLiveImage;
     if(live && live.status === 'OPEN'){
       liveBanner.title = live.liveTitle || '크랭크 치지직 생방송 보기';
+      if(lbTitle) lbTitle.textContent = live.liveTitle || '지금 방송을 시청하세요';
       lbThumb.src = chzzkLiveImageUrl;
       lbThumb.hidden = !lbThumb.src;
       liveBanner.classList.add('show');
+      document.body.classList.add('is-live-now');
       requestAnimationFrame(syncLiveBannerOffset);
     } else {
       liveBanner.classList.remove('show');
+      document.body.classList.remove('is-live-now');
       lbThumb.hidden = true;
       syncLiveBannerOffset();
     }

@@ -1585,3 +1585,232 @@ body.admin-page > .wrap,
     font-size: 12px !important;
   }
 }
+
+/* 2026-08-31: admin header shares the public live-state contract. */
+.admin-page .header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-areas: "identity controls" !important;
+  align-items: center !important;
+  column-gap: 14px !important;
+}
+
+.admin-page .header-left {
+  grid-area: identity;
+  min-width: 0 !important;
+}
+
+.admin-page .header-left h1 {
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+
+.admin-page .admin-header-controls {
+  grid-area: controls;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+}
+
+.admin-page .admin-header-controls > #ghSettingsBtn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 9px !important;
+  background: var(--bg-panel) !important;
+  color: var(--text-primary) !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+}
+
+.admin-page .header > .live-banner,
+.admin-page .header > .live-banner.show {
+  display: none !important;
+}
+
+.admin-page .header > .nav {
+  display: none !important;
+}
+
+body.admin-page.is-live-now .header {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-areas: "live controls" !important;
+  gap: 12px !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 9px !important;
+}
+
+body.admin-page.is-live-now .header-left {
+  display: none !important;
+}
+
+body.admin-page.is-live-now .header > .live-banner.show {
+  grid-area: live;
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) clamp(92px, 18vw, 210px) !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(0, 230, 147, .72) !important;
+  border-radius: 13px !important;
+  background: linear-gradient(115deg, #0c1714, #12211c) !important;
+  box-shadow: 0 9px 24px rgba(0, 0, 0, .22) !important;
+  transform: none !important;
+  text-decoration: none !important;
+}
+
+body.admin-page.is-live-now .header > .live-banner.show:hover {
+  transform: translateY(-1px) !important;
+}
+
+body.admin-page.is-live-now .header > .live-banner .lb-copy {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+  padding: 8px 12px !important;
+  color: #fff !important;
+  background: none !important;
+}
+
+body.admin-page.is-live-now .header > .live-banner .lb-status {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  color: #5fffb2 !important;
+  font: 800 8px/1 'Paperozi', sans-serif !important;
+  letter-spacing: .08em !important;
+}
+
+body.admin-page.is-live-now .header > .live-banner strong {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  color: #fff !important;
+  font: 900 15px/1.1 'Paperozi', sans-serif !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+body.admin-page.is-live-now .header > .live-banner .lb-title {
+  display: block !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  color: rgba(255,255,255,.66) !important;
+  font: 600 9px/1.1 'Paperozi', sans-serif !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+body.admin-page.is-live-now .header > .live-banner img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  object-fit: cover !important;
+}
+
+body.admin-page.is-live-now .header > .live-banner .lb-dot {
+  display: inline-block !important;
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: #00e693 !important;
+  box-shadow: 0 0 0 3px rgba(0,230,147,.14) !important;
+}
+
+body.admin-page.is-live-now .admin-header-controls {
+  grid-area: controls;
+}
+
+body.admin-page.is-live-now .header > .nav {
+  display: none !important;
+}
+
+@media (max-width: 520px) {
+  .admin-page .header {
+    column-gap: 7px !important;
+  }
+
+  .admin-page .header-left .brand {
+    display: none !important;
+  }
+
+  .admin-page .header-left h1 {
+    font-size: clamp(20px, 7vw, 28px) !important;
+  }
+
+  .admin-page .admin-header-controls {
+    gap: 4px !important;
+  }
+
+  .admin-page .admin-header-controls > #ghSettingsBtn,
+  .admin-page .admin-month-nav button {
+    width: 25px !important;
+    min-width: 25px !important;
+    height: 25px !important;
+  }
+
+  body.admin-page.is-live-now .header {
+    gap: 6px !important;
+  }
+
+  body.admin-page.is-live-now .header > .live-banner.show {
+    grid-template-columns: minmax(0, 1fr) clamp(46px, 15vw, 68px) !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    border-radius: 11px !important;
+  }
+
+  body.admin-page.is-live-now .header > .live-banner .lb-copy {
+    padding: 7px 8px !important;
+  }
+
+  body.admin-page.is-live-now .header > .live-banner strong {
+    font-size: 12px !important;
+  }
+
+  body.admin-page.is-live-now .header > .live-banner .lb-full,
+  body.admin-page.is-live-now .header > .live-banner .lb-title {
+    display: none !important;
+  }
+
+  body.admin-page.is-live-now .header > .live-banner .lb-short {
+    display: inline !important;
+  }
+}
+
+@media (max-width: 350px) {
+  .admin-page .admin-month-nav .ml-full {
+    display: none !important;
+  }
+
+  .admin-page .admin-month-nav .ml-short {
+    display: inline !important;
+  }
+
+  body.admin-page.is-live-now .admin-header-controls > #ghSettingsBtn {
+    display: none !important;
+  }
+}
