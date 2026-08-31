@@ -853,15 +853,15 @@
     "2026-09-03": {
       "a_video": {
         "t": "The Berry Patch Open #2 김준호 강민수",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "테란 끔살",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "마인드호크-5",
-        "done": false
+        "done": true
       }
     },
     "2026-09-02": {
