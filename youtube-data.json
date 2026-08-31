@@ -867,15 +867,15 @@
     "2026-09-02": {
       "a_video": {
         "t": "쿵푸컵 정재영 이병렬",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "테란 그페어",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "마인드호크-4",
-        "done": false
+        "done": true
       }
     },
     "2026-09-04": {
