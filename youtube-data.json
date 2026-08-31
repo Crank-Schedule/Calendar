@@ -895,11 +895,11 @@
     "2026-09-05": {
       "a_video": {
         "t": "패치스 모드 김준호 변현우",
-        "done": false
+        "done": true
       },
       "a_short": {
         "t": "슈팅 거신",
-        "done": false
+        "done": true
       },
       "b_video": {
         "t": "마인드호크-7",
