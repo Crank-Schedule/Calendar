@@ -910,12 +910,8 @@
   "sources": {
     "a": [
       {
-        "t": "[Pig8.0]260821 Zoun vs Solar",
-        "used": null
-      },
-      {
         "t": "[Pig8.0]260822 Zoun vs Maru",
-        "used": null
+        "used": 1788187461541
       },
       {
         "t": "[Pig8.0]260821 Serral vs Reynor",
@@ -1000,6 +996,10 @@
       {
         "t": "[와디먼데이]7/20 1.이병렬 하스템",
         "used": null
+      },
+      {
+        "t": "[Pig8.0]260821 Zoun vs Solar",
+        "used": 1788187461086
       },
       {
         "t": "[와디먼데이] 260810 신희범 vs 김도욱",
