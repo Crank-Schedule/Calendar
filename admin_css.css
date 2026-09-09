@@ -1596,7 +1596,7 @@ body.admin-page > .wrap,
 }
 
 .admin-page .header-left {
-  grid-area: identity;
+  grid-area: identity !important;
   min-width: 0 !important;
 }
 
@@ -1606,7 +1606,7 @@ body.admin-page > .wrap,
 }
 
 .admin-page .admin-header-controls {
-  grid-area: controls;
+  grid-area: controls !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
@@ -1654,7 +1654,7 @@ body.admin-page.is-live-now .header-left {
 }
 
 body.admin-page.is-live-now .header > .live-banner.show {
-  grid-area: live;
+  grid-area: live !important;
   position: relative !important;
   inset: auto !important;
   display: grid !important;
@@ -1741,7 +1741,7 @@ body.admin-page.is-live-now .header > .live-banner .lb-dot {
 }
 
 body.admin-page.is-live-now .admin-header-controls {
-  grid-area: controls;
+  grid-area: controls !important;
 }
 
 body.admin-page.is-live-now .header > .nav {
@@ -1810,7 +1810,17 @@ body.admin-page.is-live-now .header > .nav {
     display: inline !important;
   }
 
-  body.admin-page.is-live-now .admin-header-controls > #ghSettingsBtn {
-    display: none !important;
-  }
+}
+
+/* Keep shared mobile header placement from creating implicit grid tracks. */
+.admin-page .header::after {
+  display: none !important;
+}
+.admin-page .header > .header-left {
+  justify-self: stretch !important;
+  margin: 0 !important;
+}
+.admin-page .admin-header-controls {
+  justify-self: end !important;
+  white-space: nowrap !important;
 }
