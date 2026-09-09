@@ -938,6 +938,10 @@
       "b_video": {
         "t": "자낳대vs도플라맹고",
         "done": false
+      },
+      "a_short": {
+        "t": "아니 해설자 입 좀 막아라",
+        "done": false
       }
     }
   },
@@ -1034,34 +1038,6 @@
       {
         "t": "[Pig8.0]260821 Zoun vs Solar",
         "used": 1788187461086
-      },
-      {
-        "t": "[와디먼데이] 260810 신희범 vs 김도욱",
-        "used": 1787664992231
-      },
-      {
-        "t": "[Pig8.0] 260814 ByuN vs Zoun",
-        "used": 1787664979452
-      },
-      {
-        "t": "[Pig8.0] 260814 HeRoMaRinE vs ByuN",
-        "used": 1787664976275
-      },
-      {
-        "t": "[Pig8.0] 260815 Cure vs herO",
-        "used": 1787664947175
-      },
-      {
-        "t": "[Pig8.0] 260816 Maru vs Shameless",
-        "used": 1787664945376
-      },
-      {
-        "t": "[Pig8.0] 260816 Shameless vs Maru",
-        "used": 1787664944790
-      },
-      {
-        "t": "[Pig8.0] 260814 ByuN vs HeRoMaRinE",
-        "used": 1787664932840
       }
     ],
     "b": [
