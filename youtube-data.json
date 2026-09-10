@@ -975,7 +975,7 @@
       },
       {
         "t": "[Pig8.0]260821 herO vs Reynor",
-        "used": null
+        "used": 1789031840922
       },
       {
         "t": "[Pig8.0] 260816 Reynor vs trigger",
@@ -1006,10 +1006,6 @@
         "used": null
       },
       {
-        "t": "[Pig8.0] 260813 Serral vs SHIN",
-        "used": 1789031339786
-      },
-      {
         "t": "[Pig8.0] 260813 Lambo vs Rogue",
         "used": null
       },
@@ -1032,6 +1028,10 @@
       {
         "t": "[와디먼데이]7/20 1.이병렬 하스템",
         "used": null
+      },
+      {
+        "t": "[Pig8.0] 260813 Serral vs SHIN",
+        "used": 1789031339786
       },
       {
         "t": "[Pig8.0] 260813 Serral vs Lambo",
