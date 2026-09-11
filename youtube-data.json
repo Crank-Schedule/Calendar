@@ -985,6 +985,16 @@
         "t": "자낳대DAY4",
         "done": false
       }
+    },
+    "2026-09-12": {
+      "a_video": {
+        "t": "[스파클링 튜나]신희범vs닙",
+        "done": false
+      },
+      "b_video": {
+        "t": "마인드호크#9",
+        "done": false
+      }
     }
   },
   "sources": {
