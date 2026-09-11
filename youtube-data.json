@@ -999,6 +999,20 @@
         "t": "핵맞추면기분이 좋다",
         "done": false
       }
+    },
+    "2026-09-13": {
+      "a_video": {
+        "t": "패치스모드 알아보기",
+        "done": false
+      },
+      "a_short": {
+        "t": "프로토스를 왜 하냐고",
+        "done": false
+      },
+      "b_video": {
+        "t": "마인드호크#10",
+        "done": false
+      }
     }
   },
   "sources": {
