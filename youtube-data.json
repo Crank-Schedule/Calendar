@@ -976,15 +976,15 @@
   "sources": {
     "a": [
       {
+        "t": "[스파클링 튜나]신희범 gg머신",
+        "used": null
+      },
+      {
         "t": "[밴픽모드 알아보기]",
         "used": null
       },
       {
         "t": "[패치스모드]알아보기",
-        "used": null
-      },
-      {
-        "t": "[스파클링 튜나]신희범 gg머신",
         "used": null
       },
       {
@@ -1002,10 +1002,6 @@
       {
         "t": "[Pig8.0]260821 Serral vs Reynor",
         "used": null
-      },
-      {
-        "t": "[Pig8.0]260821 herO vs Reynor",
-        "used": 1789031840922
       },
       {
         "t": "[Pig8.0] 260816 Reynor vs trigger",
@@ -1058,6 +1054,10 @@
       {
         "t": "[와디먼데이]7/20 1.이병렬 하스템",
         "used": null
+      },
+      {
+        "t": "[Pig8.0]260821 herO vs Reynor",
+        "used": 1789031840922
       },
       {
         "t": "[Pig8.0] 260813 Serral vs SHIN",
