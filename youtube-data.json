@@ -994,6 +994,10 @@
       "b_video": {
         "t": "마인드호크#9",
         "done": false
+      },
+      "a_short": {
+        "t": "핵맞추면기분이 좋다",
+        "done": false
       }
     }
   },
