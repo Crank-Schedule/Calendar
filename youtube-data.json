@@ -971,6 +971,20 @@
         "t": "자낳대DAY3",
         "done": false
       }
+    },
+    "2026-09-11": {
+      "a_video": {
+        "t": "[wcs]이병렬 전태양",
+        "done": false
+      },
+      "a_short": {
+        "t": "운이따라준다",
+        "done": false
+      },
+      "b_video": {
+        "t": "자낳대DAY4",
+        "done": false
+      }
     }
   },
   "sources": {
