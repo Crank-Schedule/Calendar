@@ -1083,6 +1083,16 @@
         "t": "마인드호크-11",
         "done": false
       }
+    },
+    "2026-09-16": {
+      "a_video": {
+        "t": "김대엽vs조성주",
+        "done": false
+      },
+      "b_video": {
+        "t": "마인드호크-12",
+        "done": false
+      }
     }
   },
   "sources": {
