@@ -1069,6 +1069,20 @@
         "t": "노래 맞추기 유즈맵",
         "done": false
       }
+    },
+    "2026-09-15": {
+      "a_video": {
+        "t": "[와디 전야제]퍼시벌 야코브",
+        "done": false
+      },
+      "a_short": {
+        "t": "겜알못 블리자드",
+        "done": false
+      },
+      "b_video": {
+        "t": "마인드호크-11",
+        "done": false
+      }
     }
   },
   "sources": {
