@@ -6,7 +6,8 @@ function labelOnsydeBroadcast(element, entry) {
   element.classList.toggle('onsyde-personal-tag', covered);
   const label = document.createElement('span');
   label.className = 'onsyde-broadcast-label';
-  for (const text of covered ? ['크랭크 중계'] : ['ONSYDE 일정', '크랭크 중계 없음']) {
+  label.setAttribute('aria-label', covered ? '크랭크 중계' : 'ONSYDE 팀 일정 · 크랭크 중계 없음');
+  for (const text of covered ? ['▶ 중계'] : ['팀 일정']) {
     const part = document.createElement('span');
     part.textContent = text;
     label.appendChild(part);

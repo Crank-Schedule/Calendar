@@ -4,7 +4,7 @@
   flex-direction: column !important;
   align-items: stretch !important;
   justify-content: center !important;
-  gap: 5px !important;
+  gap: 3px !important;
   height: auto !important;
   max-height: none !important;
   padding: 6px 5px !important;
@@ -20,12 +20,12 @@
   align-items: center !important;
   gap: 2px 6px !important;
   width: 100% !important;
-  padding: 0 0 4px !important;
+  padding: 0 0 2px !important;
   border-bottom: 1px solid #66756e !important;
   color: #d4ddd8 !important;
   font: 700 10px/1.35 'Paperozi', sans-serif !important;
   text-align: center !important;
-  white-space: normal !important;
+  white-space: nowrap !important;
   overflow: visible !important;
   text-shadow: none !important;
 }
