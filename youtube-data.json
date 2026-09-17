@@ -1097,6 +1097,20 @@
         "t": "죽나요",
         "done": false
       }
+    },
+    "2026-09-17": {
+      "a_video": {
+        "t": "워3",
+        "done": false
+      },
+      "a_short": {
+        "t": "빈틈의 실",
+        "done": false
+      },
+      "b_video": {
+        "t": "워3-1",
+        "done": false
+      }
     }
   },
   "sources": {
