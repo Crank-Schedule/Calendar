@@ -1121,6 +1121,24 @@
         "t": "워크3-2",
         "done": false
       }
+    },
+    "2026-09-20": {
+      "a_video": {
+        "t": "변현우 맥팩",
+        "done": false
+      },
+      "a_short": {
+        "t": "핵",
+        "done": false
+      },
+      "b_video": {
+        "t": "워크3-4",
+        "done": false
+      },
+      "b_short": {
+        "t": "민간인킬",
+        "done": false
+      }
     }
   },
   "sources": {
