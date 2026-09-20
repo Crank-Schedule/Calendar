@@ -1139,6 +1139,20 @@
         "t": "민간인킬",
         "done": false
       }
+    },
+    "2026-09-19": {
+      "a_video": {
+        "t": "박령우 조성주",
+        "done": false
+      },
+      "a_short": {
+        "t": "고스트뾱",
+        "done": false
+      },
+      "b_video": {
+        "t": "워크3-3",
+        "done": false
+      }
     }
   },
   "sources": {
