@@ -83,23 +83,11 @@
   const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
   function scheduleSeriesKey(value) {
-    const sourceText = [value?.title, value?.short].filter(Boolean).join(" ").toUpperCase();
-    const compact = sourceText.replace(/[^A-Z0-9]/g, "");
-    if (compact.includes("PIGFEST8") || compact.includes("PIG8")) return "pig8";
-    if (compact.includes("WARDITV10")) return "warditv-10";
-    if (compact.includes("WARDITV") && compact.includes("SUMMER")) return "warditv-summer";
-    if (compact.includes("WARDITV") && compact.includes("SPRING")) return "warditv-spring";
-    if (compact.includes("WARDITV") && compact.includes("WINTER")) return "warditv-winter";
-    if (compact.includes("GSLCK")) return "gsl-ck";
-    if (compact.includes("GSTL")) return "gstl";
-    if (compact.includes("RSL")) return "rsl";
-    if (compact.includes("MOG2")) return "mog2";
-    if (compact.includes("HOMESTORY") || compact.includes("HSC")) return "hsc";
-    if (compact.includes("DOUYU")) return "douyu";
-    if (compact.includes("TLMC")) return "tlmc";
-    if (compact.includes("WARDI") && compact.includes("TEAMLEAGUE")) return "wardi-team-league";
-    if (compact.includes("GSL")) return "gsl";
-    return compact.length >= 5 ? compact : "";
+    return window.SCHEDULE_MATCHER?.key(value) || "";
+  }
+
+  function scheduleSeriesMatch(left, right) {
+    return window.SCHEDULE_MATCHER?.matches(left, right) || false;
   }
 
   function localCrankMonth(monthKey) {
@@ -122,7 +110,7 @@
         const key = scheduleSeriesKey(personalEvent);
         if (!key) return;
         const matchIndex = source.events.findIndex((event, index) => (
-          !matched.has(index) && event.date === date && scheduleSeriesKey(event) === key
+          !matched.has(index) && event.date === date && scheduleSeriesMatch(personalEvent, event)
         ));
         if (matchIndex >= 0) matched.add(matchIndex);
       });

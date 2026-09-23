@@ -1098,6 +1098,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="onsyde-broadcast-label.js?v=20260917-2"></script>
 <script src="onsyde/schedule-data.js?v=20260814-8"></script>
 <script src="onsyde/onsyde-store.js?v=20260816-5"></script>
+<script src="onsyde/schedule-matcher.js?v=20260923-1"></script>
 <script>
 
 // ===== 보안: 일정 제목/링크는 외부(저장소 JSON) 데이터이므로 항상 이스케이프해서 출력 =====
@@ -1484,25 +1485,11 @@ function getOnsydeEntriesForDate(dateObj){
 }
 
 function scheduleSeriesKey(entry){
-  const onsydeEvent = entry && entry.__onsydeEvent;
-  const source = [entry?.title, onsydeEvent?.title, onsydeEvent?.short]
-    .filter(Boolean).join(' ').toUpperCase();
-  const compact = source.replace(/[^A-Z0-9가-힣]/g, '');
-  if(compact.includes('PIGFEST8') || compact.includes('PIG8')) return 'pig8';
-  if(compact.includes('WARDITV10')) return 'warditv-10';
-  if(compact.includes('WARDITV') && compact.includes('SUMMER')) return 'warditv-summer';
-  if(compact.includes('WARDITV') && compact.includes('SPRING')) return 'warditv-spring';
-  if(compact.includes('WARDITV') && compact.includes('WINTER')) return 'warditv-winter';
-  if(compact.includes('GSLCK')) return 'gsl-ck';
-  if(compact.includes('GSTL')) return 'gstl';
-  if(compact.includes('RSL')) return 'rsl';
-  if(compact.includes('MOG2')) return 'mog2';
-  if(compact.includes('HOMESTORY') || compact.includes('HSC')) return 'hsc';
-  if(compact.includes('DOUYU')) return 'douyu';
-  if(compact.includes('TLMC')) return 'tlmc';
-  if(compact.includes('WARDI') && compact.includes('TEAMLEAGUE')) return 'wardi-team-league';
-  if(compact.includes('GSL')) return 'gsl';
-  return compact.length >= 5 ? compact : '';
+  return window.SCHEDULE_MATCHER?.key(entry) || '';
+}
+
+function scheduleSeriesMatch(left, right){
+  return window.SCHEDULE_MATCHER?.matches(left, right) || false;
 }
 
 function onsydePlayerNames(entry){
@@ -1548,7 +1535,7 @@ function mergePersonalAndOnsydeEntries(dateObj, personalEntries){
   const personal = (personalEntries || []).map(personalEntry => {
     const personalKey = scheduleSeriesKey(personalEntry);
     if(!personalKey) return personalEntry;
-    const matchIndex = remainingOnsyde.findIndex(teamEntry => scheduleSeriesKey(teamEntry) === personalKey);
+    const matchIndex = remainingOnsyde.findIndex(teamEntry => scheduleSeriesMatch(personalEntry, teamEntry));
     if(matchIndex < 0) return personalEntry;
     const [teamEntry] = remainingOnsyde.splice(matchIndex, 1);
     return mergePersonalOnsydeEntry(personalEntry, teamEntry);
