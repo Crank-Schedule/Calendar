@@ -791,14 +791,15 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   @media (max-width: 1000px) {
 
     .special-badge.badge-circle {
-        width: 18px !important; height: 18px !important; border-radius: 50% !important;
+        /* Match the viewer calendar at the tablet/Fold width. */
+        width: auto !important; min-width: 30px !important; height: 18px !important; border-radius: 3px !important;
         border: 1.5px solid currentColor !important;
         display: inline-flex !important; align-items: center !important; justify-content: center !important;
-        padding: 0 !important; flex: 0 0 auto !important;
+        padding: 0 4px !important; flex: 0 0 auto !important;
         background-color: transparent; /* allows JS inline rgba to shine through */
     }
     .special-badge.badge-circle .sp-abbr {
-        display: inline-block !important; font-size: 10px !important; font-weight: 900 !important; line-height: 1 !important; letter-spacing: 0 !important;
+        display: inline-block !important; font-size: 9px !important; font-weight: 900 !important; line-height: 1 !important; letter-spacing: -0.04em !important;
     }
     .special-badge.badge-circle .sp-label,
     .special-badge.badge-circle .sp-icon,
@@ -1271,6 +1272,12 @@ body.admin-page::after {
    keep that node functional but out of the calendar layout. */
 .admin-page #scheduleGridSection .cell-thumb-yt {
   display: none !important;
+}
+
+/* Keep admin calendar cells rounded like the public calendar at medium
+   widths; the legacy admin skin otherwise makes them look nearly square. */
+.admin-page #scheduleGridSection .cell {
+  border-radius: 16px !important;
 }
 
 /* Fold outer-screen fallback. Calendar-card typography comes from the shared
