@@ -86,6 +86,7 @@
     const sourceText = [value?.title, value?.short].filter(Boolean).join(" ").toUpperCase();
     const compact = sourceText.replace(/[^A-Z0-9]/g, "");
     if (compact.includes("PIGFEST8") || compact.includes("PIG8")) return "pig8";
+    if (compact.includes("WARDITV10")) return "warditv-10";
     if (compact.includes("WARDITV") && compact.includes("SUMMER")) return "warditv-summer";
     if (compact.includes("WARDITV") && compact.includes("SPRING")) return "warditv-spring";
     if (compact.includes("WARDITV") && compact.includes("WINTER")) return "warditv-winter";
