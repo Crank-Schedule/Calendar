@@ -60,6 +60,27 @@
     return tokens(value).sort().join("+");
   }
 
+  function timeKey(value) {
+    const explicit = String(value?.time || "").trim().toUpperCase();
+    if (explicit) {
+      const match = explicit.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?$/);
+      if (match) {
+        let hour = Number(match[1]);
+        const minute = Number(match[2] || 0);
+        const meridiem = match[3];
+        if (meridiem === "AM" && hour === 12) hour = 0;
+        if (meridiem === "PM" && hour < 12) hour += 12;
+        if (hour >= 0 && hour < 24 && minute >= 0 && minute < 60) return hour * 60 + minute;
+      }
+    }
+
+    if (value?.start) {
+      const date = new Date(value.start);
+      if (!Number.isNaN(date.getTime())) return date.getHours() * 60 + date.getMinutes();
+    }
+    return null;
+  }
+
   function matches(left, right) {
     const leftTokens = tokens(left);
     const rightTokens = tokens(right);
@@ -68,8 +89,16 @@
     const rightKey = rightTokens.slice().sort().join("+");
     if (leftKey === rightKey) return true;
     const rightSet = new Set(rightTokens);
-    return leftTokens.some(token => BROAD_FAMILY_TOKENS.has(token) && rightSet.has(token));
+    if (leftTokens.some(token => BROAD_FAMILY_TOKENS.has(token) && rightSet.has(token))) return true;
+
+    // The two calendars can describe the same match with different titles
+    // (for example, a personal "GSTL final" watch entry vs. a team "GSTL
+    // Final" entry). Both sides are already filtered to the same date by the
+    // callers, so an explicit equal clock time is a safe final fallback.
+    const leftTime = timeKey(left);
+    const rightTime = timeKey(right);
+    return leftTime !== null && rightTime !== null && leftTime === rightTime;
   }
 
-  window.SCHEDULE_MATCHER = { key, matches, tokens };
+  window.SCHEDULE_MATCHER = { key, matches, timeKey, tokens };
 })();
