@@ -73,6 +73,7 @@
   let month = requested ? Number(requested[2]) : todayDate.getMonth() + 1;
   let events = store.loadEvents();
   let crankCovered = new Set();
+  let crankCoverage = new Map();
   let crankCoverageReq = 0;
 
   function scheduleSeriesKey(value) {
@@ -94,6 +95,7 @@
 
   function rebuildCrankCoverage(crankMonthData) {
     const matched = new Set();
+    const coverage = new Map();
     Object.entries(crankMonthData || {}).forEach(([day, personalEvents]) => {
       if (!Array.isArray(personalEvents)) return;
       const date = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -101,10 +103,14 @@
         const key = scheduleSeriesKey(personalEvent);
         if (!key) return;
         const matchIndex = events.findIndex((event, index) => !matched.has(index) && event.date === date && scheduleSeriesMatch(personalEvent, event));
-        if (matchIndex >= 0) matched.add(matchIndex);
+        if (matchIndex >= 0) {
+          matched.add(matchIndex);
+          coverage.set(matchIndex, personalEvent);
+        }
       });
     });
     crankCovered = matched;
+    crankCoverage = coverage;
   }
 
   async function loadCrankCoverage() {
@@ -200,9 +206,14 @@
       const weekendClass = cell % 7 === 0 ? " is-sun" : cell % 7 === 6 ? " is-sat" : "";
       html += `<section class="admin-day${inMonth ? "" : " is-outside"}${weekendClass}${inMonth && date === todayKey ? " is-today" : ""}">
         <header><span>${shownDay}</span>${inMonth ? `<button type="button" class="day-add" data-date="${date}" aria-label="Add event on ${date}">+</button>` : ""}</header>
-        <div class="admin-events">${dayEvents.map(({ event, index }) => `<button type="button" class="admin-event ${escapeHtml(event.type)}${crankCovered.has(index) ? " is-crank-covered" : ""}" data-index="${index}">
-          ${event.start ? `<time>${escapeHtml(kstTime(event))}</time>` : ""}<span>${escapeHtml(store.compactLabel(event))}</span>${crankCovered.has(index) ? `<span class="crank-favicon" aria-hidden="true"><img src="../favicon.jpg" alt=""></span>` : ""}
-        </button>`).join("")}</div>
+        <div class="admin-events">${dayEvents.map(({ event, index }) => {
+          const personalEvent = crankCoverage.get(index);
+          const label = personalEvent?.title || store.compactLabel(event);
+          const coveredLabel = personalEvent ? `Also on CranK: ${personalEvent.title}` : "";
+          return `<button type="button" class="admin-event ${escapeHtml(event.type)}${personalEvent ? " is-crank-covered" : ""}" data-index="${index}" title="${escapeHtml(coveredLabel)}">
+          ${event.start ? `<time>${escapeHtml(kstTime(event))}</time>` : ""}<span>${escapeHtml(label)}</span>${personalEvent ? `<span class="crank-favicon" aria-label="Also on CranK broadcast schedule"><img src="../favicon.jpg" alt=""></span>` : ""}
+        </button>`;
+        }).join("")}</div>
       </section>`;
     }
     grid.innerHTML = html;

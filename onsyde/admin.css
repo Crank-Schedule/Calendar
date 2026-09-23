@@ -45,6 +45,11 @@
 }
 .admin-event.team { --type: var(--lime); }
 .admin-event.match { --type: var(--cyan); }
+.admin-event.is-crank-covered {
+  --type: var(--green);
+  border-color: var(--green);
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--green) 13%, var(--cell)) 0 7px, color-mix(in srgb, var(--green) 7%, var(--cell)) 7px 14px);
+}
 .admin-event time { color: var(--type); font-size: 10px; font-weight: 800; white-space: nowrap; }
 .admin-event span { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 700; }
 .event-editor {
