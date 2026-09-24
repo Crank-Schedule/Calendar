@@ -118,6 +118,7 @@ function parseTitle(en) {
 
     if(explicitIcon === 'lol') { iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'sc2') { iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'war3') { iconHtml = `<img src="assets/images/war3_icon.svg" onerror="this.outerHTML='🛡️'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'onsyde') { iconHtml = `<span class="onsyde-event-logo" aria-hidden="true"><img src="onsyde/assets/onsyde-logo-dark.png" alt=""></span>`; customIcon=true;}
     else if(explicitIcon === 'sc1') { iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'er') { iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
@@ -147,6 +148,7 @@ function parseTitle(en) {
   // Auto Mode
   let isLol = false;
   let isSc2 = false;
+  let isWar3 = false;
   let isSc1 = false;
   let isMk = false;
   let isBaseball = false;
@@ -162,6 +164,7 @@ function parseTitle(en) {
   const lolRegex = /(?:리그\s*오브\s*레전드|리그오브레전드|롤|LOL)/i;
   const lolKeepRegex = /(?:LEC|LCK)/i;
   const sc2Regex = /(?:스타크래프트\s*2|스타크래프트2|스타\s*2|스타2|스타\s*II|스타II|SC2)/i;
+  const war3Regex = /(?:워\s*3|워크래프트\s*3|Warcraft\s*III?)/i;
   const sc1Regex = /(?:스타크래프트\s*1|스타크래프트1|스타\s*1|스타1|스타크래프트|스타)/i;
   const mkRegex = /(?:마리오\s*카트|마리오카트|마카)/i;
   const watchRegex = /(?:같이\s*보기|입중계|시청|올림픽)/i;
@@ -185,6 +188,8 @@ function parseTitle(en) {
       let rest = displayTitle.replace(sc2Regex, '').trim();
       rest = rest.replace(/^[-:,\s]+/, '');
       displayTitle = rest === '' ? '스타 II' : rest;
+  } else if(war3Regex.test(displayTitle)) {
+      isWar3 = true;
   } else if(sc1Regex.test(displayTitle)) {
       isSc1 = true;
       let rest = displayTitle.replace(sc1Regex, '').trim();
@@ -245,6 +250,9 @@ function parseTitle(en) {
       customIcon = true;
   } else if(isSc2) {
       iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      customIcon = true;
+  } else if(isWar3) {
+      iconHtml = `<img src="assets/images/war3_icon.svg" onerror="this.outerHTML='🛡️'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isSc1) {
       iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
