@@ -1099,290 +1099,14 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="onsyde/schedule-data.js?v=20260814-8"></script>
 <script src="onsyde/onsyde-store.js?v=20260816-5"></script>
 <script src="onsyde/schedule-matcher.js?v=20260923-3"></script>
+<script src="schedule_month_cache.js?v=20260924-1"></script>
+<script src="schedule_core.js?v=20260924-3"></script>
+<script src="schedule_replay_ui.js?v=20260924-1"></script>
 <script>
 
 // ===== 보안: 일정 제목/링크는 외부(저장소 JSON) 데이터이므로 항상 이스케이프해서 출력 =====
 // ===== 라이트모드에서도 잘 보이도록 색상의 명도를 자동 조절 =====
 const WORKER_URL = 'https://crank-admin.axcrank.workers.dev';
-function hexToHsl(hex){
-  let r=0,g=0,b=0;
-  hex = String(hex||'').replace('#','');
-  if(hex.length===3){ r=parseInt(hex[0]+hex[0],16); g=parseInt(hex[1]+hex[1],16); b=parseInt(hex[2]+hex[2],16); }
-  else { r=parseInt(hex.substring(0,2),16); g=parseInt(hex.substring(2,4),16); b=parseInt(hex.substring(4,6),16); }
-  r/=255; g/=255; b/=255;
-  const max=Math.max(r,g,b), min=Math.min(r,g,b);
-  let h=0,s=0,l=(max+min)/2;
-  if(max!==min){
-    const d = max-min;
-    s = l>0.5 ? d/(2-max-min) : d/(max+min);
-    switch(max){
-      case r: h=(g-b)/d+(g<b?6:0); break;
-      case g: h=(b-r)/d+2; break;
-      case b: h=(r-g)/d+4; break;
-    }
-    h/=6;
-  }
-  return [h*360, s*100, l*100];
-}
-function hslToHex(h,s,l){
-  h/=360; s/=100; l/=100;
-  let r,g,b;
-  if(s===0){ r=g=b=l; }
-  else{
-    const hue2rgb=(p,q,t)=>{
-      if(t<0) t+=1; if(t>1) t-=1;
-      if(t<1/6) return p+(q-p)*6*t;
-      if(t<1/2) return q;
-      if(t<2/3) return p+(q-p)*(2/3-t)*6;
-      return p;
-    };
-    const q = l<0.5 ? l*(1+s) : l+s-l*s;
-    const p = 2*l-q;
-    r=hue2rgb(p,q,h+1/3); g=hue2rgb(p,q,h); b=hue2rgb(p,q,h-1/3);
-  }
-  const toHex = v => Math.round(v*255).toString(16).padStart(2,'0');
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-function getDisplayColor(hex){
-  if(!hex) return hex;
-  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  try{
-    const [h,s,l] = hexToHsl(hex);
-    if(!isLight) {
-      const newL = Math.max(l, 65);
-      const newS = Math.min(100, s + 15);
-      return hslToHex(h, newS, newL);
-    } else {
-      const isYellowish = h>=40 && h<=110;
-      const cap = isYellowish ? 22 : 28;
-      const newL = Math.min(l, cap);
-      const newS = Math.min(100, s+10);
-      return hslToHex(h, newS, newL);
-    }
-  }catch(e){ return hex; }
-}
-
-function escapeHtml(str){
-  if(str==null) return '';
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
-}
-function safeUrl(url){
-  if(!url) return '';
-  const trimmed = String(url).trim();
-  return /^https?:\/\//i.test(trimmed) ? escapeHtml(trimmed) : '';
-}
-
-
-// 제목 키워드 -> 아이콘. 이미지 아이콘을 받으면 이 부분을 <img> 태그로 교체할 예정.
-function getAbbr(title) {
-  if (!title) return '';
-  const up = title.toUpperCase();
-  if (up.includes('귀국') || up.includes('입국')) return '올귀';
-  if (up.includes('출국') || up.includes('출장')) return '올출';
-  if (up.includes('RSL')) return 'RSL';
-  if (up.includes('WARDI')) return 'Wardi Cup';
-  if (up.includes('PIGFEST') || up.includes('PIG FEST')) return 'PiGFest';
-  if (up.includes('스타2') || up.includes('스타 II') || up.includes('스타II') || up.includes('SC2')) return '스II';
-  if (up.includes('워3') || up.includes('워크래프트')) return '워3';
-  if (up.includes('스타크래프트') || up.includes('스타1') || up.includes('스타')) return '스타';
-  if (up.includes('마리오 카트') || up.includes('마카')) return '마카';
-  if (up.includes('롤') || up.includes('리그 오브 레전드') || up.includes('리그오브레전드')) return '롤';
-  if (up.includes('이터널') || up.includes('이리')) return '이리';
-  if (up.includes('휴방')) return '휴방';
-  if (up.includes('자날') || up.includes('캠페인')) return '자날 캠페인';
-  if (up.includes('에오엠') || up.includes('AGE OF EMPIRES') || up.includes('AOE')) return '에오엠4 DLC';
-  if (up.includes('그님티')) return '그님티 시청';
-  if (up.includes('야구')) return '야구';
-  if (up.includes('월드컵') || up.includes('축구')) return '축구';
-  if (up.includes('모험가') || up.includes('앨리엇')) return '앨리';
-  if (up.includes('유로트럭')) return '유로트럭';
-  if (up.includes('토크') || up.includes('저챗')) return '저챗';
-  if (up.includes('대회') || up.includes('컵') || up.includes('CUP')) return '대회';
-  const clean = title.replace(/[\[\]\s]/g, '');
-  return clean.substring(0, 2);
-}
-
-function parseTitle(en) {
-  let titleStr = typeof en === 'string' ? en : (en.title || '');
-  let explicitIcon = typeof en === 'object' && en.icon ? en.icon : null;
-  if(explicitIcon === 'auto') explicitIcon = null;
-
-  let displayTitle = titleStr || '';
-  
-  if (explicitIcon && explicitIcon !== 'none') {
-    let customIcon = false;
-    let iconHtml = '';
-    
-    if(explicitIcon === 'lol') { iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'sc2') { iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'war3') { iconHtml = `<img src="assets/images/war3_icon_reforged.png" onerror="this.outerHTML='🛡️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'onsyde') { iconHtml = `<span class="onsyde-event-logo" aria-hidden="true"><img src="onsyde/assets/onsyde-logo-dark.png" alt=""></span>`; customIcon=true;}
-    else if(explicitIcon === 'sc1') { iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'er') { iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'mk') { iconHtml = `<img src="assets/images/mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'bb') { iconHtml = `⚾`; customIcon=true;}
-    else if(explicitIcon === 'poke') { iconHtml = `<img src="assets/images/poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'chat') { iconHtml = `💬`; customIcon=true;}
-    else if(explicitIcon === 'watch') { iconHtml = `<img src="assets/images/watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    
-    return {
-        displayTitle: displayTitle,
-        customIcon: customIcon,
-        iconHtml: iconHtml
-    };
-  } else if (explicitIcon === 'none') {
-    return {
-        displayTitle: displayTitle,
-        customIcon: false,
-        iconHtml: ''
-    };
-  }
-
-  // Auto Mode
-  let isLol = false;
-  let isSc2 = false;
-  let isWar3 = false;
-  let isSc1 = false;
-  let isMk = false;
-  let isBaseball = false;
-  let isWatch = false;
-  let isChat = false;
-  let isPoke = false;
-  let isEr = false;
-  
-  const lolRegex = /(?:리그\s*오브\s*레전드|리그오브레전드|롤|LOL)/i;
-  const lolKeepRegex = /(?:LEC|LCK)/i;
-  const sc2Regex = /(?:스타크래프트\s*2|스타크래프트2|스타\s*2|스타2|스타\s*II|스타II|SC2)/i;
-  const war3Regex = /(?:워\s*3|워크래프트\s*3|Warcraft\s*III?)/i;
-  const sc1Regex = /(?:스타크래프트\s*1|스타크래프트1|스타\s*1|스타1|스타크래프트|스타)/i;
-  const mkRegex = /(?:마리오\s*카트|마리오카트|마카)/i;
-  const watchRegex = /(?:월드컵|올림픽)/i;
-  const chatRegex = /(?:저챗|토크|Just\s*Chatting)/i;
-  const pokeRegex = /(?:포켓몬스터|포켓몬)/i;
-  const erRegex = /(?:이터널\s*리턴|이리)/i;
-  
-  if(lolRegex.test(displayTitle)) {
-      isLol = true;
-      let rest = displayTitle.replace(lolRegex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '솔랭' : rest;
-  } else if (lolKeepRegex.test(displayTitle)) {
-      isLol = true;
-  } else if(sc2Regex.test(displayTitle)) {
-      isSc2 = true;
-      let rest = displayTitle.replace(sc2Regex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '스타 II' : rest;
-  } else if(war3Regex.test(displayTitle)) {
-      isWar3 = true;
-  } else if(sc1Regex.test(displayTitle)) {
-      isSc1 = true;
-      let rest = displayTitle.replace(sc1Regex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '스타' : rest;
-  } else if(mkRegex.test(displayTitle)) {
-      isMk = true;
-      let rest = displayTitle.replace(mkRegex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      rest = rest.replace(/8\s*디럭스/i, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      
-      if (rest === '') {
-          displayTitle = '8 디럭스';
-      } else {
-          if (/월[드즈]/.test(rest)) {
-              rest = rest.replace(/월즈/g, '월드');
-          }
-          displayTitle = rest;
-      }
-  } else if(/야구|삼성/.test(displayTitle)) {
-      isBaseball = true;
-      let rest = displayTitle.replace(/야구/g, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '야구' : rest;
-  } else if(watchRegex.test(displayTitle)) {
-      isWatch = true;
-  } else if(chatRegex.test(displayTitle)) {
-      isChat = true;
-      let rest = displayTitle.replace(chatRegex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '저챗' : rest;
-  } else if(pokeRegex.test(displayTitle)) {
-      isPoke = true;
-      let rest = displayTitle.replace(pokeRegex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '포켓몬' : rest;
-  } else if(erRegex.test(displayTitle)) {
-      isEr = true;
-      let rest = displayTitle.replace(erRegex, '').trim();
-      rest = rest.replace(/^[-:,\s]+/, '');
-      displayTitle = rest === '' ? '솔랭' : rest;
-  }
-  
-  let iconHtml = getIcon(displayTitle);
-  let customIcon = false;
-  
-  if(isLol) {
-      iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isSc2) {
-      iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isWar3) {
-      iconHtml = `<img src="assets/images/war3_icon_reforged.png" onerror="this.outerHTML='🛡️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isSc1) {
-      iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isMk) {
-      iconHtml = `<img src="assets/images/mk_icon.png" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isBaseball) {
-      iconHtml = `⚾`;
-      customIcon = true;
-  } else if(isWatch) {
-      iconHtml = `<img src="assets/images/watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isChat) {
-      iconHtml = `💬`;
-      customIcon = true;
-  } else if(isPoke) {
-      iconHtml = `<img src="assets/images/poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  } else if(isEr) {
-      iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
-      customIcon = true;
-  }
-  
-  return {
-      displayTitle: displayTitle,
-      customIcon: customIcon,
-      iconHtml: iconHtml
-  };
-}
-
-function getIcon(title){
-  const t = title || '';
-  if(t.includes('휴방')) return '😴';
-  if(t.includes('스타')) return '👾';
-  if(t.includes('이터널')) return '🏹';
-  if(t.includes('롤')) return '⚔️';
-  if(t.includes('같이보기')) return '📺';
-  if(t.includes('야구')) return '⚾';
-  const generalGames = ['유로트럭','앨리엇','포켓몬','제로 스페이스','스팀 데모','데모 RTS'];
-  if(generalGames.some(k=>t.includes(k))) return '🎮';
-  return '📌';
-}
-function withIcon(en){
-  const parsed = parseTitle(en);
-  const safe = escapeHtml(parsed.displayTitle);
-  return (parsed.iconHtml ? parsed.iconHtml + ' ' : '') + safe;
-}
 
 
 let savedDate = sessionStorage.getItem('viewingDate');
@@ -1454,37 +1178,53 @@ function seedJune2026(){
 async function loadMonth(d){
   const key = storageKey(d);
   if(cache[key]) return cache[key];
-  
   const y = d.getFullYear();
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
-  
-  // 로컬 앱도 배포본과 같은 최신 GitHub 일정 데이터를 우선 사용합니다.
-  // GitHub에 접근할 수 없거나 특정 월 파일이 없으면 복사해 둔 로컬 JSON으로 fallback합니다.
   const remoteDataUrl = `https://crank-schedule.github.io/Calendar/data/schedule_${y}-${m}.json`;
   const localDataUrl = `data/schedule_${y}-${m}.json`;
-  let dataFromNetwork = null;
-  for (const dataUrl of [remoteDataUrl, localDataUrl]) {
-    try {
-      const res = await fetch(`${dataUrl}?t=${Date.now()}`, { cache: 'no-store' });
-      if (res.ok) {
-        dataFromNetwork = await res.json();
-        break;
-      }
-    } catch(e) {}
-  }
-  
   let dataFromLocal = null;
+  let localTs = 0;
   try {
     const raw = localStorage.getItem('crank_storage');
     if(raw) {
         const parsed = JSON.parse(raw);
         const entry = parsed.find(item => item.key === key);
-        if(entry) dataFromLocal = entry.data || (entry.value ? JSON.parse(entry.value) : null);
+        if(entry) {
+          dataFromLocal = entry.data || (entry.value ? JSON.parse(entry.value) : null);
+          localTs = entry.ts || 0;
+        }
     }
   } catch(e) {}
-  
-  cache[key] = dataFromNetwork || dataFromLocal || ((y===2026 && m==='06') ? seedJune2026() : {});
+  const freshLocal = dataFromLocal && Date.now() - localTs < 5 * 60 * 1000;
+  const saved = window.SCHEDULE_MONTH_CACHE.read(key);
+  if(freshLocal || saved){
+    cache[key] = freshLocal ? dataFromLocal : saved;
+    const displayed = cache[key];
+    const original = JSON.stringify(displayed);
+    void fetchMonthData().then(latest=>{
+      if(!latest) return;
+      window.SCHEDULE_MONTH_CACHE.write(key, latest);
+      if(freshLocal || cache[key] !== displayed || JSON.stringify(displayed) !== original || original === JSON.stringify(latest)) return;
+      cache[key] = latest;
+      if(storageKey(current) === key) render();
+    });
+    return cache[key];
+  }
+  const latest = await fetchMonthData();
+  cache[key] = latest || dataFromLocal || ((y===2026 && m==='06') ? seedJune2026() : {});
+  if(latest) window.SCHEDULE_MONTH_CACHE.write(key, latest);
   return cache[key];
+
+  async function fetchMonthData(){
+    // GitHub Pages is the source of truth; use local JSON only when it is unavailable.
+    for(const url of [remoteDataUrl, localDataUrl]){
+      try {
+        const res = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
+        if(res.ok) return await res.json();
+      } catch(_) {}
+    }
+    return null;
+  }
 }
 // saveMonth removed
 
@@ -1730,6 +1470,7 @@ function manualReplayFromEntries(entries){
 
 let replayDateMapPromise = null;
 let resolvedReplayDateMap = null;
+let replayRefreshCallbacks = [];
 let chzzkThumbnailById = {};
 function attachKnownChzzkThumbnail(video){
   if(video?.isChzzk && video.chzzkId && !video.thumb){
@@ -1784,7 +1525,7 @@ function loadReplaysAfterSchedule(){
   if(replayDateMapPromise) return;
   loadReplayDateMap().then(map=>{
     resolvedReplayDateMap = map;
-    render();
+    replayRefreshCallbacks.forEach(refresh=>refresh(map));
   }).catch(()=>{});
 }
 
@@ -1792,6 +1533,7 @@ async function renderCalendarMonth(){
   const data = await loadMonth(current);
 
   const videoDateMap = resolvedReplayDateMap || {};
+  const replayCallbacks = [];
   const grid = document.getElementById('grid');
   const agenda = document.getElementById('agenda');
   if(grid) grid.innerHTML = '';
@@ -1899,24 +1641,12 @@ async function renderCalendarMonth(){
     cellBody.appendChild(tagsWrap);
 
     const dStr = `${cellDate.getFullYear()}-${cellDate.getMonth()+1}-${cellDate.getDate()}`;
-    // 최종 우선순위: 수동 입력 > 날짜가 맞는 YouTube > 치지직
-    const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(personalEntries) || videoDateMap[dStr]);
-    if (vid) {
-        headerWrap.classList.add('has-replay');
-        headerActions.classList.add('has-replay');
-        const replayLink = document.createElement('a');
-        replayLink.className = 'cell-replay-link';
-        replayLink.dataset.source = vid.isChzzk ? 'chzzk' : 'youtube';
-        if (/^https?:\/\//i.test(String(vid.url||''))) replayLink.href = vid.url;
-        replayLink.target = '_blank';
-        replayLink.rel = 'noopener';
-        replayLink.title = vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기');
-        replayLink.setAttribute('aria-label', replayLink.title);
-        replayLink.innerHTML = '<span class="cell-replay-icon" aria-hidden="true">▶</span><span class="cell-replay-label">다시보기</span>';
-        replayLink.addEventListener('click', (event) => event.stopPropagation());
-        replayLink.addEventListener('keydown', (event) => event.stopPropagation());
-        headerActions.appendChild(replayLink);
-    }
+    const refreshReplay = map => {
+      const video = attachKnownChzzkThumbnail(manualReplayFromEntries(personalEntries) || map[dStr]);
+      window.SCHEDULE_REPLAY_UI.updateCalendar(headerWrap, headerActions, video);
+    };
+    refreshReplay(videoDateMap);
+    replayCallbacks.push(refreshReplay);
 
     if (hasRest) {
       const restLabel = document.createElement('div');
@@ -1978,6 +1708,7 @@ async function renderCalendarMonth(){
     });
     if(agenda) agenda.appendChild(row);
   }
+  replayRefreshCallbacks = replayCallbacks;
 }
 
 
@@ -2062,6 +1793,7 @@ async function renderListMonth(){
   listTimeline.innerHTML = '';
 
   const videoDateMap = resolvedReplayDateMap || {};
+  const replayCallbacks = [];
   for(const dt of allDates){
     const sk = storageKey(dt);
     if(!cache[sk]) {
@@ -2141,63 +1873,18 @@ async function renderListMonth(){
     item.appendChild(contentCol);
 
     if (isPast) {
-        const dStr = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
-        // 최종 우선순위: 수동 입력 > 날짜가 맞는 YouTube > 치지직
-        const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(personalEntries) || videoDateMap[dStr]);
-        
-        if (vid) {
-            const ytCol = document.createElement('a');
-            ytCol.className = 'timeline-yt';
-            ytCol.dataset.source = vid.isChzzk ? 'chzzk' : 'youtube';
-            ytCol.dataset.sourceLabel = vid.isChzzk ? 'CHZZK' : 'YT';
-            if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
-            ytCol.target = '_blank';
-            ytCol.rel = 'noopener';
-            ytCol.title = vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기');
-            ytCol.setAttribute('aria-label', ytCol.title);
-            ytCol.onclick = (e) => e.stopPropagation();
-            
-            if (vid.isChzzk) {
-                if (vid.thumb) {
-                    ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                    item.appendChild(ytCol);
-                } else if (vid.chzzkId) {
-                    ytCol.innerHTML = `<span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                    item.appendChild(ytCol);
-                    const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
-                    fetch(`${workerUrl}/api/chzzk/video/${vid.chzzkId}`)
-                      .then(r => r.json())
-                      .then(data => {
-                          if(data?.content?.thumbnailImageUrl) {
-                              ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                          }
-                      }).catch(()=>{});
-                }
-            } else {
-                ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon"></span>`;
-                item.appendChild(ytCol);
-            }
-        } else if (personalEntries.length > 0 && !personalEntries[0].title.includes("휴방")) {
-            const emptyCol = document.createElement('div');
-            emptyCol.className = 'timeline-yt-empty';
-            
-            const hasEuroTruck = entries.some(en => en.title.includes('유로트럭') || en.title.includes('유로 트럭'));
-
-            if (hasEuroTruck) {
-                emptyCol.innerHTML = `<span class="yt-icon">📺</span><span class="yt-label">유로트럭 다시보기는<br>유튜브에 제공되지 않습니다</span>`;
-            } else if (daysDiff >= 3) {
-                emptyCol.innerHTML = `<span class="yt-icon">📺</span><span class="yt-label">치지직 다시보기를<br>통해 봐주세요</span>`;
-            } else if (daysDiff === 0) {
-                emptyCol.innerHTML = `<span class="yt-icon">⏳</span><span class="yt-label">방송 이후<br>업데이트 예정</span>`;
-            } else {
-                emptyCol.innerHTML = `<span class="yt-icon">⏳</span><span class="yt-label">다시보기 대기중</span>`;
-            }
-            item.appendChild(emptyCol);
-        }
+      const dStr = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
+      const refreshReplay = map => {
+        const video = attachKnownChzzkThumbnail(manualReplayFromEntries(personalEntries) || map[dStr]);
+        window.SCHEDULE_REPLAY_UI.updateList(item, video, entries, personalEntries, daysDiff);
+      };
+      refreshReplay(videoDateMap);
+      replayCallbacks.push(refreshReplay);
     }
 
     listTimeline.appendChild(item);
   }
+  replayRefreshCallbacks = replayCallbacks;
 
   if (m === today.getMonth() && y === today.getFullYear() && !sessionStorage.getItem('hasAutoScrolled')) {
     setTimeout(() => {

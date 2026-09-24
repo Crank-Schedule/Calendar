@@ -1182,7 +1182,9 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="onsyde/schedule-data.js?v=20260814-8"></script>
 <script src="onsyde/onsyde-store.js?v=20260816-5"></script>
 <script src="onsyde/schedule-matcher.js?v=20260923-3"></script>
-<script src="schedule_core.js?v=20260924-2"></script>
+<script src="schedule_month_cache.js?v=20260924-1"></script>
+<script src="schedule_core.js?v=20260924-3"></script>
+<script src="schedule_replay_ui.js?v=20260924-1"></script>
 <script>
 
 const COLORS = [
@@ -1378,19 +1380,8 @@ function seedJune2026(){
 async function loadMonth(d){
   const key = storageKey(d);
   if(cache[key]) return cache[key];
-  
   const y = d.getFullYear();
   const m = (d.getMonth() + 1).toString().padStart(2, '0');
-  
-  let dataFromNetwork = null;
-  try {
-    const baseUrl = location.protocol === 'file:' ? 'https://crank-schedule.github.io/Calendar/' : '';
-    const res = await fetch(`${baseUrl}data/schedule_${y}-${m}.json?t=${Date.now()}`);
-    if (res.ok) {
-       dataFromNetwork = await res.json();
-    }
-  } catch(e) {}
-  
   let dataFromLocal = null;
   let localTs = 0;
   try {
@@ -1404,14 +1395,33 @@ async function loadMonth(d){
         }
     }
   } catch(e) {}
-  
-  if (dataFromLocal && (Date.now() - localTs < 5 * 60 * 1000)) {
-    cache[key] = dataFromLocal;
-  } else {
-    cache[key] = dataFromNetwork || dataFromLocal || ((y===2026 && m==='06' && typeof seedJune2026 === 'function') ? seedJune2026() : {});
+  const freshLocal = dataFromLocal && Date.now() - localTs < 5 * 60 * 1000;
+  const saved = window.SCHEDULE_MONTH_CACHE.read(key);
+  if(freshLocal || saved){
+    cache[key] = freshLocal ? dataFromLocal : saved;
+    const displayed = cache[key];
+    const original = JSON.stringify(displayed);
+    void fetchMonthData().then(latest=>{
+      if(!latest) return;
+      window.SCHEDULE_MONTH_CACHE.write(key, latest);
+      if(freshLocal || hasUnsavedChanges || cache[key] !== displayed || JSON.stringify(displayed) !== original || original === JSON.stringify(latest)) return;
+      cache[key] = latest;
+      if(storageKey(current) === key) render();
+    });
+    return cache[key];
   }
-  
+  const latest = await fetchMonthData();
+  cache[key] = freshLocal ? dataFromLocal : (latest || dataFromLocal || ((y===2026 && m==='06' && typeof seedJune2026 === 'function') ? seedJune2026() : {}));
+  if(latest) window.SCHEDULE_MONTH_CACHE.write(key, latest);
   return cache[key];
+
+  async function fetchMonthData(){
+    try {
+      const baseUrl = location.protocol === 'file:' ? 'https://crank-schedule.github.io/Calendar/' : '';
+      const res = await fetch(`${baseUrl}data/schedule_${y}-${m}.json?t=${Date.now()}`, { cache: 'no-store' });
+      return res.ok ? await res.json() : null;
+    } catch(_) { return null; }
+  }
 }
 
 function getOnsydeEntriesForDate(dateObj){
@@ -1519,6 +1529,7 @@ async function saveMonth(d, _retried){
         if(idx >= 0) parsed[idx] = newEntry;
         else parsed.push(newEntry);
         localStorage.setItem('crank_storage', JSON.stringify(parsed));
+        window.SCHEDULE_MONTH_CACHE.write(key, cache[key]);
       } catch(e) {}
       markDirty(false);
       const savedTime = new Intl.DateTimeFormat('ko-KR', { hour:'numeric', minute:'2-digit' }).format(new Date());
@@ -1686,6 +1697,7 @@ function manualReplayFromEntries(entries){
 
 let replayDateMapPromise = null;
 let resolvedReplayDateMap = null;
+let replayRefreshCallbacks = [];
 let chzzkThumbnailById = {};
 let chzzkLiveOpen = false;
 let chzzkLiveImageUrl = '';
@@ -1753,7 +1765,7 @@ function loadReplaysAfterSchedule(){
   if(replayDateMapPromise) return;
   loadReplayDateMap().then(map=>{
     resolvedReplayDateMap = map;
-    render();
+    replayRefreshCallbacks.forEach(refresh=>refresh(map));
   }).catch(()=>{});
 }
 
@@ -2088,6 +2100,7 @@ async function renderCalendarMonth(){
   const data = await loadMonth(current);
 
   const videoDateMap = resolvedReplayDateMap || {};
+  const replayCallbacks = [];
   const grid = document.getElementById('grid');
   const agenda = document.getElementById('agenda');
   if(grid) grid.innerHTML = '';
@@ -2207,26 +2220,12 @@ async function renderCalendarMonth(){
     cellBody.appendChild(tagsWrap);
 
     const dStr = `${cellDate.getFullYear()}-${cellDate.getMonth()+1}-${cellDate.getDate()}`;
-    // 일반 일정표와 같은 우선순위와 표시 방식: 수동 입력 > 날짜별 다시보기.
-    // 달력 셀에는 썸네일을 넣지 않고 날짜 우상단의 다시보기 버튼만 표시한다.
-    const vid = attachKnownChzzkThumbnail(manualReplayFromEntries(entries) || videoDateMap[dStr]);
-
-    if (vid) {
-      headerWrap.classList.add('has-replay');
-      headerActions.classList.add('has-replay');
-      const replayLink = document.createElement('a');
-      replayLink.className = 'cell-replay-link';
-      replayLink.dataset.source = vid.isChzzk ? 'chzzk' : 'youtube';
-      if (/^https?:\/\//i.test(String(vid.url || ''))) replayLink.href = vid.url;
-      replayLink.target = '_blank';
-      replayLink.rel = 'noopener';
-      replayLink.title = vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기');
-      replayLink.setAttribute('aria-label', replayLink.title);
-      replayLink.innerHTML = '<span class="cell-replay-icon" aria-hidden="true">&#9654;</span><span class="cell-replay-label">다시보기</span>';
-      replayLink.addEventListener('click', (event) => event.stopPropagation());
-      replayLink.addEventListener('keydown', (event) => event.stopPropagation());
-      headerActions.appendChild(replayLink);
-    }
+    const refreshReplay = map => {
+      const video = attachKnownChzzkThumbnail(manualReplayFromEntries(entries) || map[dStr]);
+      window.SCHEDULE_REPLAY_UI.updateCalendar(headerWrap, headerActions, video);
+    };
+    refreshReplay(videoDateMap);
+    replayCallbacks.push(refreshReplay);
 
     if (hasRest) {
       const restLabel = document.createElement('div');
@@ -2304,6 +2303,7 @@ async function renderCalendarMonth(){
 
   // 그리드 드래그 앤 드롭 초기화
   initGridDragDrop();
+  replayRefreshCallbacks = replayCallbacks;
 }
 
 
@@ -2531,6 +2531,7 @@ async function renderListMonth(){
   listTimeline.innerHTML = '';
 
   const videoDateMap = resolvedReplayDateMap || {};
+  const replayCallbacks = [];
   for(const dt of allDates){
     const sk = storageKey(dt);
     if(!cache[sk]) {
@@ -2609,64 +2610,18 @@ async function renderListMonth(){
     item.appendChild(contentCol);
 
     if (isPast) {
-        const dStr = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
-        // 최종 우선순위: 수동 입력 > 오늘 라이브 스트리밍 > 날짜가 맞는 YouTube > 치지직
-        const manualReplay = manualReplayFromEntries(entries);
-        const vid = attachKnownChzzkThumbnail(manualReplay || liveLinkForToday(dStr, videoDateMap[dStr]));
-        
-        if (vid) {
-            const ytCol = document.createElement('a');
-            ytCol.className = 'timeline-yt';
-            ytCol.dataset.source = vid.isChzzk ? 'chzzk' : 'youtube';
-            ytCol.dataset.sourceLabel = vid.isChzzk ? 'CHZZK' : 'YT';
-            if (/^https?:\/\//i.test(String(vid.url||''))) { ytCol.href = vid.url; }
-            ytCol.target = '_blank';
-            ytCol.rel = 'noopener';
-            ytCol.title = vid.source === 'live' ? '치지직 라이브 스트리밍' : (vid.source === 'manual' ? '수동 지정 다시보기' : (vid.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기'));
-            ytCol.setAttribute('aria-label', ytCol.title);
-            ytCol.onclick = (e) => e.stopPropagation();
-            
-            if (vid.isChzzk) {
-                if (vid.thumb) {
-                    ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                    item.appendChild(ytCol);
-                } else if (vid.chzzkId) {
-                    ytCol.innerHTML = `<span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                    item.appendChild(ytCol);
-                    const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
-                    fetch(`${workerUrl}/api/chzzk/video/${vid.chzzkId}`)
-                      .then(r => r.json())
-                      .then(data => {
-                          if(data?.content?.thumbnailImageUrl) {
-                              ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(data.content.thumbnailImageUrl)}" alt="replay"><span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>`;
-                          }
-                      }).catch(()=>{});
-                }
-            } else {
-                ytCol.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(vid.thumb)}" alt="replay"><span class="yt-play-icon"></span>`;
-                item.appendChild(ytCol);
-            }
-        } else if (entries.length > 0 && !entries[0].title.includes("휴방")) {
-            const emptyCol = document.createElement('div');
-            emptyCol.className = 'timeline-yt-empty';
-            
-            const hasEuroTruck = entries.some(en => en.title.includes('유로트럭') || en.title.includes('유로 트럭'));
-
-            if (hasEuroTruck) {
-                emptyCol.innerHTML = `<span class="yt-icon">📺</span><span class="yt-label">유로트럭 다시보기는<br>유튜브에 제공되지 않습니다</span>`;
-            } else if (daysDiff >= 3) {
-                emptyCol.innerHTML = `<span class="yt-icon">📺</span><span class="yt-label">치지직 다시보기를<br>통해 봐주세요</span>`;
-            } else if (daysDiff === 0) {
-                emptyCol.innerHTML = `<span class="yt-icon">⏳</span><span class="yt-label">방송 이후<br>업데이트 예정</span>`;
-            } else {
-                emptyCol.innerHTML = `<span class="yt-icon">⏳</span><span class="yt-label">다시보기 대기중</span>`;
-            }
-            item.appendChild(emptyCol);
-        }
+      const dStr = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
+      const refreshReplay = map => {
+        const video = attachKnownChzzkThumbnail(manualReplayFromEntries(entries) || liveLinkForToday(dStr, map[dStr]));
+        window.SCHEDULE_REPLAY_UI.updateList(item, video, entries, entries, daysDiff);
+      };
+      refreshReplay(videoDateMap);
+      replayCallbacks.push(refreshReplay);
     }
 
     listTimeline.appendChild(item);
   }
+  replayRefreshCallbacks = replayCallbacks;
 
   if (m === today.getMonth() && y === today.getFullYear() && !sessionStorage.getItem('hasAutoScrolled')) {
     setTimeout(() => {

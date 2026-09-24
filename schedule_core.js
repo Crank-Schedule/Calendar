@@ -84,6 +84,7 @@ function getAbbr(title) {
   if (up.includes('귀국') || up.includes('입국')) return '올귀';
   if (up.includes('출국') || up.includes('출장')) return '올출';
   if (up.includes('RSL')) return 'RSL';
+  if (up.includes('워크래프트') || up.includes('워3') || up.includes('WARCRAFT')) return '워3';
   if (up.includes('WARDI')) return 'Wardi Cup';
   if (up.includes('PIGFEST') || up.includes('PIG FEST')) return 'PiGFest';
   if (up.includes('스타2') || up.includes('스타 II') || up.includes('스타II') || up.includes('SC2')) return '스II';
