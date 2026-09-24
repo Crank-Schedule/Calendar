@@ -11,9 +11,9 @@ window.SCHEDULE_REPLAY_UI = (() => {
     if (/^https?:\/\//i.test(String(video.url || ''))) link.href = video.url;
     link.target = '_blank';
     link.rel = 'noopener';
-    link.title = video.source === 'manual' ? '수동 지정 다시보기' : (video.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기');
+    link.title = `${video.isChzzk ? '치지직' : 'YouTube'} ${video.source === 'manual' ? '수동 지정 ' : ''}다시보기`;
     link.setAttribute('aria-label', link.title);
-    link.innerHTML = '<span class="cell-replay-icon" aria-hidden="true">▶</span><span class="cell-replay-label">다시보기</span>';
+    link.innerHTML = `<span class="cell-replay-icon" aria-hidden="true">${video.isChzzk ? '치' : 'YT'}</span><span class="cell-replay-label">${video.isChzzk ? '치지직' : 'YouTube'}</span>`;
     link.addEventListener('click', event => event.stopPropagation());
     link.addEventListener('keydown', event => event.stopPropagation());
     headerActions.appendChild(link);
@@ -25,16 +25,14 @@ window.SCHEDULE_REPLAY_UI = (() => {
       const link = document.createElement('a');
       link.className = 'timeline-yt';
       link.dataset.source = video.isChzzk ? 'chzzk' : 'youtube';
-      link.dataset.sourceLabel = video.isChzzk ? 'CHZZK' : 'YT';
+      link.dataset.sourceLabel = video.isChzzk ? '치지직' : 'YouTube';
       if (/^https?:\/\//i.test(String(video.url || ''))) link.href = video.url;
       link.target = '_blank';
       link.rel = 'noopener';
-      link.title = video.source === 'live' ? '치지직 라이브 스트리밍' : (video.source === 'manual' ? '수동 지정 다시보기' : (video.isChzzk ? '치지직 다시보기' : 'YouTube 다시보기'));
+      link.title = video.source === 'live' ? '치지직 라이브 스트리밍' : `${video.isChzzk ? '치지직' : 'YouTube'} ${video.source === 'manual' ? '수동 지정 ' : ''}다시보기`;
       link.setAttribute('aria-label', link.title);
       link.onclick = event => event.stopPropagation();
-      const play = video.isChzzk
-        ? '<span class="yt-play-icon" style="background:#00FFA3; box-shadow:0 0 0 2px var(--bg-main);"></span>'
-        : '<span class="yt-play-icon"></span>';
+      const play = '<span class="yt-play-icon"></span>';
       if (video.thumb) {
         link.innerHTML = `<img class="yt-thumb-img" src="${safeUrl(video.thumb)}" alt="replay">${play}`;
       } else {

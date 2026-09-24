@@ -4377,3 +4377,82 @@ body.is-live-now .header > .nav #themeToggleBtn {
   height: 13px !important;
   margin: 0 !important;
 }
+
+/* Replay source is visible before opening the link, including on tiny cells. */
+#scheduleGridSection .cell-replay-link[data-source='youtube'] {
+  background: #d8243d !important;
+  border-color: #ff7585 !important;
+  color: #fff !important;
+  box-shadow: 0 1px 5px rgba(216, 36, 61, .28) !important;
+}
+#scheduleGridSection .cell-replay-link[data-source='chzzk'] {
+  background: #00d995 !important;
+  border-color: #74ffd1 !important;
+  color: #062c20 !important;
+  box-shadow: 0 1px 5px rgba(0, 180, 123, .3) !important;
+}
+#scheduleGridSection .cell-replay-link .cell-replay-icon {
+  font-size: 8px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+#scheduleGridSection .cell-replay-link .cell-replay-label {
+  font-size: 9px !important;
+  font-weight: 900 !important;
+}
+
+.timeline-yt[data-source='youtube'] {
+  border: 2px solid #e22b42 !important;
+  background: #30080f !important;
+  box-shadow: 0 0 0 1px rgba(226, 43, 66, .2) !important;
+}
+.timeline-yt[data-source='chzzk'] {
+  border: 2px solid #00db96 !important;
+  background: #06281e !important;
+  box-shadow: 0 0 0 1px rgba(0, 219, 150, .2) !important;
+}
+.timeline-yt[data-source]::before {
+  content: attr(data-source-label) !important;
+  top: 4px !important;
+  bottom: auto !important;
+  left: 4px !important;
+  right: auto !important;
+  z-index: 3 !important;
+  padding: 3px 5px !important;
+  border: 1px solid transparent !important;
+  border-radius: 5px !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, .35) !important;
+}
+.timeline-yt[data-source='youtube']::before {
+  background: #d8243d !important;
+  border-color: #ff7585 !important;
+  color: #fff !important;
+}
+.timeline-yt[data-source='chzzk']::before {
+  background: #00d995 !important;
+  border-color: #74ffd1 !important;
+  color: #062c20 !important;
+}
+.timeline-yt[data-source]::after {
+  content: '▶ 다시보기' !important;
+  left: auto !important;
+  right: 4px !important;
+  bottom: 4px !important;
+  border-radius: 4px !important;
+  border-color: rgba(255, 255, 255, .7) !important;
+}
+.timeline-yt[data-source='youtube'] .yt-play-icon { background: #d8243d !important; }
+.timeline-yt[data-source='chzzk'] .yt-play-icon { background: #00d995 !important; }
+
+@media (max-width: 680px) {
+  .timeline-yt[data-source]::before {
+    top: 2px !important;
+    left: 2px !important;
+    padding: 2px 3px !important;
+    font-size: 7px !important;
+  }
+  #scheduleGridSection .cell-replay-link .cell-replay-icon { font-size: 7px !important; }
+}
