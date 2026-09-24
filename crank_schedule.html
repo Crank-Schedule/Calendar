@@ -983,7 +983,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   // 사용자가 다크 모드를 선택하면 localStorage 값을 우선합니다.
   if(localStorage.getItem('crank_theme') !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20260924-1">
+  <link rel="stylesheet" href="schedule_css.css?v=20260924-3">
   <link rel="stylesheet" href="onsyde-broadcast-label.css?v=20260917-2">
 </head>
 <body>
@@ -1100,7 +1100,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="onsyde/onsyde-store.js?v=20260816-5"></script>
 <script src="onsyde/schedule-matcher.js?v=20260923-3"></script>
 <script src="schedule_month_cache.js?v=20260924-1"></script>
-<script src="schedule_core.js?v=20260924-3"></script>
+<script src="schedule_core.js?v=20260924-4"></script>
 <script src="schedule_replay_ui.js?v=20260924-1"></script>
 <script>
 
@@ -1206,7 +1206,7 @@ async function loadMonth(d){
       window.SCHEDULE_MONTH_CACHE.write(key, latest);
       if(freshLocal || cache[key] !== displayed || JSON.stringify(displayed) !== original || original === JSON.stringify(latest)) return;
       cache[key] = latest;
-      if(storageKey(current) === key) render();
+      if(storageKey(current) === key) render({ preserveScroll: true });
     });
     return cache[key];
   }
@@ -1471,6 +1471,10 @@ function manualReplayFromEntries(entries){
 let replayDateMapPromise = null;
 let resolvedReplayDateMap = null;
 let replayRefreshCallbacks = [];
+let replayLookupNeedsRetry = false;
+let replayRetryCount = 0;
+let replayRetryTimer = null;
+let replayLookupInFlight = false;
 let chzzkThumbnailById = {};
 function attachKnownChzzkThumbnail(video){
   if(video?.isChzzk && video.chzzkId && !video.thumb){
@@ -1484,12 +1488,20 @@ async function loadReplayDateMap(){
   replayDateMapPromise = (async()=>{
     const replayChannel = YT_CHANNELS.find(channel=>channel.key === 'replay');
     const workerUrl = typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://crank-admin.axcrank.workers.dev';
+    let youtubeFailed = false;
+    let chzzkFailed = false;
     const [youtubeVideos, chzzkData] = await Promise.all([
-      fetchLatestVideos(replayChannel, 50).catch(()=>[]),
+      fetchLatestVideos(replayChannel, 50).catch(()=>{ youtubeFailed = true; return []; }),
       fetch(`${workerUrl}/api/chzzk/channel/de27c33ee2364c4e5007867bb3b96001/videos`)
-        .then(response=>response.ok ? response.json() : null)
-        .catch(()=>null),
+        .then(async response=>{
+          if(!response.ok) throw new Error(`CHZZK HTTP ${response.status}`);
+          const data = await response.json();
+          if(!Array.isArray(data?.content?.data)) throw new Error('Invalid CHZZK video list');
+          return data;
+        })
+        .catch(()=>{ chzzkFailed = true; return null; }),
     ]);
+    replayLookupNeedsRetry = youtubeFailed || chzzkFailed;
 
     const chzzkMap = {};
     const chzzkVideos = chzzkData?.content?.data || [];
@@ -1522,12 +1534,33 @@ async function loadReplayDateMap(){
 }
 
 function loadReplaysAfterSchedule(){
-  if(replayDateMapPromise) return;
+  if(replayDateMapPromise || replayLookupInFlight) return;
+  if(replayRetryTimer){ clearTimeout(replayRetryTimer); replayRetryTimer = null; }
+  replayLookupInFlight = true;
   loadReplayDateMap().then(map=>{
-    resolvedReplayDateMap = map;
-    replayRefreshCallbacks.forEach(refresh=>refresh(map));
-  }).catch(()=>{});
+    const merged = { ...(resolvedReplayDateMap || {}) };
+    for(const [key, video] of Object.entries(map)){
+      if(merged[key]?.source !== 'youtube' || video.source === 'youtube') merged[key] = video;
+    }
+    resolvedReplayDateMap = merged;
+    replayRefreshCallbacks.forEach(refresh=>refresh(merged));
+  }).catch(()=>{ replayLookupNeedsRetry = true; }).finally(()=>{
+    replayLookupInFlight = false;
+    if(!replayLookupNeedsRetry){ replayRetryCount = 0; return; }
+    if(replayRetryCount >= 3) return;
+    replayDateMapPromise = null;
+    const delay = [5000, 15000, 45000][replayRetryCount++];
+    replayRetryTimer = setTimeout(()=>{ replayRetryTimer = null; loadReplaysAfterSchedule(); }, delay);
+  });
 }
+window.addEventListener('online', ()=>{
+  if(!replayLookupNeedsRetry || replayLookupInFlight) return;
+  clearTimeout(replayRetryTimer);
+  replayRetryTimer = null;
+  replayRetryCount = 0;
+  replayDateMapPromise = null;
+  loadReplaysAfterSchedule();
+});
 
 async function renderCalendarMonth(){
   const data = await loadMonth(current);
@@ -1746,7 +1779,7 @@ function updateEmptyFilterButton(){
   button.textContent = hideEmptyDays ? '빈 날짜 표시' : '빈 날짜 숨기기';
 }
 
-async function render(){
+async function render({ preserveScroll = false } = {}){
   const y = current.getFullYear();
   const m = current.getMonth();
   const monthLabel = document.getElementById('monthLabel');
@@ -1769,12 +1802,13 @@ async function render(){
   } else {
     if(gridSec) gridSec.style.display = 'none';
     if(listSec) listSec.style.display = 'block';
-    await renderListMonth();
+    await renderListMonth({ preserveScroll });
   }
   loadReplaysAfterSchedule();
 }
 
-async function renderListMonth(){
+async function renderListMonth({ preserveScroll = false } = {}){
+  const previousScrollY = preserveScroll ? window.scrollY : 0;
   updateEmptyFilterButton();
   const today = new Date();
   const dowNames = ['일','월','화','수','목','금','토'];
@@ -1885,6 +1919,11 @@ async function renderListMonth(){
     listTimeline.appendChild(item);
   }
   replayRefreshCallbacks = replayCallbacks;
+
+  if(preserveScroll){
+    requestAnimationFrame(()=>window.scrollTo({ top: previousScrollY, behavior: 'instant' }));
+    return;
+  }
 
   if (m === today.getMonth() && y === today.getFullYear() && !sessionStorage.getItem('hasAutoScrolled')) {
     setTimeout(() => {

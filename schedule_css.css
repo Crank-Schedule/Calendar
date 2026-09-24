@@ -4330,3 +4330,50 @@ body.is-live-now .header > .nav #themeToggleBtn {
     padding-top: 7px !important;
   }
 }
+
+/* The icon and title occupy one centered group, rather than centering text
+   inside a full-width flex child (which makes their apparent gap vary). */
+@media (min-width: 1001px) {
+  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) {
+    justify-content: center !important;
+    gap: 2px !important;
+    padding-left: 5px !important;
+  }
+  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    flex: 0 0 13px !important;
+  }
+  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .title-wrap {
+    flex: 0 1 auto !important;
+    width: auto !important;
+    max-width: calc(100% - 17px) !important;
+  }
+}
+
+/* Shared icon slot for list rows, modal entries and preset chips. */
+.schedule-inline-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  margin-right: 4px;
+  overflow: hidden;
+  line-height: 1;
+  vertical-align: -2px;
+}
+.schedule-inline-icon > img,
+.schedule-inline-icon > svg {
+  display: block !important;
+  width: 11px !important;
+  height: 11px !important;
+  margin: 0 !important;
+  object-fit: contain !important;
+}
+.schedule-inline-icon > .onsyde-event-logo {
+  width: 13px !important;
+  height: 13px !important;
+  margin: 0 !important;
+}

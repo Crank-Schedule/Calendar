@@ -316,5 +316,7 @@ function getIcon(title){
 function withIcon(en){
   const parsed = parseTitle(en);
   const safe = escapeHtml(parsed.displayTitle);
-  return (parsed.iconHtml ? parsed.iconHtml + ' ' : '') + safe;
+  return parsed.iconHtml
+    ? `<span class="schedule-inline-icon" aria-hidden="true">${parsed.iconHtml}</span><span class="schedule-inline-title">${safe}</span>`
+    : safe;
 }
