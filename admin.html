@@ -1685,6 +1685,7 @@ function manualReplayFromEntries(entries){
 }
 
 let replayDateMapPromise = null;
+let resolvedReplayDateMap = null;
 let chzzkThumbnailById = {};
 let chzzkLiveOpen = false;
 let chzzkLiveImageUrl = '';
@@ -1746,6 +1747,14 @@ async function loadReplayDateMap(){
     return { ...chzzkMap, ...youtubeMap };
   })();
   return replayDateMapPromise;
+}
+
+function loadReplaysAfterSchedule(){
+  if(replayDateMapPromise) return;
+  loadReplayDateMap().then(map=>{
+    resolvedReplayDateMap = map;
+    render();
+  }).catch(()=>{});
 }
 
 function getSession() {
@@ -2078,7 +2087,7 @@ window.addEventListener('resize', () => {
 async function renderCalendarMonth(){
   const data = await loadMonth(current);
 
-  const videoDateMap = await loadReplayDateMap();
+  const videoDateMap = resolvedReplayDateMap || {};
   const grid = document.getElementById('grid');
   const agenda = document.getElementById('agenda');
   if(grid) grid.innerHTML = '';
@@ -2499,6 +2508,7 @@ async function render(){
     if(listSec) listSec.style.display = 'block';
     await renderListMonth();
   }
+  loadReplaysAfterSchedule();
   renderScheduleSearchResults();
 }
 
@@ -2520,7 +2530,7 @@ async function renderListMonth(){
   if(!listTimeline) return;
   listTimeline.innerHTML = '';
 
-  const videoDateMap = await loadReplayDateMap();
+  const videoDateMap = resolvedReplayDateMap || {};
   for(const dt of allDates){
     const sk = storageKey(dt);
     if(!cache[sk]) {
