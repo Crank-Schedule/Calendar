@@ -3412,6 +3412,37 @@ body.is-live-now .header .lb-short {
   }
 }
 
+/* Keep emoji, raster icons, SVGs, and the ONSYDE mark on the same optical
+   baseline. The wrapper owns the box; each asset is centered inside it. */
+#scheduleGridSection .tag .tag-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 13px !important;
+  min-width: 13px !important;
+  height: 13px !important;
+  margin: 0 2px 0 0 !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+  flex: 0 0 13px !important;
+}
+
+#scheduleGridSection .tag .tag-icon > img,
+#scheduleGridSection .tag .tag-icon > svg {
+  display: block !important;
+  width: 11px !important;
+  height: 11px !important;
+  margin: 0 !important;
+  object-fit: contain !important;
+  vertical-align: middle !important;
+}
+
+#scheduleGridSection .tag .tag-icon > .onsyde-event-logo {
+  width: 13px !important;
+  height: 13px !important;
+  margin: 0 !important;
+}
+
 /* Compact ONSYDE switch: match the surrounding controls at every breakpoint. */
 .schedule-switch-link {
   --onsyde-switch-size: 34px;
