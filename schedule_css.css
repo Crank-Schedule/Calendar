@@ -4386,15 +4386,27 @@ body.is-live-now .header > .nav #themeToggleBtn {
   box-shadow: 0 1px 5px rgba(216, 36, 61, .28) !important;
 }
 #scheduleGridSection .cell-replay-link[data-source='chzzk'] {
-  background: #00d995 !important;
-  border-color: #74ffd1 !important;
-  color: #062c20 !important;
+  background: #061b14 !important;
+  border-color: #00d995 !important;
+  color: #00ffa3 !important;
   box-shadow: 0 1px 5px rgba(0, 180, 123, .3) !important;
 }
 #scheduleGridSection .cell-replay-link .cell-replay-icon {
-  font-size: 8px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 14px !important;
+  height: 14px !important;
+  flex: 0 0 14px !important;
+}
+#scheduleGridSection .cell-replay-link .cell-replay-icon img {
+  display: block !important;
+  width: 14px !important;
+  height: 14px !important;
+  object-fit: contain !important;
+}
+#scheduleGridSection .cell-replay-link[data-source='chzzk'] .cell-replay-icon img {
+  mix-blend-mode: screen;
 }
 #scheduleGridSection .cell-replay-link .cell-replay-label {
   font-size: 9px !important;
@@ -4432,9 +4444,9 @@ body.is-live-now .header > .nav #themeToggleBtn {
   color: #fff !important;
 }
 .timeline-yt[data-source='chzzk']::before {
-  background: #00d995 !important;
-  border-color: #74ffd1 !important;
-  color: #062c20 !important;
+  background: #06281e !important;
+  border-color: #00d995 !important;
+  color: #00ffa3 !important;
 }
 .timeline-yt[data-source]::after {
   content: '▶ 다시보기' !important;
@@ -4454,5 +4466,10 @@ body.is-live-now .header > .nav #themeToggleBtn {
     padding: 2px 3px !important;
     font-size: 7px !important;
   }
-  #scheduleGridSection .cell-replay-link .cell-replay-icon { font-size: 7px !important; }
+  #scheduleGridSection .cell-replay-link .cell-replay-icon,
+  #scheduleGridSection .cell-replay-link .cell-replay-icon img {
+    width: 12px !important;
+    height: 12px !important;
+  }
+  #scheduleGridSection .cell-replay-link .cell-replay-icon { flex-basis: 12px !important; }
 }

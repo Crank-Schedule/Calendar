@@ -13,7 +13,8 @@ window.SCHEDULE_REPLAY_UI = (() => {
     link.rel = 'noopener';
     link.title = `${video.isChzzk ? '치지직' : 'YouTube'} ${video.source === 'manual' ? '수동 지정 ' : ''}다시보기`;
     link.setAttribute('aria-label', link.title);
-    link.innerHTML = `<span class="cell-replay-icon" aria-hidden="true">${video.isChzzk ? '치' : 'YT'}</span><span class="cell-replay-label">${video.isChzzk ? '치지직' : 'YouTube'}</span>`;
+    const icon = video.isChzzk ? 'assets/images/chzzk_favicon.png' : 'assets/images/youtube_replay_icon.svg';
+    link.innerHTML = `<span class="cell-replay-icon" aria-hidden="true"><img src="${icon}" alt=""></span><span class="cell-replay-label">${video.isChzzk ? 'Chzzk' : 'YouTube'}</span>`;
     link.addEventListener('click', event => event.stopPropagation());
     link.addEventListener('keydown', event => event.stopPropagation());
     headerActions.appendChild(link);
@@ -25,7 +26,7 @@ window.SCHEDULE_REPLAY_UI = (() => {
       const link = document.createElement('a');
       link.className = 'timeline-yt';
       link.dataset.source = video.isChzzk ? 'chzzk' : 'youtube';
-      link.dataset.sourceLabel = video.isChzzk ? '치지직' : 'YouTube';
+      link.dataset.sourceLabel = video.isChzzk ? 'Chzzk' : 'YouTube';
       if (/^https?:\/\//i.test(String(video.url || ''))) link.href = video.url;
       link.target = '_blank';
       link.rel = 'noopener';
