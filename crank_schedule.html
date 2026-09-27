@@ -2152,6 +2152,7 @@ const liveBanner = document.getElementById('liveBanner');
 const lbThumb = document.getElementById('lbThumb');
 const lbTitle = document.getElementById('lbTitle');
 const forceLivePreview = new URLSearchParams(location.search).get('testLive') === '1';
+let liveCheckController = null;
 
 function showLiveBanner(live = {}){
   const imageUrl = String(live.liveImageUrl || '').replace('{type}', '480');
@@ -2163,29 +2164,53 @@ function showLiveBanner(live = {}){
   document.body.classList.add('is-live-now');
 }
 
+function hideLiveBanner(){
+  liveBanner.classList.remove('show');
+  document.body.classList.remove('is-live-now');
+  lbThumb.hidden = true;
+}
+
 async function checkChzzkLive(){
   if(forceLivePreview){
     showLiveBanner({ liveTitle: '로컬 생방송 알림 미리보기' });
     return;
   }
+  liveCheckController?.abort();
+  liveCheckController = null;
+  if(document.hidden){
+    hideLiveBanner();
+    return;
+  }
+  const controller = new AbortController();
+  liveCheckController = controller;
+  const timeout = setTimeout(() => controller.abort(), 10000);
   try{
-    const res = await fetch(`${WORKER_URL}/api/chzzk/live/${CHZZK_CHANNEL_ID}`);
+    const res = await fetch(`${WORKER_URL}/api/chzzk/live/${CHZZK_CHANNEL_ID}?t=${Date.now()}`, {
+      cache: 'no-store', signal: controller.signal,
+    });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
+    if(controller !== liveCheckController) return;
     const live = json && json.content;
     if(live && live.status === 'OPEN'){
       showLiveBanner(live);
     } else {
-      liveBanner.classList.remove('show');
-      document.body.classList.remove('is-live-now');
-      lbThumb.hidden = true;
+      hideLiveBanner();
     }
   }catch(e){
+    if(controller !== liveCheckController) return;
+    hideLiveBanner();
     console.warn('치지직 라이브 상태를 확인하지 못했습니다.', e.message);
+  }finally{
+    clearTimeout(timeout);
+    if(controller === liveCheckController) liveCheckController = null;
   }
 }
 checkChzzkLive();
 setInterval(checkChzzkLive, 60000);
+document.addEventListener('visibilitychange', checkChzzkLive);
+window.addEventListener('pageshow', event => { if(event.persisted) checkChzzkLive(); });
+window.addEventListener('online', checkChzzkLive);
 
 // ===== 유튜브 최신 영상 =====
 // 브라우저 공개 키: Google Cloud에서 https://crank-schedule.github.io/* 와

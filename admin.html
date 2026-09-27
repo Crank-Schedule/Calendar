@@ -3308,48 +3308,71 @@ const liveBanner = document.getElementById('liveBanner');
 const lbThumb = document.getElementById('lbThumb');
 const lbTitle = document.getElementById('lbTitle');
 const forceLivePreview = new URLSearchParams(location.search).get('testLive') === '1';
+let liveCheckController = null;
 
 function syncLiveBannerOffset(){
   document.documentElement.style.setProperty('--live-banner-height', '0px');
 }
 
+function updateLiveBanner(live){
+  const nextLiveOpen = live?.status === 'OPEN';
+  const nextLiveImage = nextLiveOpen ? String(live.liveImageUrl || '').replace('{type}', '480') : '';
+  const liveStateChanged = nextLiveOpen !== chzzkLiveOpen || nextLiveImage !== chzzkLiveImageUrl;
+  chzzkLiveOpen = nextLiveOpen;
+  chzzkLiveImageUrl = nextLiveImage;
+  if(live && live.status === 'OPEN'){
+    liveBanner.title = live.liveTitle || '크랭크 치지직 생방송 보기';
+    if(lbTitle) lbTitle.textContent = live.liveTitle || '지금 방송을 시청하세요';
+    lbThumb.src = chzzkLiveImageUrl;
+    lbThumb.hidden = !lbThumb.src;
+    liveBanner.classList.add('show');
+    document.body.classList.add('is-live-now');
+    requestAnimationFrame(syncLiveBannerOffset);
+  } else {
+    liveBanner.classList.remove('show');
+    document.body.classList.remove('is-live-now');
+    lbThumb.hidden = true;
+    syncLiveBannerOffset();
+  }
+  if(liveStateChanged && typeof render === 'function') render().catch(()=>{});
+}
+
 async function checkChzzkLive(){
+  if(forceLivePreview){
+    updateLiveBanner({ status:'OPEN', liveTitle:'로컬 생방송 미리보기', liveImageUrl:'https://i.ytimg.com/vi/F1IheoshEps/mqdefault.jpg' });
+    return;
+  }
+  liveCheckController?.abort();
+  liveCheckController = null;
+  if(document.hidden){
+    updateLiveBanner(null);
+    return;
+  }
+  const controller = new AbortController();
+  liveCheckController = controller;
+  const timeout = setTimeout(() => controller.abort(), 10000);
   try{
-    let live;
-    if(forceLivePreview){
-      live = { status:'OPEN', liveTitle:'로컬 생방송 미리보기', liveImageUrl:'https://i.ytimg.com/vi/F1IheoshEps/mqdefault.jpg' };
-    } else {
-      const res = await fetch(`${WORKER_URL}/api/chzzk/live/${CHZZK_CHANNEL_ID}`);
-      if(!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
-      live = json && json.content;
-    }
-    const nextLiveOpen = live?.status === 'OPEN';
-    const nextLiveImage = nextLiveOpen ? String(live.liveImageUrl || '').replace('{type}', '480') : '';
-    const liveStateChanged = nextLiveOpen !== chzzkLiveOpen || nextLiveImage !== chzzkLiveImageUrl;
-    chzzkLiveOpen = nextLiveOpen;
-    chzzkLiveImageUrl = nextLiveImage;
-    if(live && live.status === 'OPEN'){
-      liveBanner.title = live.liveTitle || '크랭크 치지직 생방송 보기';
-      if(lbTitle) lbTitle.textContent = live.liveTitle || '지금 방송을 시청하세요';
-      lbThumb.src = chzzkLiveImageUrl;
-      lbThumb.hidden = !lbThumb.src;
-      liveBanner.classList.add('show');
-      document.body.classList.add('is-live-now');
-      requestAnimationFrame(syncLiveBannerOffset);
-    } else {
-      liveBanner.classList.remove('show');
-      document.body.classList.remove('is-live-now');
-      lbThumb.hidden = true;
-      syncLiveBannerOffset();
-    }
-    if(liveStateChanged && typeof render === 'function') render().catch(()=>{});
+    const res = await fetch(`${WORKER_URL}/api/chzzk/live/${CHZZK_CHANNEL_ID}?t=${Date.now()}`, {
+      cache: 'no-store', signal: controller.signal,
+    });
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if(controller !== liveCheckController) return;
+    updateLiveBanner(json && json.content);
   }catch(e){
+    if(controller !== liveCheckController) return;
+    updateLiveBanner(null);
     console.warn('치지직 라이브 상태를 확인하지 못했습니다.', e.message);
+  }finally{
+    clearTimeout(timeout);
+    if(controller === liveCheckController) liveCheckController = null;
   }
 }
 checkChzzkLive();
 setInterval(checkChzzkLive, 60000);
+document.addEventListener('visibilitychange', checkChzzkLive);
+window.addEventListener('pageshow', event => { if(event.persisted) checkChzzkLive(); });
+window.addEventListener('online', checkChzzkLive);
 
 render();
   const themeToggleBtn = document.getElementById('themeToggleBtn');
