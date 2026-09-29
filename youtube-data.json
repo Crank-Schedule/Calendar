@@ -1237,6 +1237,16 @@
         "t": "워크3-10",
         "done": false
       }
+    },
+    "2026-09-29": {
+      "a_video": {
+        "t": "AI+패치",
+        "done": false
+      },
+      "b_video": {
+        "t": "워크3-11",
+        "done": false
+      }
     }
   },
   "sources": {
