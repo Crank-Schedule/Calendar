@@ -4473,3 +4473,12 @@ body.is-live-now .header > .nav #themeToggleBtn {
   }
   #scheduleGridSection .cell-replay-link .cell-replay-icon { flex-basis: 12px !important; }
 }
+
+/* Use the leading gold A from the franchise wordmark in the existing icon slot. */
+img.aoe-series-icon,
+#scheduleGridSection .tag .tag-icon > img.aoe-series-icon,
+.schedule-inline-icon > img.aoe-series-icon {
+  object-fit: cover !important;
+  object-position: left center !important;
+  border-radius: 0 !important;
+}
