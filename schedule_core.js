@@ -94,7 +94,7 @@ function getAbbr(title) {
   if (up.includes('이터널') || up.includes('이리')) return '이리';
   if (up.includes('휴방')) return '휴방';
   if (up.includes('자날') || up.includes('캠페인')) return '자날 캠페인';
-  if (up.includes('에오엠') || up.includes('AGE OF EMPIRES') || up.includes('AOE')) return '에오엠4 DLC';
+  if (up.includes('에오엠') || /에이지\s*오브\s*엠파이어/.test(up) || up.includes('AGE OF EMPIRES') || up.includes('AOE')) return '에오엠';
   if (up.includes('그님티')) return '그님티 시청';
   if (up.includes('야구')) return '야구';
   if (up.includes('월드컵') || up.includes('축구')) return '축구';
@@ -120,6 +120,7 @@ function parseTitle(en) {
     if(explicitIcon === 'lol') { iconHtml = `<img src="assets/images/lol_icon.png" onerror="this.outerHTML='⚔️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'sc2') { iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'war3') { iconHtml = `<img src="assets/images/war3_icon_reforged.png" onerror="this.outerHTML='🛡️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'aoe') { iconHtml = `<img src="assets/images/aoe_icon.jpg" onerror="this.outerHTML='🏰'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'onsyde') { iconHtml = `<span class="onsyde-event-logo" aria-hidden="true"><img src="onsyde/assets/onsyde-logo-dark.png" alt=""></span>`; customIcon=true;}
     else if(explicitIcon === 'sc1') { iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'er') { iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
@@ -150,6 +151,7 @@ function parseTitle(en) {
   let isLol = false;
   let isSc2 = false;
   let isWar3 = false;
+  let isAoe = false;
   let isSc1 = false;
   let isMk = false;
   let isBaseball = false;
@@ -166,6 +168,7 @@ function parseTitle(en) {
   const lolKeepRegex = /(?:LEC|LCK)/i;
   const sc2Regex = /(?:스타크래프트\s*2|스타크래프트2|스타\s*2|스타2|스타\s*II|스타II|SC2)/i;
   const war3Regex = /(?:워\s*3|워크래프트\s*3|Warcraft\s*III?)/i;
+  const aoeRegex = /(?:에오엠|에이지\s*오브\s*엠파이어(?:스)?|Age\s*of\s*Empires|\bAoE(?:\s*(?:[1-4]|IV|III|II|I))?\b)/i;
   const sc1Regex = /(?:스타크래프트\s*1|스타크래프트1|스타\s*1|스타1|스타크래프트|스타)/i;
   const mkRegex = /(?:마리오\s*카트|마리오카트|마카)/i;
   const watchRegex = /(?:같이\s*보기|입중계|시청|올림픽)/i;
@@ -191,6 +194,8 @@ function parseTitle(en) {
       displayTitle = rest === '' ? '스타 II' : rest;
   } else if(war3Regex.test(displayTitle)) {
       isWar3 = true;
+  } else if(aoeRegex.test(displayTitle)) {
+      isAoe = true;
   } else if(sc1Regex.test(displayTitle)) {
       isSc1 = true;
       let rest = displayTitle.replace(sc1Regex, '').trim();
@@ -254,6 +259,9 @@ function parseTitle(en) {
       customIcon = true;
   } else if(isWar3) {
       iconHtml = `<img src="assets/images/war3_icon_reforged.png" onerror="this.outerHTML='🛡️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
+      customIcon = true;
+  } else if(isAoe) {
+      iconHtml = `<img src="assets/images/aoe_icon.jpg" onerror="this.outerHTML='🏰'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isSc1) {
       iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
