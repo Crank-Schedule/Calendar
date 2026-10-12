@@ -121,6 +121,7 @@ function parseTitle(en) {
     else if(explicitIcon === 'sc2') { iconHtml = `<img src="assets/images/sc2_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'war3') { iconHtml = `<img src="assets/images/war3_icon_reforged.png" onerror="this.outerHTML='🛡️'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'aoe') { iconHtml = `<img class="aoe-series-icon" src="assets/images/aoe_franchise_logo.webp" onerror="this.outerHTML='🏰'" style="width:11px; height:11px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'hearthstone') { iconHtml = `<img src="assets/images/hearthstone_icon.png" onerror="this.outerHTML='🃏'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'onsyde') { iconHtml = `<span class="onsyde-event-logo" aria-hidden="true"><img src="onsyde/assets/onsyde-logo-dark.png" alt=""></span>`; customIcon=true;}
     else if(explicitIcon === 'sc1') { iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'er') { iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
@@ -129,8 +130,8 @@ function parseTitle(en) {
     else if(explicitIcon === 'poke') { iconHtml = `<img src="assets/images/poke_icon.png" onerror="this.outerHTML='🔴'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'chat') { iconHtml = `💬`; customIcon=true;}
     else if(explicitIcon === 'watch') { iconHtml = `<img src="assets/images/watch_icon.png" onerror="this.outerHTML='📺'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
-    else if(explicitIcon === 'truck') { iconHtml = `🎮`; customIcon=true;}
-    else if(explicitIcon === 'adventure') { iconHtml = `<img src="assets/images/adventure_icon.svg" onerror="this.outerHTML='🧭'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'truck') { iconHtml = `<img src="assets/images/euro_truck_icon.jpg" onerror="this.outerHTML='🚛'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
+    else if(explicitIcon === 'adventure' || explicitIcon === 'general') { iconHtml = `<img src="assets/images/general_game_icon.svg" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
     else if(explicitIcon === 'football') { iconHtml = `⚽`; customIcon=true;}
     else if(explicitIcon === 'diablo') { iconHtml = `<img src="assets/images/diablo_icon.svg" onerror="this.outerHTML='🔥'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
 
@@ -152,6 +153,7 @@ function parseTitle(en) {
   let isSc2 = false;
   let isWar3 = false;
   let isAoe = false;
+  let isHearthstone = false;
   let isSc1 = false;
   let isMk = false;
   let isBaseball = false;
@@ -176,7 +178,8 @@ function parseTitle(en) {
   const pokeRegex = /(?:포켓몬스터|포켓몬)/i;
   const erRegex = /(?:이터널\s*리턴|이리)/i;
   const truckRegex = /(?:유로\s*트럭|유로트럭|Euro\s*Truck)/i;
-  const adventureRegex = /(?:모험가\s*앨리엇|앨리엇)/i;
+  const adventureRegex = /(?:모험가\s*[앨엘]리엇|[앨엘]리엇|종겜|종합\s*게임)/i;
+  const hearthstoneRegex = /(?:하스\s*스톤|하스|Hearth\s*stone)/i;
   const footballRegex = /(?:월드컵|축구)/i;
   const diabloRegex = /(?:디아블로|Diablo)/i;
 
@@ -196,6 +199,8 @@ function parseTitle(en) {
       isWar3 = true;
   } else if(aoeRegex.test(displayTitle)) {
       isAoe = true;
+  } else if(hearthstoneRegex.test(displayTitle)) {
+      isHearthstone = true;
   } else if(sc1Regex.test(displayTitle)) {
       isSc1 = true;
       let rest = displayTitle.replace(sc1Regex, '').trim();
@@ -263,6 +268,9 @@ function parseTitle(en) {
   } else if(isAoe) {
       iconHtml = `<img class="aoe-series-icon" src="assets/images/aoe_franchise_logo.webp" onerror="this.outerHTML='🏰'" style="width:11px; height:11px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
+  } else if(isHearthstone) {
+      iconHtml = `<img src="assets/images/hearthstone_icon.png" onerror="this.outerHTML='🃏'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`;
+      customIcon = true;
   } else if(isSc1) {
       iconHtml = `<img src="assets/images/sc_icon.png" onerror="this.outerHTML='👾'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
@@ -285,10 +293,10 @@ function parseTitle(en) {
       iconHtml = `<img src="assets/images/er_icon.png" onerror="this.outerHTML='🏹'" style="width:11px; height:11px; object-fit:contain; border-radius:2px; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isTruck) {
-      iconHtml = `🎮`;
+      iconHtml = `<img src="assets/images/euro_truck_icon.jpg" onerror="this.outerHTML='🚛'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isAdventure) {
-      iconHtml = `<img src="assets/images/adventure_icon.svg" onerror="this.outerHTML='🧭'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`;
+      iconHtml = `<img src="assets/images/general_game_icon.svg" onerror="this.outerHTML='🎮'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`;
       customIcon = true;
   } else if(isFootball) {
       iconHtml = `⚽`;

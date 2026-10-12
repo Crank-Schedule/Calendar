@@ -2,18 +2,21 @@
 // 전략: HTML/JSON은 network-first(항상 최신, 오프라인 시 캐시 폴백),
 //       폰트/이미지/CSS 등 정적 자산은 stale-while-revalidate.
 // 관리자 페이지(admin.html)와 API 호출은 절대 캐시하지 않습니다.
-const CACHE = 'crank-schedule-v31';
+const CACHE = 'crank-schedule-v32';
 const APP_SHELL = [
   './crank_schedule.html',
   './replay.html',
   './schedule_css.css?v=20261005-1',
   './admin_css.css?v=20260812-12',
-  './schedule_core.js?v=20261005-2',
+  './schedule_core.js?v=20261012-1',
   './manifest.json',
   './assets/images/favicon.jpg',
   './assets/images/lol_icon.png',
   './assets/images/sc2_icon.png',
   './assets/images/aoe_franchise_logo.webp',
+  './assets/images/hearthstone_icon.png',
+  './assets/images/euro_truck_icon.jpg',
+  './assets/images/general_game_icon.svg',
   './assets/images/sc_icon.png',
   './assets/images/er_icon.png',
   './assets/images/mk_icon.png',

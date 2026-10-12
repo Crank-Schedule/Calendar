@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="종합 게임">
+  <path d="M19 16h26c8 0 12 7 14 17l3 13c2 9-8 13-14 6l-7-8H23l-7 8C10 59 0 55 2 46l3-13c2-10 6-17 14-17Z" fill="#6d5dfc" stroke="#d8d2ff" stroke-width="3"/>
+  <path d="M18 25v14m-7-7h14" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="44" cy="28" r="4" fill="#6bffe0"/>
+  <circle cx="51" cy="36" r="4" fill="#ffcb6b"/>
+</svg>
