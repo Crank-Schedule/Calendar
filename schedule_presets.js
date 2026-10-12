@@ -28,5 +28,12 @@
       catch(_) {throw workerError;}
     }
   }
-  root.SCHEDULE_PRESETS = {merge,load};
+  function select({shared,local,pending,ready}){
+    // Local cache is only a fallback. Only explicit unsaved edits may augment the server list.
+    return ready ? merge(shared,pending) : merge(local,pending);
+  }
+  function acknowledge(pending,sent){
+    return merge(pending).filter(item=>!sent.some(saved=>JSON.stringify(saved)===JSON.stringify(item)));
+  }
+  root.SCHEDULE_PRESETS = {merge,load,select,acknowledge};
 })(typeof window === 'undefined' ? globalThis : window);

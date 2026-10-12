@@ -2,6 +2,8 @@
 
 Recent presets are capped at 10. Their title, time (including explicitly empty time), color and icon are stored in `data/admin-presets.json`. Browser storage remains a fallback. Basic game presets are separate and collapsed by default.
 
+The admin now loads shared presets on page entry, before opening a day editor. Once shared data is loaded, device-specific cached histories are not merged into the visible list. Old histories are preserved in `crank_presets_legacy_backup`. Only explicit unsaved edits from `crank_presets_pending_items` may augment the canonical list. Acknowledgment clears only the edits actually sent, preserving edits made while saving. Focus after 60 seconds and reopening the editor refresh shared data; no login is required for reads.
+
 ## Worker integration (deployed 2026-10-12)
 
 Cloudflare authorization was renewed and the existing `crank-admin` Worker was deployed on 2026-10-12. Version: `000b1156-a3eb-4e85-9cfb-574b9a9c255c`. Live GET `/api/presets` returned 200 and 10 presets with `Cache-Control: no-store`. Anonymous PUT returned 401. Authenticated persistence and concurrent merge behavior are covered by automated tests; no test calendar entry or preset was written to production.

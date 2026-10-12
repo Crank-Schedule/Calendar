@@ -1184,7 +1184,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="schedule_month_cache.js?v=20260924-1"></script>
 <script src="schedule_core.js?v=20261012-1"></script>
 <script src="schedule_replay_ui.js?v=20260925-2"></script>
-<script src="schedule_presets.js?v=20261012-3"></script>
+<script src="schedule_presets.js?v=20261012-4"></script>
 <script src="schedule_save_queue.js?v=20261012-2"></script>
 <script src="schedule_editor_utils.js?v=20261012-1"></script>
 <script>
@@ -2784,11 +2784,32 @@ function buildSwatches(){
 }
 
 let sharedPresets = [];
+let sharedPresetsReady = false;
 let presetLoadPromise = null;
 let presetLoadStarted = false;
+let presetLoadedAt = 0;
+function readPendingPresets(){
+  try {
+    const stored=localStorage.getItem('crank_presets_pending_items');
+    if(stored) return window.SCHEDULE_PRESETS.merge(JSON.parse(stored));
+    // Migrate only genuinely timestamped edits, never the old device-specific history.
+    if(localStorage.getItem('crank_presets_pending')){
+      return window.SCHEDULE_PRESETS.merge(JSON.parse(localStorage.getItem('crank_recent_presets') || '[]').filter(p=>p.usedAt>0));
+    }
+  } catch(_) {}
+  return [];
+}
+function storePendingPresets(items){
+  try {
+    localStorage.setItem('crank_presets_pending_items',JSON.stringify(items));
+    if(items.length) localStorage.setItem('crank_presets_pending','1');
+    else localStorage.removeItem('crank_presets_pending');
+  } catch(_) {}
+}
 function readRecentPresets(){
-  try { return window.SCHEDULE_PRESETS.merge(sharedPresets,JSON.parse(localStorage.getItem('crank_recent_presets') || '[]')); }
-  catch(_) { return window.SCHEDULE_PRESETS.merge(sharedPresets); }
+  let local=[];
+  try {local=JSON.parse(localStorage.getItem('crank_recent_presets') || '[]');} catch(_) {}
+  return window.SCHEDULE_PRESETS.select({shared:sharedPresets,local,pending:readPendingPresets(),ready:sharedPresetsReady});
 }
 function storeRecentPresets(items){
   try { localStorage.setItem('crank_recent_presets',JSON.stringify(items)); } catch(_) {}
@@ -2798,13 +2819,18 @@ function setPresetStatus(text,failed=false){
   document.getElementById('retryPresetSync').hidden=!failed;
 }
 function queuePresetSync(){
-  try { localStorage.setItem('crank_presets_pending','1'); } catch(_) {}
-  void monthSaveQueue.enqueue('shared-presets',JSON.stringify({presets:readRecentPresets()}),600);
+  const pending=readPendingPresets();
+  if(!pending.length) return;
+  storePendingPresets(pending);
+  void monthSaveQueue.enqueue('shared-presets',JSON.stringify({presets:pending}),600);
 }
 function acceptSavedPresets(body,result){
+  const sent=JSON.parse(body).presets;
+  storePendingPresets(window.SCHEDULE_PRESETS.acknowledge(readPendingPresets(),sent));
   sharedPresets=window.SCHEDULE_PRESETS.merge(result?.presets || JSON.parse(body).presets);
+  sharedPresetsReady=true;
   storeRecentPresets(readRecentPresets());
-  if(JSON.stringify({presets:readRecentPresets()}) !== body){
+  if(readPendingPresets().length){
     queuePresetSync();
   } else {
     try { localStorage.removeItem('crank_presets_pending'); } catch(_) {}
@@ -2822,12 +2848,18 @@ function loadSharedPresets(){
   presetLoadPromise=Promise.resolve().then(async()=>{
     try {
       const data=await window.SCHEDULE_PRESETS.load({workerUrl:`${WORKER_URL}/api/presets`,staticUrl:`data/admin-presets.json?t=${Date.now()}`});
+      const pending=readPendingPresets();
+      // Retain a backup of the previous device history without displaying it as shared data.
+      try {
+        if(!localStorage.getItem('crank_presets_legacy_backup')) localStorage.setItem('crank_presets_legacy_backup',localStorage.getItem('crank_recent_presets') || '[]');
+      } catch(_) {}
+      storePendingPresets(pending);
       sharedPresets=data.presets;
+      sharedPresetsReady=true;
+      presetLoadedAt=Date.now();
       storeRecentPresets(readRecentPresets());
-      setPresetStatus(data.live ? '공유 프리셋 불러옴' : 'GitHub 프리셋 사용 · 공유 서버 연결 재시도',!data.live);
-      let pending=false;
-      try {pending=!!localStorage.getItem('crank_presets_pending');} catch(_) {}
-      if(data.live && pending && getSession()) queuePresetSync();
+      setPresetStatus(data.live ? (pending.length ? `공유 연결됨 · 프리셋 ${pending.length}개 저장 대기` : '공유 프리셋 불러옴') : 'GitHub 프리셋 사용 · 공유 서버 연결 재시도',!data.live || !!pending.length);
+      if(data.live && pending.length && getSession()) queuePresetSync();
     } catch(error) {
       console.warn('공유 프리셋 불러오기 실패:',error.name,error.message);
       setPresetStatus('이 기기의 프리셋 사용 · 연결 실패, 재시도 가능',true);
@@ -2840,7 +2872,7 @@ function loadSharedPresets(){
   return presetLoadPromise;
 }
 function buildPresets(){
-  if(!presetLoadStarted) void loadSharedPresets();
+  if(!presetLoadStarted || Date.now()-presetLoadedAt>60000 && !presetLoadPromise && presetLoadedAt) void loadSharedPresets();
   const query = document.getElementById('presetSearch').value.trim().toLocaleLowerCase('ko-KR');
   const render = (target,items) => {
     target.innerHTML='';
@@ -2880,13 +2912,19 @@ function buildPresets(){
 function updateRecentPresets(title, color, icon, time) {
   const previous=readRecentPresets();
   const usedAt=Math.max(Date.now(),...previous.map(p=>p.usedAt+1));
-  storeRecentPresets(window.SCHEDULE_PRESETS.merge(previous,[{title,color,icon,time,usedAt}]));
+  storePendingPresets(window.SCHEDULE_PRESETS.merge(readPendingPresets(),[{title,color,icon,time,usedAt}]));
+  storeRecentPresets(readRecentPresets());
   queuePresetSync();
   buildPresets();
 }
 document.getElementById('retryPresetSync').addEventListener('click',()=>{
   // Always reconnect first; successful loading retries pending writes with a valid session.
   void loadSharedPresets();
+});
+// Start at admin entry, rather than waiting for the first calendar editor to open.
+void loadSharedPresets();
+window.addEventListener('focus',()=>{
+  if(Date.now()-presetLoadedAt>60000) void loadSharedPresets();
 });
 
 function editorDateKey(dateObj){ return `${storageKey(dateObj)}:${dateObj.getDate()}`; }

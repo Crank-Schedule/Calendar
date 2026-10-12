@@ -7,6 +7,29 @@ const root=path.join(__dirname,'..');
 const context=vm.createContext({window:{},AbortController,setTimeout,clearTimeout});
 vm.runInContext(fs.readFileSync(path.join(root,'schedule_presets.js'),'utf8'),context);
 const merge=(...lists)=>JSON.parse(JSON.stringify(context.window.SCHEDULE_PRESETS.merge(...lists)));
+test('two devices display the identical canonical shared list despite different cached histories',()=>{
+  const shared=[{title:'Shared game',time:'9PM',usedAt:0}];
+  const select=local=>JSON.parse(JSON.stringify(context.window.SCHEDULE_PRESETS.select({shared,local,pending:[],ready:true})));
+  assert.deepEqual(select([{title:'Computer A',usedAt:100}]),select([{title:'Computer B',usedAt:200}]));
+  assert.equal(select([])[0].title,'Shared game');
+});
+test('offline cache remains usable and only explicit pending edits join the shared list',()=>{
+  const args={shared:[{title:'Shared'}],local:[{title:'Old local'}],pending:[{title:'Unsaved',usedAt:10}]};
+  const ready=context.window.SCHEDULE_PRESETS.select({...args,ready:true});
+  assert.deepEqual(Array.from(ready,p=>p.title),['Unsaved','Shared']);
+  const offline=context.window.SCHEDULE_PRESETS.select({...args,ready:false});
+  assert.deepEqual(Array.from(offline,p=>p.title),['Unsaved','Old local']);
+});
+test('save acknowledgment preserves edits made while the request was in flight',()=>{
+  const sent=merge([{title:'Game',time:'9PM',usedAt:10}]);
+  assert.equal(context.window.SCHEDULE_PRESETS.acknowledge(sent,sent).length,0);
+  const pending=merge([{title:'Game',time:'10PM',usedAt:20}]);
+  assert.equal(context.window.SCHEDULE_PRESETS.acknowledge(pending,sent)[0].time,'10PM');
+});
+test('shared presets load on admin entry before the user opens an editor',()=>{
+  const html=fs.readFileSync(path.join(root,'admin.html'),'utf8');
+  assert.match(html,/\/\/ Start at admin entry[\s\S]*?\nvoid loadSharedPresets\(\);/);
+});
 test('recent presets cap at 10 and retain latest title, time and icon',()=>{
   const old=Array.from({length:15},(_,i)=>({title:'Game '+i,time:'9PM',usedAt:i}));
   const items=merge(old,[{title:'Game 14',time:'',icon:'war3',usedAt:20}]);
