@@ -983,6 +983,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   <link rel="stylesheet" href="schedule_css.css?v=20261005-1">
   <link rel="stylesheet" href="admin_css.css?v=20260923-2">
   <link rel="stylesheet" href="onsyde-broadcast-label.css?v=20260917-2">
+  <link rel="stylesheet" href="admin_editor.css?v=20261012-1">
 </head>
 <body class="admin-page">
 <div class="wrap">
@@ -1132,54 +1133,41 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 </div>
 
 <div class="overlay" id="overlay" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalDate">
-    <h2><span id="modalDate">6월 1일</span><button type="button" class="close" id="closeModal" aria-label="일정 편집 닫기">✕</button></h2>
-
-    <div class="entry-list" id="entryList"></div>
-
-    <div id="editArea" style="display:none;">
-      <div style="display:flex; gap:6px; margin-bottom:12px;">
-        <button id="quickRest" style="flex:1; padding:8px 0; font-weight:700; background:rgba(255,0,0,0.1); border:1px solid var(--neon-red); color:var(--neon-red); border-radius: 4px; cursor:pointer; font-size:12px;">+ 휴방</button>
-        <button id="quickReturn" style="flex:1; padding:8px 0; font-weight:700; background:rgba(0,150,255,0.1); border:1px solid var(--neon-cyan); color:var(--neon-cyan); border-radius: 4px; cursor:pointer; font-size:12px;">+ 올귀</button>
-        <button id="quickDepart" style="flex:1; padding:8px 0; font-weight:700; background:rgba(255,150,0,0.1); border:1px solid var(--neon-amber); color:var(--neon-amber); border-radius: 4px; cursor:pointer; font-size:12px;">+ 올출</button>
-        <button id="quickTrip" style="flex:1; padding:8px 0; font-weight:700; background:rgba(153,0,255,0.1); border:1px solid var(--neon-violet); color:var(--neon-violet); border-radius: 4px; cursor:pointer; font-size:12px;">+ 올출장</button>
+  <div class="modal schedule-editor" role="dialog" aria-modal="true" aria-labelledby="modalDate">
+    <header class="editor-header">
+      <div><span class="editor-eyebrow">방송 일정 편집</span><h2 id="modalDate">6월 1일</h2></div>
+      <div class="editor-date-nav">
+        <button type="button" id="editorPrevDay" aria-label="이전 날짜">‹</button>
+        <button type="button" id="editorNextDay" aria-label="다음 날짜">›</button>
+        <button type="button" class="close" id="closeModal" aria-label="일정 편집 닫기">✕</button>
       </div>
-      <div style="display:flex; gap:6px; margin-bottom:12px;">
-        <input type="text" id="customQuickTagInput" placeholder="커스텀 태그 텍스트 입력..." style="flex:1; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-strong); padding:8px; border-radius:4px; font-size:12px;">
-        <button id="customQuickTagBtn" style="padding:8px 14px; font-weight:700; background:rgba(255,255,255,0.1); border:1px solid var(--border-strong); color:var(--text-primary); border-radius: 4px; cursor:pointer; font-size:12px;">+ 추가</button>
-      </div>
-
-      <div class="presets" id="presets"></div>
-
-      <div class="form-row">
-        <label>방송 제목</label>
-        <input type="text" id="titleInput" placeholder="예) 스타 II MoG 2">
-      </div>
-      <div class="form-row">
-        <label>시간 (선택)</label>
-        <input type="text" id="timeInput" placeholder="예) 6PM">
-      </div>
-      <div class="form-row">
-        <label>다시보기 링크 (선택)</label>
-        <input type="text" id="linkInput" placeholder="https://youtube.com/...">
-      </div>
-      <div class="form-row">
-        <label>태그 색상</label>
-        <div class="swatches" id="swatches"></div>
-      </div>
-      <div class="form-row">
-        <label>아이콘 선택</label>
-        <div class="icon-swatches" id="iconSwatches"></div>
-      </div>
-      <div class="modal-actions">
-        <button class="primary" id="addEntryBtn">추가하기</button>
-        <button id="cancelEditBtn" style="display:none; padding:10px; background:transparent; border:1px solid var(--border-strong); color:var(--text-dim); border-radius:4px; cursor:pointer; margin-top:8px; width:100%;">수정 취소</button>
-        <button id="doneBtn">완료</button>
-      </div>
+    </header>
+    <div class="editor-body">
+      <section class="editor-day-list" aria-label="등록된 일정">
+        <div class="editor-section-heading"><h3>이날의 일정 <span id="entryCount">0</span></h3><button type="button" id="newEntryBtn">＋ 새 일정</button></div>
+        <div class="entry-list" id="entryList"></div>
+        <div class="editor-history"><button type="button" id="undoEntryBtn" disabled>↶ 되돌리기</button><button type="button" id="redoEntryBtn" disabled>↷ 다시 실행</button></div>
+        <div class="editor-quick-label">빠른 일정 추가</div>
+        <div class="editor-quick-actions"><button type="button" id="quickRest">휴방</button><button type="button" id="quickReturn">귀국</button><button type="button" id="quickDepart">출국</button><button type="button" id="quickTrip">출장</button></div>
+        <div class="editor-custom-tag"><input type="text" id="customQuickTagInput" aria-label="빠른 일정 제목" placeholder="간단한 일정 제목"><button type="button" id="customQuickTagBtn">추가</button></div>
+      </section>
+      <section id="editArea" class="editor-compose" style="display:none;" aria-label="일정 입력">
+        <div class="editor-section-heading"><h3 id="editorFormHeading">새 일정 추가</h3><button type="button" id="cancelEditBtn" style="display:none;">수정 취소</button></div>
+        <div class="form-row"><label for="titleInput">방송 제목</label><input type="text" id="titleInput" placeholder="방송할 게임이나 중계 제목" autocomplete="off" aria-describedby="editorFormError"></div>
+        <div class="form-row"><label for="timeInput">시간 <span>선택</span></label><input type="text" id="timeInput" placeholder="9PM 또는 21:00" autocomplete="off"><div class="editor-time-shortcuts"><button type="button" data-time="6PM">6 PM</button><button type="button" data-time="7PM">7 PM</button><button type="button" data-time="8PM">8 PM</button><button type="button" data-time="9PM">9 PM</button><button type="button" data-time="">시간 없음</button></div></div>
+        <div class="editor-preset-picker"><label for="presetSearch">최근 일정 · 프리셋</label><input id="presetSearch" type="search" placeholder="게임·일정 이름 검색" autocomplete="off"><div class="presets" id="presets"></div></div>
+        <details class="editor-options" id="editorOptions"><summary>색상 · 아이콘 · 다시보기 링크</summary>
+          <div class="form-row"><label for="linkInput">다시보기 링크</label><input type="url" id="linkInput" placeholder="https://youtube.com/..." aria-describedby="editorFormError"></div>
+          <div class="form-row"><label>태그 색상</label><div class="swatches" id="swatches" role="group" aria-label="일정 색상"></div></div>
+          <div class="form-row"><label>아이콘</label><div class="icon-swatches" id="iconSwatches" role="group" aria-label="게임 아이콘"></div></div>
+        </details>
+        <div class="editor-preview"><span>미리보기</span><div id="entryPreview"></div></div>
+        <p id="editorFormError" class="editor-form-error" role="alert" hidden></p>
+        <button type="button" class="editor-submit" id="addEntryBtn">＋ 일정 추가</button>
+        <div class="editor-keyboard-hint">Enter로 추가 · Ctrl+Enter로 저장하고 닫기</div>
+      </section>
     </div>
-    <div id="viewOnlyClose" style="display:none;">
-      <div class="modal-actions"><button id="doneBtn2">닫기</button></div>
-    </div>
+    <footer class="editor-footer"><div class="editor-save-info"><span id="modalSaveStatus" role="status" aria-live="polite">변경 없음</span><small>추가·수정·삭제하면 자동으로 저장됩니다</small></div><button type="button" id="modalRetrySave" hidden>저장 재시도</button><button type="button" id="doneBtn">저장하고 닫기</button><div id="viewOnlyClose" style="display:none;"><button type="button" id="doneBtn2">닫기</button></div></footer>
   </div>
 </div>
 
@@ -1191,6 +1179,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="schedule_core.js?v=20261012-1"></script>
 <script src="schedule_replay_ui.js?v=20260925-2"></script>
 <script src="schedule_save_queue.js?v=20261012-1"></script>
+<script src="schedule_editor_utils.js?v=20261012-1"></script>
 <script>
 
 const COLORS = [
@@ -1231,6 +1220,7 @@ let current = savedDate ? new Date(savedDate) : new Date(); // 오늘 날짜를 
 let activeDate = null; // 모달에서 다루는 날짜 (Date 객체)
 let cache = {};
 let pickedColor = COLORS[0].hex;
+let pickedColorManually = false;
 let editingEntryIndex = -1;
 let hasUnsavedChanges = false;
 let lastModalFocus = null;
@@ -1239,6 +1229,9 @@ const dirtyMonthKeys = new Set();
 const failedMonthKeys = new Set();
 const savedMonthBodies = new Map();
 let monthSaveQueue = null;
+const editorHistory = window.SCHEDULE_EDITOR_UTILS.createHistory();
+let composerBaseline = '';
+let modalOpenRequest = 0;
 let toastTimer = null;
 
 function showAdminToast(message, isError = false){
@@ -1258,6 +1251,10 @@ function setSaveState(state, message){
   status.textContent = message;
   const retry = document.getElementById('retryScheduleSave');
   if(retry) retry.hidden = failedMonthKeys.size === 0;
+  const modalStatus = document.getElementById('modalSaveStatus');
+  if(modalStatus){ modalStatus.dataset.state = state; modalStatus.textContent = message; }
+  const modalRetry = document.getElementById('modalRetrySave');
+  if(modalRetry) modalRetry.hidden = failedMonthKeys.size === 0;
 }
 
 function markDirty(value = true, dateObj = activeDate || current){
@@ -1272,7 +1269,7 @@ function markDirty(value = true, dateObj = activeDate || current){
 }
 
 window.addEventListener('beforeunload', (event)=>{
-  if(!hasUnsavedChanges) return;
+  if(!hasUnsavedChanges && !(overlay.classList.contains('show') && isComposerDirty())) return;
   event.preventDefault();
   event.returnValue = '';
 });
@@ -1325,10 +1322,12 @@ function buildIconSwatches(){
   if(!container) return;
   container.innerHTML='';
   ICONS.forEach(ic=>{
-    const btn = document.createElement('div');
+    const btn = document.createElement('button');
+    btn.type = 'button';
     btn.className='icon-sw'+(pickedIcon===ic.id?' active':'');
     btn.innerHTML = `${ic.html} <span>${ic.name}</span>`;
-    btn.addEventListener('click', ()=>{ pickedIcon=ic.id; if(ic.color) pickedColor=ic.color; buildSwatches(); buildIconSwatches(); });
+    btn.setAttribute('aria-pressed', String(pickedIcon === ic.id));
+    btn.addEventListener('click', ()=>{ pickedIcon=ic.id; if(ic.color){ pickedColor=ic.color; pickedColorManually=false; } buildSwatches(); buildIconSwatches(); updateEntryPreview(); });
     container.appendChild(btn);
   });
 }
@@ -2760,10 +2759,14 @@ async function renderListMonth({ preserveScroll = false, days = null } = {}){
 function buildSwatches(){
   swatchesEl.innerHTML='';
   COLORS.forEach(c=>{
-    const s = document.createElement('div');
+    const s = document.createElement('button');
+    s.type = 'button';
     s.className='sw'+(c.hex===pickedColor?' active':'');
     s.style.background=c.hex;
-    s.addEventListener('click', ()=>{ pickedColor=c.hex; buildSwatches(); buildIconSwatches(); });
+    s.setAttribute('aria-label', `${c.name} 색상`);
+    s.setAttribute('aria-pressed', String(c.hex === pickedColor));
+    s.title = `${c.name} 색상`;
+    s.addEventListener('click', ()=>{ pickedColor=c.hex; pickedColorManually=true; buildSwatches(); buildIconSwatches(); updateEntryPreview(); });
     swatchesEl.appendChild(s);
   });
 }
@@ -2791,24 +2794,35 @@ function buildPresets(){
     if(!p || !p.title || seenTitles.has(p.title)) return false;
     seenTitles.add(p.title);
     return true;
-  }).slice(0, 18);
+  });
+  const query = document.getElementById('presetSearch').value.trim().toLocaleLowerCase('ko-KR');
+  const visiblePresets = presets.filter(p => `${p.title} ${p.time || ''}`.toLocaleLowerCase('ko-KR').includes(query));
 
-  presets.forEach(p=>{
+  visiblePresets.forEach(p=>{
     const chip = document.createElement('button');
     chip.className='preset-chip';
+    chip.type = 'button';
     chip.style.color = getDisplayColor(p.color);
     const presetTime = typeof p.time === 'string' ? p.time.trim() : '';
     chip.innerHTML = `${presetTime ? `<span class="preset-time">${escapeHtml(presetTime)}</span>` : ''}${withIcon(p)}`;
     chip.addEventListener('click', ()=>{
       titleInput.value = p.title;
       timeInput.value = presetTime;
+      linkInput.value = '';
       pickedColor = p.color;
+      pickedColorManually = true;
       if (p.icon !== undefined) pickedIcon = p.icon;
       else pickedIcon = 'auto';
-      buildSwatches(); buildIconSwatches();
+      clearEditorError(); buildSwatches(); buildIconSwatches(); updateEntryPreview();
+      titleInput.focus({preventScroll:true});
     });
     presetsEl.appendChild(chip);
   });
+  if(!visiblePresets.length){
+    const empty = document.createElement('span');
+    empty.className = 'empty-note'; empty.textContent = '일치하는 프리셋이 없어요. 제목을 직접 입력해도 됩니다.';
+    presetsEl.appendChild(empty);
+  }
 }
 
 function updateRecentPresets(title, color, icon, time) {
@@ -2835,235 +2849,296 @@ function updateRecentPresets(title, color, icon, time) {
   buildPresets();
 }
 
-function renderEntries(dateObj){
+function editorDateKey(dateObj){ return `${storageKey(dateObj)}:${dateObj.getDate()}`; }
+
+function composerState(){
+  return JSON.stringify([titleInput.value, timeInput.value, linkInput.value, pickedIcon, pickedColor, pickedColorManually]);
+}
+function isComposerDirty(){ return composerBaseline !== '' && composerState() !== composerBaseline; }
+function discardComposerIfNeeded(){
+  return !isComposerDirty() || confirm('입력 중인 내용을 지우고 계속할까요?');
+}
+function clearEditorError(){
+  document.getElementById('editorFormError').hidden = true;
+  titleInput.removeAttribute('aria-invalid');
+  linkInput.removeAttribute('aria-invalid');
+}
+function showEditorError(message, input){
+  const error = document.getElementById('editorFormError');
+  error.textContent = message; error.hidden = false;
+  input.setAttribute('aria-invalid', 'true');
+  if(input === linkInput) document.getElementById('editorOptions').open = true;
+  input.focus();
+}
+
+function composerColor(title){
+  return pickedColorManually ? pickedColor : getFixedColor(title, pickedIcon, pickedColor);
+}
+
+function updateEntryPreview(){
+  const title = titleInput.value.trim();
+  const preview = document.getElementById('entryPreview');
+  const color = composerColor(title);
+  preview.style.setProperty('--preview-color', getDisplayColor(color));
+  const time = window.SCHEDULE_EDITOR_UTILS.normalizeTime(timeInput.value);
+  preview.innerHTML = title ? `${time ? `<strong>${escapeHtml(time)}</strong> · ` : ''}${withIcon({title, icon:pickedIcon, color})}` : '<span style="color:var(--text-dim)">제목을 입력하면 여기에 미리 보입니다</span>';
+}
+
+function resetEntryEditor(focus = false){
+  editingEntryIndex = -1;
+  titleInput.value = ''; timeInput.value = ''; linkInput.value = '';
+  pickedIcon = 'auto'; pickedColor = COLORS[0].hex; pickedColorManually = false;
+  document.getElementById('editorFormHeading').textContent = '새 일정 추가';
+  document.getElementById('addEntryBtn').textContent = '＋ 일정 추가';
+  document.getElementById('cancelEditBtn').style.display = 'none';
+  clearEditorError();
+  buildSwatches(); buildIconSwatches(); updateEntryPreview();
+  composerBaseline = composerState();
+  if(focus) titleInput.focus();
+}
+
+function beginEntryEdit(idx){
+  if(editingEntryIndex === idx){ titleInput.focus(); return; }
+  if(editingEntryIndex !== idx && !discardComposerIfNeeded()) return;
+  const en = cache[storageKey(activeDate)]?.[activeDate.getDate()]?.[idx];
+  if(!en) return;
+  editingEntryIndex = idx;
+  titleInput.value = en.title || ''; timeInput.value = en.time || ''; linkInput.value = en.link || '';
+  pickedColor = en.color || COLORS[0].hex; pickedIcon = en.icon || 'auto';
+  pickedColorManually = true;
+  document.getElementById('editorFormHeading').textContent = `${idx + 1}번째 일정 수정`;
+  document.getElementById('addEntryBtn').textContent = '✓ 수정 적용';
+  document.getElementById('cancelEditBtn').style.display = 'block';
+  clearEditorError(); buildSwatches(); buildIconSwatches(); updateEntryPreview();
+  composerBaseline = composerState();
+  renderEntries(activeDate);
+  editArea.scrollIntoView({block:'nearest', behavior:'smooth'});
+  titleInput.focus({preventScroll:true});
+}
+
+function commitEditorDay(dateObj, update){
   const data = cache[storageKey(dateObj)];
-  const entries = data[dateObj.getDate()] || [];
-  entryList.innerHTML='';
-  if(entries.length===0){
-    const p = document.createElement('div');
-    p.className='empty-note'; p.textContent='아직 등록된 방송이 없어요';
-    entryList.appendChild(p);
+  if(!data) return false;
+  const day = dateObj.getDate();
+  const previous = JSON.parse(JSON.stringify(data[day] || []));
+  if(!data[day]) data[day] = [];
+  update(data[day]);
+  if(JSON.stringify(previous) === JSON.stringify(data[day])) return false;
+  editorHistory.record(editorDateKey(dateObj), previous);
+  markDirty(true, dateObj);
+  renderEntries(dateObj);
+  void refreshScheduleDates(dateObj, [day]);
+  void saveMonth(dateObj, 500);
+  return true;
+}
+
+function renderEntries(dateObj){
+  const entries = cache[storageKey(dateObj)]?.[dateObj.getDate()] || [];
+  entryList.innerHTML = '';
+  document.getElementById('entryCount').textContent = entries.length;
+  const historyKey = editorDateKey(dateObj);
+  document.getElementById('undoEntryBtn').disabled = !editorHistory.canUndo(historyKey);
+  document.getElementById('redoEntryBtn').disabled = !editorHistory.canRedo(historyKey);
+  if(!entries.length){
+    const empty = document.createElement('div');
+    empty.className = 'editor-empty';
+    empty.innerHTML = '<strong>아직 일정이 없어요</strong>제목을 입력하거나 프리셋을 골라 추가하세요.';
+    entryList.appendChild(empty);
     return;
   }
-  entries.forEach((en,idx)=>{
+  entries.forEach((en, idx) => {
     const row = document.createElement('div');
-    row.className='entry';
-    let html = `<span class="swatch" style="background:${getDisplayColor(en.color)}"></span>
-      <span class="e-title">${withIcon(en)}</span>
-      <span class="e-time">${escapeHtml(en.time||'')}</span>`;
-    if(en.link && safeUrl(en.link)){
-      html += `<a class="e-link" href="${safeUrl(en.link)}" target="_blank" rel="noopener">🔗</a>`;
-    }
+    row.className = 'entry' + (editingEntryIndex === idx ? ' is-editing' : '');
+    row.style.setProperty('--entry-color', getDisplayColor(en.color));
+    row.innerHTML = `<div class="editor-entry-main"><span class="e-title">${withIcon(en)}</span><span class="e-time">${escapeHtml(en.time || '')}</span>${en.link && safeUrl(en.link) ? `<a class="e-link" href="${safeUrl(en.link)}" target="_blank" rel="noopener" aria-label="${escapeHtml(en.title)} 다시보기">↗</a>` : ''}</div>`;
     if(isAdmin){
-      html += `<div class="ord">
-          <button class="up" ${idx===0?'disabled':''}>▲</button>
-          <button class="down" ${idx===entries.length-1?'disabled':''}>▼</button>
-        </div>
-        <button class="edit" style="margin-right:4px;">✏️</button><button class="del">✕</button>`;
-    }
-    row.innerHTML = html;
-    if(isAdmin){
-      row.querySelector('.up').addEventListener('click', ()=>{
-        if(idx>0){
-          [entries[idx-1],entries[idx]]=[entries[idx],entries[idx-1]];
-          if(editingEntryIndex === idx) editingEntryIndex--;
-          else if(editingEntryIndex === idx-1) editingEntryIndex++;
-          markDirty(true, dateObj);
-          renderEntries(dateObj);
-          void refreshScheduleDates(dateObj, [dateObj.getDate()]);
-          void saveMonth(dateObj, 350);
-        }
+      const actions = document.createElement('div');
+      actions.className = 'editor-entry-actions';
+      actions.innerHTML = `<button type="button" class="edit" aria-label="${idx+1}번째 일정 수정">수정</button><button type="button" class="duplicate" aria-label="${idx+1}번째 일정 복제">복제</button><button type="button" class="del" aria-label="${idx+1}번째 일정 삭제">삭제</button><div class="ord"><button type="button" class="up" aria-label="${idx+1}번째 일정 위로" ${idx === 0 ? 'disabled' : ''}>↑</button><button type="button" class="down" aria-label="${idx+1}번째 일정 아래로" ${idx === entries.length-1 ? 'disabled' : ''}>↓</button></div>`;
+      row.appendChild(actions);
+      actions.querySelector('.edit').addEventListener('click', () => beginEntryEdit(idx));
+      actions.querySelector('.duplicate').addEventListener('click', () => {
+        if(!discardComposerIfNeeded()) return;
+        resetEntryEditor();
+        commitEditorDay(dateObj, list => {
+          const copy = {...list[idx]}; delete copy.__day; delete copy.__idx;
+          list.splice(idx + 1, 0, copy);
+        });
+        beginEntryEdit(idx + 1);
       });
-      row.querySelector('.down').addEventListener('click', ()=>{
-        if(idx<entries.length-1){
-          [entries[idx+1],entries[idx]]=[entries[idx],entries[idx+1]];
-          if(editingEntryIndex === idx) editingEntryIndex++;
-          else if(editingEntryIndex === idx+1) editingEntryIndex--;
-          markDirty(true, dateObj);
-          renderEntries(dateObj);
-          void refreshScheduleDates(dateObj, [dateObj.getDate()]);
-          void saveMonth(dateObj, 350);
-        }
+      actions.querySelector('.del').addEventListener('click', () => {
+        if(editingEntryIndex === idx){
+          if(!discardComposerIfNeeded()) return;
+          resetEntryEditor();
+        } else if(editingEntryIndex > idx) editingEntryIndex--;
+        commitEditorDay(dateObj, list => list.splice(idx, 1));
+        if(editingEntryIndex >= 0) document.getElementById('editorFormHeading').textContent = `${editingEntryIndex+1}번째 일정 수정`;
+        showAdminToast('일정을 삭제했습니다. 되돌리기로 복구할 수 있어요.');
       });
-      row.querySelector('.edit').addEventListener('click', ()=>{
-        editingEntryIndex = idx;
-        titleInput.value = en.title || '';
-        timeInput.value = en.time || '';
-        linkInput.value = en.link || '';
-        pickedColor = en.color || COLORS[0].hex;
-        pickedIcon = en.icon || 'auto';
-        buildSwatches();
-        if(typeof buildIconSwatches === 'function') buildIconSwatches();
-        document.getElementById('addEntryBtn').textContent = '수정 완료';
-        document.getElementById('cancelEditBtn').style.display = 'block';
-      });
-      row.querySelector('.del').addEventListener('click', ()=>{
-        entries.splice(idx,1);
-        if(editingEntryIndex === idx) document.getElementById('cancelEditBtn').click();
-        else if(editingEntryIndex > idx) editingEntryIndex--;
-        markDirty(true, dateObj);
-        renderEntries(dateObj);
-        void refreshScheduleDates(dateObj, [dateObj.getDate()]);
-        void saveMonth(dateObj, 350);
-      });
+      const move = delta => {
+        const next = idx + delta;
+        if(next < 0 || next >= entries.length) return;
+        if(editingEntryIndex === idx) editingEntryIndex = next;
+        else if(editingEntryIndex === next) editingEntryIndex = idx;
+        commitEditorDay(dateObj, list => { [list[idx], list[next]] = [list[next], list[idx]]; });
+        if(editingEntryIndex >= 0) document.getElementById('editorFormHeading').textContent = `${editingEntryIndex+1}번째 일정 수정`;
+      };
+      actions.querySelector('.up').addEventListener('click', () => move(-1));
+      actions.querySelector('.down').addEventListener('click', () => move(1));
     }
     entryList.appendChild(row);
   });
 }
 
 async function openModal(dateObj){
-  lastModalFocus = document.activeElement;
-  activeDate = dateObj;
-  editingEntryIndex = -1;
-  const aeb = document.getElementById('addEntryBtn');
-  if(aeb) aeb.textContent = '추가하기';
-  const ceb = document.getElementById('cancelEditBtn');
-  if(ceb) ceb.style.display = 'none';
-  await loadMonth(dateObj); // 해당 월 데이터가 캐시에 있는지 보장
-  modalOriginalEntries = JSON.parse(JSON.stringify((cache[storageKey(dateObj)] && cache[storageKey(dateObj)][dateObj.getDate()]) || []));
-  modalDate.textContent = (dateObj.getMonth()+1)+'월 '+dateObj.getDate()+'일';
-  titleInput.value=''; timeInput.value=''; linkInput.value='';
-  pickedColor = COLORS[0].hex;
-
-  if(isAdmin){
-    editArea.style.display='block';
-    viewOnlyClose.style.display='none';
-    buildSwatches(); buildIconSwatches();
-    buildPresets();
-  } else {
-    editArea.style.display='none';
-    viewOnlyClose.style.display='block';
-  }
-  renderEntries(dateObj);
-  overlay.classList.add('show');
-  overlay.setAttribute('aria-hidden', 'false');
-  document.getElementById('closeModal').focus();
+  const request = ++modalOpenRequest;
+  if(!overlay.classList.contains('show')) lastModalFocus = document.activeElement;
+  activeDate = new Date(dateObj);
+  await loadMonth(dateObj);
+  if(request !== modalOpenRequest) return;
+  modalOriginalEntries = JSON.parse(JSON.stringify(cache[storageKey(dateObj)]?.[dateObj.getDate()] || []));
+  modalDate.textContent = new Intl.DateTimeFormat('ko-KR', {month:'long', day:'numeric', weekday:'short'}).format(dateObj);
+  editArea.style.display = isAdmin ? 'block' : 'none';
+  viewOnlyClose.style.display = isAdmin ? 'none' : 'block';
+  document.getElementById('doneBtn').hidden = !isAdmin;
+  document.getElementById('presetSearch').value = '';
+  document.getElementById('editorOptions').open = false;
+  resetEntryEditor(); buildPresets(); renderEntries(dateObj);
+  overlay.classList.add('show'); overlay.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('schedule-editor-open');
+  const composer = document.querySelector('.editor-body');
+  composer.scrollTop = 0;
+  (window.innerWidth > 700 && isAdmin ? titleInput : document.getElementById('closeModal')).focus({preventScroll:true});
 }
 
 function closeScheduleModal(force = false){
+  if(!force && !discardComposerIfNeeded()) return false;
+  ++modalOpenRequest;
   const key = activeDate && storageKey(activeDate);
-  const currentEntries = key ? cache[key]?.[activeDate.getDate()] || [] : [];
-  const changedHere = JSON.stringify(currentEntries) !== JSON.stringify(modalOriginalEntries || []);
-  if(!force && changedHere && !monthSaveQueue.hasPending(key)){
-    if(!confirm('저장되지 않은 변경사항이 있습니다. 변경을 취소하고 닫을까요?')) return false;
-    const data = cache[storageKey(activeDate)];
-    if(data) data[activeDate.getDate()] = JSON.parse(JSON.stringify(modalOriginalEntries || []));
-    markDirty(JSON.stringify(cache[key] || {}) !== savedMonthBodies.get(key), activeDate);
-    if(!hasUnsavedChanges) setSaveState('clean', '변경 취소됨');
-    void refreshScheduleDates(activeDate, [activeDate.getDate()]);
-  }
-  overlay.classList.remove('show');
-  overlay.setAttribute('aria-hidden', 'true');
-  const focusTarget = lastModalFocus?.isConnected ? lastModalFocus
-    : document.querySelector(currentView === 'calendar' ? `#grid [data-date-day="${activeDate?.getDate()}"]` : `#item-day-${activeDate?.getDate()}`);
-  if(focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus();
+  if(key && dirtyMonthKeys.has(key)) void saveMonth(activeDate);
+  composerBaseline = '';
+  overlay.classList.remove('show'); overlay.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('schedule-editor-open');
+  const focusTarget = lastModalFocus?.isConnected ? lastModalFocus : document.querySelector(currentView === 'calendar' ? `#grid [data-date-day="${activeDate?.getDate()}"]` : `#item-day-${activeDate?.getDate()}`);
+  if(focusTarget?.focus) focusTarget.focus();
   return true;
 }
-document.getElementById('closeModal').addEventListener('click', ()=>closeScheduleModal());
-document.getElementById('doneBtn').addEventListener('click', async ()=>{
-  const btn = document.getElementById('doneBtn');
-  const dateObj = new Date(activeDate);
-  const key = storageKey(dateObj);
-  btn.textContent = '저장 중...'; btn.disabled = true;
-  let saved;
-  do { saved = await saveMonth(dateObj); }
-  while(saved && dirtyMonthKeys.has(key));
-  btn.textContent = '완료'; btn.disabled = false;
-  if(saved && activeDate && isSameYMD(activeDate, dateObj)) closeScheduleModal(true);
-});
-document.getElementById('doneBtn2').addEventListener('click', ()=>closeScheduleModal());
-overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeScheduleModal(); });
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape' && overlay.classList.contains('show')) closeScheduleModal();
-});
 
-document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
+function submitScheduleEntry(){
   let title = titleInput.value.trim();
-  if(!title) {
-    if(pickedIcon !== 'auto' && pickedIcon !== 'none') {
-      const icObj = ICONS.find(i => i.id === pickedIcon);
-      if(icObj) title = icObj.name;
+  if(!title && pickedIcon !== 'auto' && pickedIcon !== 'none') title = ICONS.find(icon => icon.id === pickedIcon)?.name || '';
+  if(!title){ showEditorError('방송 제목을 입력해주세요.', titleInput); return false; }
+  if(!window.SCHEDULE_EDITOR_UTILS.validReplayLink(linkInput.value)){
+    showEditorError('다시보기 링크는 https://로 시작하는 주소를 입력해주세요.', linkInput); return false;
+  }
+  const entry = {
+    title, time:window.SCHEDULE_EDITOR_UTILS.normalizeTime(timeInput.value), link:linkInput.value.trim(),
+    color:composerColor(title), icon:pickedIcon === 'auto' ? undefined : pickedIcon,
+  };
+  const idx = editingEntryIndex;
+  commitEditorDay(activeDate, list => {
+    if(idx >= 0 && idx < list.length) list[idx] = {...list[idx], ...entry};
+    else list.push(entry);
+  });
+  updateRecentPresets(entry.title, entry.color, entry.icon, entry.time);
+  resetEntryEditor(true); renderEntries(activeDate);
+  return true;
+}
+
+async function saveAndCloseEditor(){
+  const btn = document.getElementById('doneBtn');
+  if(btn.disabled) return;
+  if(isComposerDirty()){
+    if(!submitScheduleEntry()) return;
+  }
+  const dateObj = new Date(activeDate);
+  const request = modalOpenRequest;
+  const key = storageKey(dateObj);
+  btn.textContent = '저장 중…'; btn.disabled = true;
+  try {
+    let saved = true;
+    while(dirtyMonthKeys.has(key) || monthSaveQueue.hasPending(key)){
+      saved = await saveMonth(dateObj);
+      if(!saved) break;
     }
-  }
-  if(!title) return;
-  
-  let finalColor = getFixedColor(title, pickedIcon, pickedColor);
-  
+    if(saved && request === modalOpenRequest && !isComposerDirty()) closeScheduleModal(true);
+  } finally { btn.textContent = '저장하고 닫기'; btn.disabled = false; }
+}
+
+function changeEditorHistory(direction){
+  if(!activeDate || !discardComposerIfNeeded()) return;
   const data = cache[storageKey(activeDate)];
   const day = activeDate.getDate();
-  if(!data[day]) data[day]=[];
-  
-  if(editingEntryIndex >= 0) {
-    data[day][editingEntryIndex] = {
-      title, 
-      time:timeInput.value.trim(), 
-      link:linkInput.value.trim(), 
-      color:finalColor,
-      icon: pickedIcon === 'auto' ? undefined : pickedIcon
-    };
-    editingEntryIndex = -1;
-    document.getElementById('addEntryBtn').textContent = '추가하기';
-    document.getElementById('cancelEditBtn').style.display = 'none';
-  } else {
-    data[day].push({
-      title, 
-      time:timeInput.value.trim(), 
-      link:linkInput.value.trim(), 
-      color:finalColor,
-      icon: pickedIcon === 'auto' ? undefined : pickedIcon
-    });
+  const restored = editorHistory[direction](editorDateKey(activeDate), data[day] || []);
+  if(restored === null) return;
+  data[day] = restored;
+  resetEntryEditor(); markDirty(true, activeDate); renderEntries(activeDate);
+  void refreshScheduleDates(activeDate, [day]); void saveMonth(activeDate, 500);
+  showAdminToast(direction === 'undo' ? '마지막 변경을 되돌렸습니다.' : '변경을 다시 적용했습니다.');
+}
+
+async function moveEditorDate(delta){
+  if(!discardComposerIfNeeded()) return;
+  const next = new Date(activeDate.getFullYear(), activeDate.getMonth(), activeDate.getDate() + delta);
+  if(dirtyMonthKeys.has(storageKey(activeDate))) void saveMonth(activeDate);
+  if(storageKey(next) !== storageKey(current)){
+    current = new Date(next.getFullYear(), next.getMonth(), 1);
+    sessionStorage.setItem('viewingDate', current.toISOString());
+    void render({preserveScroll:true});
   }
-  markDirty();
-  
-  updateRecentPresets(
-    title,
-    finalColor,
-    pickedIcon === 'auto' ? undefined : pickedIcon,
-    timeInput.value
-  );
-  
+  await openModal(next);
+}
 
-  titleInput.value=''; timeInput.value=''; linkInput.value='';
-  pickedIcon = 'auto';
-  if (typeof buildIconSwatches === 'function') buildIconSwatches();
-  
-  renderEntries(activeDate);
-  void refreshScheduleDates(activeDate, [activeDate.getDate()]);
+document.getElementById('closeModal').addEventListener('click', () => closeScheduleModal());
+document.getElementById('doneBtn').addEventListener('click', saveAndCloseEditor);
+document.getElementById('doneBtn2').addEventListener('click', () => closeScheduleModal());
+document.getElementById('addEntryBtn').addEventListener('click', submitScheduleEntry);
+document.getElementById('cancelEditBtn').addEventListener('click', () => { if(discardComposerIfNeeded()){ resetEntryEditor(true); renderEntries(activeDate); } });
+document.getElementById('newEntryBtn').addEventListener('click', () => { if(discardComposerIfNeeded()){ resetEntryEditor(true); renderEntries(activeDate); } });
+document.getElementById('undoEntryBtn').addEventListener('click', () => changeEditorHistory('undo'));
+document.getElementById('redoEntryBtn').addEventListener('click', () => changeEditorHistory('redo'));
+document.getElementById('editorPrevDay').addEventListener('click', () => moveEditorDate(-1));
+document.getElementById('editorNextDay').addEventListener('click', () => moveEditorDate(1));
+document.getElementById('modalRetrySave').addEventListener('click', () => document.getElementById('retryScheduleSave').click());
+document.getElementById('presetSearch').addEventListener('input', buildPresets);
+for(const input of [titleInput, timeInput, linkInput]) input.addEventListener('input', () => { clearEditorError(); updateEntryPreview(); });
+document.querySelectorAll('.editor-time-shortcuts [data-time]').forEach(button => button.addEventListener('click', () => { timeInput.value = button.dataset.time; updateEntryPreview(); }));
+overlay.addEventListener('click', event => { if(event.target === overlay) closeScheduleModal(); });
+overlay.addEventListener('keydown', event => {
+  if(event.isComposing) return;
+  if(event.key === 'Escape'){
+    event.preventDefault(); event.stopPropagation();
+    if(editingEntryIndex >= 0){ if(discardComposerIfNeeded()){ resetEntryEditor(); renderEntries(activeDate); } }
+    else closeScheduleModal();
+  } else if(event.key === 'Enter' && (event.ctrlKey || event.metaKey)){
+    event.preventDefault(); void saveAndCloseEditor();
+  } else if(event.key === 'Enter' && [titleInput, timeInput, linkInput].includes(event.target)){
+    event.preventDefault(); submitScheduleEntry();
+  } else if((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z' && !event.target.matches('input,textarea')){
+    event.preventDefault(); changeEditorHistory(event.shiftKey ? 'redo' : 'undo');
+  } else if(event.key === 'Tab'){
+    const focusable = Array.from(overlay.querySelectorAll('button:not(:disabled),input,summary,a[href]')).filter(el => el.getClientRects().length);
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if(event.shiftKey && document.activeElement === first){ event.preventDefault(); last?.focus(); }
+    else if(!event.shiftKey && document.activeElement === last){ event.preventDefault(); first?.focus(); }
+  }
 });
 
-document.getElementById('cancelEditBtn').addEventListener('click', ()=>{
-  editingEntryIndex = -1;
-  titleInput.value=''; timeInput.value=''; linkInput.value='';
-  pickedIcon = 'auto';
-  pickedColor = COLORS[0].hex;
-  buildSwatches();
-  if (typeof buildIconSwatches === 'function') buildIconSwatches();
-  document.getElementById('addEntryBtn').textContent = '추가하기';
-  document.getElementById('cancelEditBtn').style.display = 'none';
-});
-
-
-function addQuickTag(title, color) {
-  const data = cache[storageKey(activeDate)];
-  const day = activeDate.getDate();
-  if(!data[day]) data[day]=[];
-  data[day].push({title: title, time:'', link:'', color: color, icon: undefined});
-  markDirty();
-  renderEntries(activeDate);
-  void refreshScheduleDates(activeDate, [activeDate.getDate()]);
+function addQuickTag(title, color){
+  commitEditorDay(activeDate, list => list.push({title, time:'', link:'', color, icon:undefined}));
 }
 document.getElementById('quickRest').addEventListener('click', () => addQuickTag('휴방', '#FF0000'));
 document.getElementById('quickReturn').addEventListener('click', () => addQuickTag('올리비아 귀국', '#00BFFF'));
 document.getElementById('quickDepart').addEventListener('click', () => addQuickTag('올리비아 출국', '#FFA500'));
 document.getElementById('quickTrip').addEventListener('click', () => addQuickTag('올리비아 출장', '#9900FF'));
 document.getElementById('customQuickTagBtn').addEventListener('click', () => {
-  const val = document.getElementById('customQuickTagInput').value.trim();
-  if (val) {
-    let finalColor = getFixedColor(val, pickedIcon, pickedColor || '#FFFFFF');
-    
-    addQuickTag(val, finalColor);
-    document.getElementById('customQuickTagInput').value = '';
-  }
+  const input = document.getElementById('customQuickTagInput');
+  const title = input.value.trim();
+  if(!title){ input.focus(); return; }
+  addQuickTag(title, getFixedColor(title, 'auto', pickedColor)); input.value = ''; input.focus();
+});
+document.getElementById('customQuickTagInput').addEventListener('keydown', event => {
+  if(event.key === 'Enter' && !event.isComposing){ event.preventDefault(); document.getElementById('customQuickTagBtn').click(); }
 });
 
 document.getElementById('prevBtn').addEventListener('click', ()=>{
