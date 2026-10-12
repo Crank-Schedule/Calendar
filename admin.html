@@ -953,12 +953,13 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     outline:2px solid var(--neon-cyan); outline-offset:2px;
   }
   .admin-utility-bar{
-    display:flex; align-items:center; justify-content:flex-end; gap:8px;
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:8px;
     min-height:26px; padding:4px 0 6px; color:var(--text-dim); font-size:10px;
   }
   #saveStatus[data-state='dirty']{color:var(--neon-amber);}
   #saveStatus[data-state='saving']{color:var(--neon-cyan);}
   #saveStatus[data-state='error']{color:var(--neon-red);}
+  #retryScheduleSave[hidden]{display:none !important;}
   .admin-toast{
     position:fixed; left:50%; bottom:76px; z-index:1200; transform:translate(-50%,16px);
     max-width:min(90vw,520px); padding:9px 14px; border:1px solid var(--border-strong);
@@ -1023,6 +1024,10 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
     </div>
   </div>
 
+  <div class="admin-utility-bar">
+    <span id="saveStatus" data-state="clean" role="status" aria-live="polite">변경 없음</span>
+    <button id="retryScheduleSave" type="button" hidden>저장 재시도</button>
+  </div>
   <div class="schedule-search-backdrop" id="scheduleSearchBackdrop" hidden>
     <section class="schedule-search-dialog" id="scheduleSearchWrap" role="dialog" aria-modal="true" aria-labelledby="scheduleSearchTitle">
       <div class="schedule-search-heading">
@@ -1185,6 +1190,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="schedule_month_cache.js?v=20260924-1"></script>
 <script src="schedule_core.js?v=20261012-1"></script>
 <script src="schedule_replay_ui.js?v=20260925-2"></script>
+<script src="schedule_save_queue.js?v=20261012-1"></script>
 <script>
 
 const COLORS = [
@@ -1229,6 +1235,10 @@ let editingEntryIndex = -1;
 let hasUnsavedChanges = false;
 let lastModalFocus = null;
 let modalOriginalEntries = null;
+const dirtyMonthKeys = new Set();
+const failedMonthKeys = new Set();
+const savedMonthBodies = new Map();
+let monthSaveQueue = null;
 let toastTimer = null;
 
 function showAdminToast(message, isError = false){
@@ -1246,11 +1256,19 @@ function setSaveState(state, message){
   if(!status) return;
   status.dataset.state = state;
   status.textContent = message;
+  const retry = document.getElementById('retryScheduleSave');
+  if(retry) retry.hidden = failedMonthKeys.size === 0;
 }
 
-function markDirty(value = true){
-  hasUnsavedChanges = value;
+function markDirty(value = true, dateObj = activeDate || current){
+  const key = storageKey(dateObj);
+  if(value) dirtyMonthKeys.add(key);
+  else { dirtyMonthKeys.delete(key); failedMonthKeys.delete(key); }
+  hasUnsavedChanges = dirtyMonthKeys.size > 0;
   if(value) setSaveState('dirty', '저장되지 않은 변경사항');
+  if(value && monthSaveQueue?.hasPending(key)){
+    void monthSaveQueue.enqueue(key, JSON.stringify(cache[key] || {}), 350);
+  }
 }
 
 window.addEventListener('beforeunload', (event)=>{
@@ -1401,6 +1419,7 @@ async function loadMonth(d){
   const saved = window.SCHEDULE_MONTH_CACHE.read(key);
   if(freshLocal || saved){
     cache[key] = freshLocal ? dataFromLocal : saved;
+    savedMonthBodies.set(key, JSON.stringify(cache[key]));
     const displayed = cache[key];
     const original = JSON.stringify(displayed);
     void fetchMonthData().then(latest=>{
@@ -1408,12 +1427,14 @@ async function loadMonth(d){
       window.SCHEDULE_MONTH_CACHE.write(key, latest);
       if(freshLocal || hasUnsavedChanges || cache[key] !== displayed || JSON.stringify(displayed) !== original || original === JSON.stringify(latest)) return;
       cache[key] = latest;
+      savedMonthBodies.set(key, JSON.stringify(latest));
       if(storageKey(current) === key) render({ preserveScroll: true });
     });
     return cache[key];
   }
   const latest = await fetchMonthData();
   cache[key] = freshLocal ? dataFromLocal : (latest || dataFromLocal || ((y===2026 && m==='06' && typeof seedJune2026 === 'function') ? seedJune2026() : {}));
+  savedMonthBodies.set(key, JSON.stringify(cache[key]));
   if(latest) window.SCHEDULE_MONTH_CACHE.write(key, latest);
   return cache[key];
 
@@ -1488,80 +1509,93 @@ function mergePersonalAndOnsydeEntries(dateObj, personalEntries){
   return { personal, onsyde: remainingOnsyde, entries: [...personal, ...remainingOnsyde] };
 }
 
-async function saveMonth(d, _retried){
-  const key = storageKey(d);
+async function sendMonthSnapshot(key, body, retried = false){
   let session = getSession();
   if (!session) {
     const ok = await adminLogin();
-    if (!ok) return false;
+    if (!ok) throw new Error('로그인이 필요합니다.');
     session = getSession();
-    if (!session) return false;
+    if (!session) throw new Error('로그인이 필요합니다.');
   }
-
-  const y = d.getFullYear();
-  const m = (d.getMonth() + 1).toString().padStart(2, '0');
-
-  const doneBtn = document.getElementById('doneBtn2');
-  const grid = document.getElementById('grid');
-  if(doneBtn) { doneBtn.textContent = "저장 중..."; doneBtn.disabled = true; }
-  setSaveState('saving', '저장 중…');
-  
-  if(grid) { grid.style.opacity = '0.5'; grid.style.pointerEvents = 'none'; }
-
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000);
   try {
-    const res = await fetch(`${WORKER_URL}/api/schedule/${y}-${m}`, {
+    const res = await fetch(`${WORKER_URL}/api/schedule/${key.slice('schedule:'.length)}`, {
       method: 'PUT',
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${session.token}`,
       },
-      body: JSON.stringify(cache[key] || {}),
+      body,
     });
-    const json = await res.json();
-
-    if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
-    if(grid) { grid.style.opacity = '1'; grid.style.pointerEvents = 'auto'; }
-
-    if (res.ok) {
-      try {
-        let raw = localStorage.getItem('crank_storage') || '[]';
-        let parsed = JSON.parse(raw);
-        const idx = parsed.findIndex(item => item.key === key);
-        const newEntry = { key, data: cache[key], ts: Date.now() };
-        if(idx >= 0) parsed[idx] = newEntry;
-        else parsed.push(newEntry);
-        localStorage.setItem('crank_storage', JSON.stringify(parsed));
-        window.SCHEDULE_MONTH_CACHE.write(key, cache[key]);
-      } catch(e) {}
-      markDirty(false);
-      const savedTime = new Intl.DateTimeFormat('ko-KR', { hour:'numeric', minute:'2-digit' }).format(new Date());
-      setSaveState('clean', `저장 완료 · ${savedTime}`);
-      showAdminToast('일정이 저장되었습니다.');
-      if(activeDate && storageKey(activeDate) === key && overlay.classList.contains('show')){
-        modalOriginalEntries = JSON.parse(JSON.stringify((cache[key] && cache[key][activeDate.getDate()]) || []));
-      }
-      return true;
-    } else if (res.status === 401) {
+    if (res.ok) return;
+    if (res.status === 401) {
       localStorage.removeItem('crank_admin_session');
-      // 저장된 비번으로 조용히 재로그인 후 한 번만 재시도
-      if (!_retried && await adminLogin({ silent: true })) {
-        return await saveMonth(d, true);
+      if (!retried && await adminLogin({ silent: true })) {
+        return await sendMonthSnapshot(key, body, true);
       }
-      setSaveState('error', '세션 만료 · 저장 실패');
-      showAdminToast('세션이 만료되었습니다. 다시 로그인해주세요.', true);
-    } else {
-      setSaveState('error', '저장 실패');
-      showAdminToast(`저장 실패: ${json.error || '알 수 없는 오류'}`, true);
+      throw new Error('세션이 만료되었습니다. 다시 로그인해주세요.');
     }
-    return false;
-  } catch(e) {
-    if(doneBtn) { doneBtn.textContent = "닫기"; doneBtn.disabled = false; }
-    if(grid) { grid.style.opacity = '1'; grid.style.pointerEvents = 'auto'; }
-    setSaveState('error', '네트워크 오류 · 저장 실패');
-    showAdminToast('네트워크 오류: ' + e.message, true);
-    return false;
+    const json = await res.json().catch(() => ({}));
+    throw new Error(json.error || `저장 요청 실패 (${res.status})`);
+  } finally {
+    clearTimeout(timeout);
   }
 }
+
+function acceptSavedMonth(key, body){
+  const saved = JSON.parse(body);
+  failedMonthKeys.delete(key);
+  savedMonthBodies.set(key, body);
+  try {
+    const parsed = JSON.parse(localStorage.getItem('crank_storage') || '[]');
+    const idx = parsed.findIndex(item => item.key === key);
+    const entry = { key, data: saved, ts: Date.now() };
+    if(idx >= 0) parsed[idx] = entry;
+    else parsed.push(entry);
+    localStorage.setItem('crank_storage', JSON.stringify(parsed));
+    window.SCHEDULE_MONTH_CACHE.write(key, saved);
+  } catch(_) {}
+  // Only acknowledge the exact snapshot that reached GitHub, not later edits.
+  if(JSON.stringify(cache[key] || {}) === body) dirtyMonthKeys.delete(key);
+  else dirtyMonthKeys.add(key);
+  hasUnsavedChanges = dirtyMonthKeys.size > 0;
+  if(activeDate && storageKey(activeDate) === key && overlay.classList.contains('show')){
+    modalOriginalEntries = JSON.parse(JSON.stringify(saved[activeDate.getDate()] || []));
+  }
+  if(hasUnsavedChanges) setSaveState('dirty', '변경사항 저장 대기');
+  else {
+    const savedTime = new Intl.DateTimeFormat('ko-KR', { hour:'numeric', minute:'2-digit' }).format(new Date());
+    setSaveState('clean', `저장 완료 · ${savedTime}`);
+    showAdminToast('일정이 저장되었습니다.');
+  }
+}
+
+monthSaveQueue = window.SCHEDULE_SAVE_QUEUE.create({
+  send: sendMonthSnapshot,
+  onSaved: acceptSavedMonth,
+  onSaving: () => setSaveState('saving', '저장 중… 편집을 계속할 수 있습니다'),
+  onError: (key, error) => {
+    failedMonthKeys.add(key);
+    dirtyMonthKeys.add(key);
+    hasUnsavedChanges = true;
+    setSaveState('error', '저장 실패 · 변경사항은 유지됩니다');
+    showAdminToast(error.name === 'AbortError' ? '저장 응답이 지연됩니다. 재시도해주세요.' : error.message, true);
+  },
+});
+
+function saveMonth(dateObj, delay = 0){
+  const key = storageKey(dateObj);
+  return monthSaveQueue.enqueue(key, JSON.stringify(cache[key] || {}), delay);
+}
+
+document.getElementById('retryScheduleSave').addEventListener('click', () => {
+  for(const key of dirtyMonthKeys){
+    const [year, month] = key.slice('schedule:'.length).split('-').map(Number);
+    void saveMonth(new Date(year, month - 1, 1));
+  }
+});
 
 // ===== Cloudflare Worker 기반 관리자 로그인 / 저장 =====
 // 배포한 Worker 주소로 바꿔주세요 (예: https://crank-admin.내서브도메인.workers.dev)
@@ -2016,10 +2050,10 @@ document.addEventListener('mouseup', async (e) => {
   data[toDay]   = toArr;
   
   dndLog(`Moving "${moved.title}" to day ${toDay}`);
-  markDirty();
-  await saveMonth(current);
-  dndLog('Saved! Rendering...');
-  await render();
+  const movedDate = new Date(current);
+  markDirty(true, movedDate);
+  void refreshScheduleDates(movedDate, [fromDay, toDay]);
+  void saveMonth(movedDate, 350);
 });
 
 function initGridDragDrop() {
@@ -2131,15 +2165,24 @@ window.addEventListener('resize', () => {
   }, 140);
 });
 
-async function renderCalendarMonth(){
-  const data = await loadMonth(current);
+const calendarReplayCallbacks = new Map();
+const listReplayCallbacks = new Map();
+
+async function renderCalendarMonth({ days = null } = {}){
+  const viewDate = new Date(current);
+  const data = await loadMonth(viewDate);
+  if(storageKey(current) !== storageKey(viewDate) || currentView !== 'calendar') return;
 
   const videoDateMap = resolvedReplayDateMap || {};
-  const replayCallbacks = [];
   const grid = document.getElementById('grid');
   const agenda = document.getElementById('agenda');
-  if(grid) grid.innerHTML = '';
-  if(agenda) agenda.innerHTML = '';
+  const partial = !!days && grid?.dataset.monthKey === storageKey(viewDate) && !!grid.querySelector('[data-date-day]');
+  if(!partial){
+    if(grid) grid.innerHTML = '';
+    if(grid) grid.dataset.monthKey = storageKey(viewDate);
+    if(agenda) agenda.innerHTML = '';
+    calendarReplayCallbacks.clear();
+  }
 
   const firstDay = new Date(current.getFullYear(), current.getMonth(), 1);
   const startOffset = firstDay.getDay();
@@ -2147,12 +2190,13 @@ async function renderCalendarMonth(){
   const today = new Date();
   const dowNames = ['일','월','화','수','목','금','토'];
 
-  for(let i=0;i<startOffset;i++){
+  for(let i=0;!partial && i<startOffset;i++){
     const c = document.createElement('div');
     c.className='cell empty';
     if(grid) grid.appendChild(c);
   }
   for(let day=1; day<=daysInMonth; day++){
+    if(partial && !days.includes(day)) continue;
     const cellDate = new Date(current.getFullYear(), current.getMonth(), day);
     const rawPersonalEntries = data[day] || [];
     const personalWithSource = rawPersonalEntries.map((entry, index) => ({...entry, __day: day, __idx: index}));
@@ -2161,6 +2205,7 @@ async function renderCalendarMonth(){
     
     const c = document.createElement('div');
     c.className='cell';
+    c.dataset.dateDay = day;
     c.classList.add(`day-${cellDate.getDay()}`);
     if(isSameYMD(cellDate, today)) c.classList.add('today');
     
@@ -2260,7 +2305,7 @@ async function renderCalendarMonth(){
       window.SCHEDULE_REPLAY_UI.updateCalendar(headerWrap, headerActions, video);
     };
     refreshReplay(videoDateMap);
-    replayCallbacks.push(refreshReplay);
+    calendarReplayCallbacks.set(day, refreshReplay);
 
     if (hasRest) {
       const restLabel = document.createElement('div');
@@ -2282,10 +2327,13 @@ async function renderCalendarMonth(){
     if (window.innerWidth > 900) {
       c.dataset.cellDay = day; // 드롭 대상 식별용
     }
-    if(grid) grid.appendChild(c);
+    const previousCell = partial && grid?.querySelector(`[data-date-day="${day}"]`);
+    if(previousCell) previousCell.replaceWith(c);
+    else if(grid) grid.appendChild(c);
 
     const row = document.createElement('div');
     row.className = 'agenda-row'+(isSameYMD(cellDate, today) ? ' today' : '');
+    row.dataset.dateDay = day;
     const dateBlock = document.createElement('div');
     dateBlock.className = 'agenda-date';
     dateBlock.innerHTML = `<span class="num">${day}</span><span class="dow">${dowNames[cellDate.getDay()]}</span>`;
@@ -2322,11 +2370,13 @@ async function renderCalendarMonth(){
     row.addEventListener('keydown', (event)=>{
       if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); openModal(cellDate); }
     });
-    if(agenda) agenda.appendChild(row);
+    const previousRow = partial && agenda?.querySelector(`[data-date-day="${day}"]`);
+    if(previousRow) previousRow.replaceWith(row);
+    else if(agenda) agenda.appendChild(row);
   }
 
   const trailingCount = (7 - ((startOffset + daysInMonth) % 7)) % 7;
-  for(let i=1; i<=trailingCount; i++){
+  for(let i=1; !partial && i<=trailingCount; i++){
     const c = document.createElement('div');
     c.className='cell empty adjacent-month';
     const num = document.createElement('div');
@@ -2338,7 +2388,14 @@ async function renderCalendarMonth(){
 
   // 그리드 드래그 앤 드롭 초기화
   initGridDragDrop();
-  replayRefreshCallbacks = replayCallbacks;
+  replayRefreshCallbacks = [...calendarReplayCallbacks.values()];
+}
+
+async function refreshScheduleDates(dateObj, days){
+  if(storageKey(dateObj) !== storageKey(current)) return;
+  if(currentView === 'calendar') await renderCalendarMonth({ days });
+  else await renderListMonth({ preserveScroll: true, days });
+  if(!scheduleSearchBackdrop?.hidden) void renderScheduleSearchResults();
 }
 
 
@@ -2547,14 +2604,17 @@ async function render({ preserveScroll = false } = {}){
   renderScheduleSearchResults();
 }
 
-async function renderListMonth({ preserveScroll = false } = {}){
+async function renderListMonth({ preserveScroll = false, days = null } = {}){
   const previousScrollY = preserveScroll ? window.scrollY : 0;
   updateEmptyFilterButton();
   const today = new Date();
   const dowNames = ['일','월','화','수','목','금','토'];
   
-  const y = current.getFullYear();
-  const m = current.getMonth();
+  const viewDate = new Date(current);
+  const y = viewDate.getFullYear();
+  const m = viewDate.getMonth();
+  await loadMonth(viewDate);
+  if(storageKey(current) !== storageKey(viewDate) || currentView !== 'list') return;
   const daysInMonth = new Date(y, m+1, 0).getDate();
 
   const allDates = [];
@@ -2564,15 +2624,18 @@ async function renderListMonth({ preserveScroll = false } = {}){
 
   const listTimeline = document.getElementById('listTimeline');
   if(!listTimeline) return;
-  listTimeline.innerHTML = '';
+  const partial = !!days && listTimeline.dataset.monthKey === storageKey(viewDate) && !!listTimeline.querySelector('.timeline-item');
+  if(!partial){
+    listTimeline.innerHTML = '';
+    listTimeline.dataset.monthKey = storageKey(viewDate);
+    listReplayCallbacks.clear();
+  }
 
   const videoDateMap = resolvedReplayDateMap || {};
-  const replayCallbacks = [];
   for(const dt of allDates){
+    const day = dt.getDate();
+    if(partial && !days.includes(day)) continue;
     const sk = storageKey(dt);
-    if(!cache[sk]) {
-        await loadMonth(dt);
-    }
     const personalEntries = (cache[sk] && cache[sk][dt.getDate()]) || [];
     const entries = mergePersonalAndOnsydeEntries(dt, personalEntries).entries;
     
@@ -2580,13 +2643,18 @@ async function renderListMonth({ preserveScroll = false } = {}){
     const todayZero = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const isPast = dtZero < todayZero;
     const isToday = dtZero.getTime() === todayZero.getTime();
-    if(hideEmptyDays && entries.length === 0 && !isToday) continue;
+    if(hideEmptyDays && entries.length === 0 && !isToday){
+      if(partial) listTimeline.querySelector(`#item-day-${day}`)?.remove();
+      listReplayCallbacks.delete(day);
+      continue;
+    }
     
     const daysDiff = Math.floor((todayZero - dtZero) / (1000 * 60 * 60 * 24));
 
     const item = document.createElement('div');
     item.className = 'timeline-item';
     item.id = 'item-day-' + dt.getDate();
+    item.dataset.dateDay = day;
     item.tabIndex = 0;
     item.setAttribute('role', 'button');
     item.setAttribute('aria-label', `${dt.getMonth()+1}월 ${dt.getDate()}일 일정 보기`);
@@ -2652,12 +2720,17 @@ async function renderListMonth({ preserveScroll = false } = {}){
         window.SCHEDULE_REPLAY_UI.updateList(item, video, entries, personalEntries, daysDiff);
       };
       refreshReplay(videoDateMap);
-      replayCallbacks.push(refreshReplay);
+      listReplayCallbacks.set(day, refreshReplay);
     }
 
-    listTimeline.appendChild(item);
+    const previousItem = partial && listTimeline.querySelector(`#item-day-${day}`);
+    if(previousItem) previousItem.replaceWith(item);
+    else {
+      const nextItem = partial && Array.from(listTimeline.children).find(el => Number(el.dataset.dateDay) > day);
+      listTimeline.insertBefore(item, nextItem || null);
+    }
   }
-  replayRefreshCallbacks = replayCallbacks;
+  replayRefreshCallbacks = [...listReplayCallbacks.values()];
 
   if(preserveScroll){
     requestAnimationFrame(()=>window.scrollTo({ top: previousScrollY, behavior: 'instant' }));
@@ -2790,11 +2863,27 @@ function renderEntries(dateObj){
     }
     row.innerHTML = html;
     if(isAdmin){
-      row.querySelector('.up').addEventListener('click', async ()=>{
-        if(idx>0){ [entries[idx-1],entries[idx]]=[entries[idx],entries[idx-1]]; markDirty(); await saveMonth(dateObj); renderEntries(dateObj); render(); }
+      row.querySelector('.up').addEventListener('click', ()=>{
+        if(idx>0){
+          [entries[idx-1],entries[idx]]=[entries[idx],entries[idx-1]];
+          if(editingEntryIndex === idx) editingEntryIndex--;
+          else if(editingEntryIndex === idx-1) editingEntryIndex++;
+          markDirty(true, dateObj);
+          renderEntries(dateObj);
+          void refreshScheduleDates(dateObj, [dateObj.getDate()]);
+          void saveMonth(dateObj, 350);
+        }
       });
-      row.querySelector('.down').addEventListener('click', async ()=>{
-        if(idx<entries.length-1){ [entries[idx+1],entries[idx]]=[entries[idx],entries[idx+1]]; markDirty(); await saveMonth(dateObj); renderEntries(dateObj); render(); }
+      row.querySelector('.down').addEventListener('click', ()=>{
+        if(idx<entries.length-1){
+          [entries[idx+1],entries[idx]]=[entries[idx],entries[idx+1]];
+          if(editingEntryIndex === idx) editingEntryIndex++;
+          else if(editingEntryIndex === idx+1) editingEntryIndex--;
+          markDirty(true, dateObj);
+          renderEntries(dateObj);
+          void refreshScheduleDates(dateObj, [dateObj.getDate()]);
+          void saveMonth(dateObj, 350);
+        }
       });
       row.querySelector('.edit').addEventListener('click', ()=>{
         editingEntryIndex = idx;
@@ -2808,12 +2897,14 @@ function renderEntries(dateObj){
         document.getElementById('addEntryBtn').textContent = '수정 완료';
         document.getElementById('cancelEditBtn').style.display = 'block';
       });
-      row.querySelector('.del').addEventListener('click', async ()=>{
+      row.querySelector('.del').addEventListener('click', ()=>{
         entries.splice(idx,1);
-        markDirty();
-        await saveMonth(dateObj);
+        if(editingEntryIndex === idx) document.getElementById('cancelEditBtn').click();
+        else if(editingEntryIndex > idx) editingEntryIndex--;
+        markDirty(true, dateObj);
         renderEntries(dateObj);
-        render();
+        void refreshScheduleDates(dateObj, [dateObj.getDate()]);
+        void saveMonth(dateObj, 350);
       });
     }
     entryList.appendChild(row);
@@ -2850,26 +2941,35 @@ async function openModal(dateObj){
 }
 
 function closeScheduleModal(force = false){
-  if(!force && hasUnsavedChanges){
+  const key = activeDate && storageKey(activeDate);
+  const currentEntries = key ? cache[key]?.[activeDate.getDate()] || [] : [];
+  const changedHere = JSON.stringify(currentEntries) !== JSON.stringify(modalOriginalEntries || []);
+  if(!force && changedHere && !monthSaveQueue.hasPending(key)){
     if(!confirm('저장되지 않은 변경사항이 있습니다. 변경을 취소하고 닫을까요?')) return false;
     const data = cache[storageKey(activeDate)];
     if(data) data[activeDate.getDate()] = JSON.parse(JSON.stringify(modalOriginalEntries || []));
-    markDirty(false);
-    setSaveState('clean', '변경 취소됨');
-    render();
+    markDirty(JSON.stringify(cache[key] || {}) !== savedMonthBodies.get(key), activeDate);
+    if(!hasUnsavedChanges) setSaveState('clean', '변경 취소됨');
+    void refreshScheduleDates(activeDate, [activeDate.getDate()]);
   }
   overlay.classList.remove('show');
   overlay.setAttribute('aria-hidden', 'true');
-  if(lastModalFocus && typeof lastModalFocus.focus === 'function') lastModalFocus.focus();
+  const focusTarget = lastModalFocus?.isConnected ? lastModalFocus
+    : document.querySelector(currentView === 'calendar' ? `#grid [data-date-day="${activeDate?.getDate()}"]` : `#item-day-${activeDate?.getDate()}`);
+  if(focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus();
   return true;
 }
 document.getElementById('closeModal').addEventListener('click', ()=>closeScheduleModal());
 document.getElementById('doneBtn').addEventListener('click', async ()=>{
   const btn = document.getElementById('doneBtn');
+  const dateObj = new Date(activeDate);
+  const key = storageKey(dateObj);
   btn.textContent = '저장 중...'; btn.disabled = true;
-  const saved = await saveMonth(activeDate);
+  let saved;
+  do { saved = await saveMonth(dateObj); }
+  while(saved && dirtyMonthKeys.has(key));
   btn.textContent = '완료'; btn.disabled = false;
-  if(saved) closeScheduleModal(true);
+  if(saved && activeDate && isSameYMD(activeDate, dateObj)) closeScheduleModal(true);
 });
 document.getElementById('doneBtn2').addEventListener('click', ()=>closeScheduleModal());
 overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeScheduleModal(); });
@@ -2928,7 +3028,7 @@ document.getElementById('addEntryBtn').addEventListener('click', async ()=>{
   if (typeof buildIconSwatches === 'function') buildIconSwatches();
   
   renderEntries(activeDate);
-  render();
+  void refreshScheduleDates(activeDate, [activeDate.getDate()]);
 });
 
 document.getElementById('cancelEditBtn').addEventListener('click', ()=>{
@@ -2950,7 +3050,7 @@ function addQuickTag(title, color) {
   data[day].push({title: title, time:'', link:'', color: color, icon: undefined});
   markDirty();
   renderEntries(activeDate);
-  render();
+  void refreshScheduleDates(activeDate, [activeDate.getDate()]);
 }
 document.getElementById('quickRest').addEventListener('click', () => addQuickTag('휴방', '#FF0000'));
 document.getElementById('quickReturn').addEventListener('click', () => addQuickTag('올리비아 귀국', '#00BFFF'));
