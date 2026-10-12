@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "presets": [
+    {"title":"스타 II Patch Clash","time":"11:59PM","color":"#9900FF","icon":"sc2","usedAt":0},
+    {"title":"스타 II Tuna Cup #150","time":"8PM","color":"#9900FF","icon":"sc2","usedAt":0},
+    {"title":"온사이드 유니폼 프로모션겸 선수들 불러 홍보시키기(=간단한 쇼매치 닙성주희범한솔)","time":"9PM","color":"#9900FF","icon":"sc2","usedAt":0},
+    {"title":"롤","time":"","color":"#33FF00","icon":"lol","usedAt":0},
+    {"title":"하스스톤 전장","time":"","color":"#FF0000","icon":"hearthstone","usedAt":0},
+    {"title":"마카","time":"","color":"#FF0000","icon":"mk","usedAt":0},
+    {"title":"스타 II 쿵푸컵 결승 다시보기","time":"","color":"#9900FF","icon":"sc2","usedAt":0},
+    {"title":"에오엠4 신규 DLC -완-","time":"","color":"#9900FF","icon":"aoe","usedAt":0},
+    {"title":"에오엠4 신규 DLC","time":"","color":"#9900FF","icon":"aoe","usedAt":0},
+    {"title":"옛경기들 리플레이 보기","time":"","color":"#9900FF","icon":"sc2","usedAt":0}
+  ]
+}

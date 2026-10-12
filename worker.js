@@ -1,3 +1,5 @@
+import { handlePresetRequest } from './preset-route.mjs';
+
 const DEFAULT_ALLOWED_ORIGINS = [
   'https://crank-schedule.github.io',
   'http://localhost:8080',
@@ -243,6 +245,9 @@ export default {
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: corsHeaders(request, env) });
     }
+
+    const presetResponse = await handlePresetRequest(request, env, { requireAuth, jsonResponse, githubHeaders });
+    if (presetResponse) return presetResponse;
 
     if (request.method === 'GET' && url.pathname === '/api/health') {
       return jsonResponse(request, env, { ok: true });

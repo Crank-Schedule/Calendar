@@ -15,8 +15,8 @@ window.SCHEDULE_SAVE_QUEUE = {
       let success = false;
       try {
         onSaving?.(key);
-        await send(key, job.body);
-        onSaved?.(key, job.body);
+        const result = await send(key, job.body);
+        onSaved?.(key, job.body, result);
         success = true;
       } catch (error) {
         onError?.(key, error);
