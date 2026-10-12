@@ -4,7 +4,7 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const path=require('node:path');
 const root=path.join(__dirname,'..');
-const context=vm.createContext({window:{}});
+const context=vm.createContext({window:{},AbortController,setTimeout,clearTimeout});
 vm.runInContext(fs.readFileSync(path.join(root,'schedule_presets.js'),'utf8'),context);
 const merge=(...lists)=>JSON.parse(JSON.stringify(context.window.SCHEDULE_PRESETS.merge(...lists)));
 test('recent presets cap at 10 and retain latest title, time and icon',()=>{
@@ -32,6 +32,31 @@ test('Worker refuses unauthenticated writes before accessing GitHub',async()=>{
     requireAuth:async()=>false,jsonResponse:(req,env,data,status)=>new Response(JSON.stringify(data),{status}), githubHeaders:()=>{throw new Error('must not access GitHub');},
   });
   assert.equal(result.status,401);
+});
+test('network rejection falls back to GitHub JSON rather than abandoning loading',async()=>{
+  const calls=[];
+  const result=await context.window.SCHEDULE_PRESETS.load({workerUrl:'worker',staticUrl:'static',fetchImpl:async url=>{
+    calls.push(url);
+    if(url==='worker') throw new TypeError('Failed to fetch');
+    return {ok:true,json:async()=>({presets:[{title:'Fallback',time:'9PM'}]})};
+  }});
+  assert.deepEqual(calls,['worker','static']); assert.equal(result.live,false); assert.equal(result.presets[0].time,'9PM');
+});
+test('timeout abort falls back and a later retry can read the live server',async()=>{
+  const result=await context.window.SCHEDULE_PRESETS.load({workerUrl:'worker',staticUrl:'static',timeoutMs:5,fetchImpl:async(url,{signal})=>{
+    if(url==='worker') return new Promise((resolve,reject)=>signal.addEventListener('abort',()=>reject(new Error('timed out'))));
+    return {ok:true,json:async()=>({presets:[]})};
+  }});
+  assert.equal(result.live,false);
+  const retried=await context.window.SCHEDULE_PRESETS.load({workerUrl:'worker',staticUrl:'static',fetchImpl:async()=>({ok:true,json:async()=>({presets:[{title:'Live'}]})})});
+  assert.equal(retried.live,true);
+});
+test('invalid API JSON also falls back; retry handler reconnects before pending writes',async()=>{
+  const result=await context.window.SCHEDULE_PRESETS.load({workerUrl:'worker',staticUrl:'static',fetchImpl:async url=>({ok:true,json:async()=>url==='worker'?{}:{presets:[]}})});
+  assert.equal(result.live,false);
+  const html=fs.readFileSync(path.join(root,'admin.html'),'utf8');
+  const handler=html.slice(html.indexOf("document.getElementById('retryPresetSync').addEventListener"),html.indexOf('function editorDateKey('));
+  assert.match(handler,/void loadSharedPresets\(\)/); assert.ok(!handler.includes('queuePresetSync()'));
 });
 test('Worker re-reads and merges after a concurrent GitHub write conflict',async()=>{
   const {handlePresetRequest}=await import('../preset-route.mjs');

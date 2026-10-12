@@ -1184,7 +1184,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="schedule_month_cache.js?v=20260924-1"></script>
 <script src="schedule_core.js?v=20261012-1"></script>
 <script src="schedule_replay_ui.js?v=20260925-2"></script>
-<script src="schedule_presets.js?v=20261012-2"></script>
+<script src="schedule_presets.js?v=20261012-3"></script>
 <script src="schedule_save_queue.js?v=20261012-2"></script>
 <script src="schedule_editor_utils.js?v=20261012-1"></script>
 <script>
@@ -2785,6 +2785,7 @@ function buildSwatches(){
 
 let sharedPresets = [];
 let presetLoadPromise = null;
+let presetLoadStarted = false;
 function readRecentPresets(){
   try { return window.SCHEDULE_PRESETS.merge(sharedPresets,JSON.parse(localStorage.getItem('crank_recent_presets') || '[]')); }
   catch(_) { return window.SCHEDULE_PRESETS.merge(sharedPresets); }
@@ -2811,23 +2812,35 @@ function acceptSavedPresets(body,result){
   }
   buildPresets();
 }
-async function loadSharedPresets(){
-  let live=false;
-  try {
-    let res=await fetch(`${WORKER_URL}/api/presets`,{cache:'no-store',signal:AbortSignal.timeout(8000)});
-    live=res.ok;
-    if(!live) res=await fetch(`data/admin-presets.json?t=${Date.now()}`,{cache:'no-store',signal:AbortSignal.timeout(8000)});
-    if(!res.ok) throw new Error('presets unavailable');
-    const data=await res.json();
-    sharedPresets=window.SCHEDULE_PRESETS.merge(data.presets);
-    storeRecentPresets(readRecentPresets());
-    setPresetStatus(live ? '공유 프리셋 불러옴' : 'GitHub 프리셋 불러옴 · 자동 공유는 배포 대기');
-    if(live && localStorage.getItem('crank_presets_pending') && getSession()) queuePresetSync();
-  } catch(_) { setPresetStatus('이 기기의 프리셋 사용 · 공유 연결 확인 필요',true); }
-  buildPresets();
+function loadSharedPresets(){
+  if(presetLoadPromise) return presetLoadPromise;
+  presetLoadStarted=true;
+  const retryButton=document.getElementById('retryPresetSync');
+  retryButton.disabled=true;
+  setPresetStatus('공유 프리셋 확인 중…');
+  // Defer execution so synchronous browser/storage errors cannot recurse via buildPresets.
+  presetLoadPromise=Promise.resolve().then(async()=>{
+    try {
+      const data=await window.SCHEDULE_PRESETS.load({workerUrl:`${WORKER_URL}/api/presets`,staticUrl:`data/admin-presets.json?t=${Date.now()}`});
+      sharedPresets=data.presets;
+      storeRecentPresets(readRecentPresets());
+      setPresetStatus(data.live ? '공유 프리셋 불러옴' : 'GitHub 프리셋 사용 · 공유 서버 연결 재시도',!data.live);
+      let pending=false;
+      try {pending=!!localStorage.getItem('crank_presets_pending');} catch(_) {}
+      if(data.live && pending && getSession()) queuePresetSync();
+    } catch(error) {
+      console.warn('공유 프리셋 불러오기 실패:',error.name,error.message);
+      setPresetStatus('이 기기의 프리셋 사용 · 연결 실패, 재시도 가능',true);
+    }
+  }).finally(()=>{
+    presetLoadPromise=null;
+    retryButton.disabled=false;
+    buildPresets();
+  });
+  return presetLoadPromise;
 }
 function buildPresets(){
-  if(!presetLoadPromise) presetLoadPromise=loadSharedPresets();
+  if(!presetLoadStarted) void loadSharedPresets();
   const query = document.getElementById('presetSearch').value.trim().toLocaleLowerCase('ko-KR');
   const render = (target,items) => {
     target.innerHTML='';
@@ -2872,8 +2885,8 @@ function updateRecentPresets(title, color, icon, time) {
   buildPresets();
 }
 document.getElementById('retryPresetSync').addEventListener('click',()=>{
-  if(localStorage.getItem('crank_presets_pending')) queuePresetSync();
-  else void loadSharedPresets();
+  // Always reconnect first; successful loading retries pending writes with a valid session.
+  void loadSharedPresets();
 });
 
 function editorDateKey(dateObj){ return `${storageKey(dateObj)}:${dateObj.getDate()}`; }

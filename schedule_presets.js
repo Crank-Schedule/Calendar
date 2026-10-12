@@ -10,5 +10,23 @@
     }
     return [...entries.values()].sort((a,b)=>b.item.usedAt-a.item.usedAt || b.priority-a.priority).slice(0,10).map(value=>value.item);
   }
-  root.SCHEDULE_PRESETS = {merge};
+  async function load({workerUrl,staticUrl,fetchImpl=fetch,timeoutMs=12000}){
+    async function read(url){
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),timeoutMs);
+      try {
+        const response=await fetchImpl(url,{cache:'no-store',signal:controller.signal});
+        if(!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data=await response.json();
+        if(!data || !Array.isArray(data.presets)) throw new Error('Invalid preset data');
+        return merge(data.presets);
+      } finally {clearTimeout(timer);}
+    }
+    try { return {presets:await read(workerUrl),live:true}; }
+    catch(workerError){
+      try { return {presets:await read(staticUrl),live:false}; }
+      catch(_) {throw workerError;}
+    }
+  }
+  root.SCHEDULE_PRESETS = {merge,load};
 })(typeof window === 'undefined' ? globalThis : window);
