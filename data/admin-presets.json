@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "야구 삼성 플옵 응원",
+      "color": "#FF9F43",
+      "icon": "bb",
+      "time": "",
+      "usedAt": 1791995308014
+    },
+    {
       "title": "하스스톤 전장",
       "color": "#FF0000",
       "icon": "hearthstone",
@@ -63,14 +70,7 @@
       "icon": "aoe",
       "time": "",
       "usedAt": 0
-    },
-    {
-      "title": "옛경기들 리플레이 보기",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "",
-      "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-14T10:24:28.826Z"
+  "updatedAt": "2026-10-14T16:28:30.873Z"
 }
