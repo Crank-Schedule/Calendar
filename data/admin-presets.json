@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "매스리콜 캠페인 크랭크 버전",
+      "color": "#9900FF",
+      "icon": "sc2",
+      "time": "",
+      "usedAt": 1792091793026
+    },
+    {
       "title": "롤캠프 스파링해주기",
       "color": "#33FF00",
       "icon": "lol",
@@ -63,14 +70,7 @@
       "icon": "sc2",
       "time": "9PM",
       "usedAt": 0
-    },
-    {
-      "title": "롤",
-      "color": "#33FF00",
-      "icon": "lol",
-      "time": "",
-      "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-15T19:16:00.909Z"
+  "updatedAt": "2026-10-15T19:16:35.085Z"
 }
