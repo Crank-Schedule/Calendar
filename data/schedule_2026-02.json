@@ -10,7 +10,8 @@
       "title": "롤 LEC VIT 경기 [2일 오전 3시] - 마크서버 봉봉팜 -",
       "time": "",
       "color": "#FFC857",
-      "link": ""
+      "link": "",
+      "icon": "adventure"
     }
   ],
   "2": [
@@ -18,7 +19,8 @@
       "title": "- 마크서버 봉봉팜 -",
       "time": "",
       "color": "#FFC857",
-      "link": ""
+      "link": "",
+      "icon": "adventure"
     },
     {
       "title": "무한도전 육남매 같이 보기",
@@ -32,7 +34,8 @@
       "title": "- 마크서버 봉봉팜 -",
       "time": "",
       "color": "#FFC857",
-      "link": ""
+      "link": "",
+      "icon": "adventure"
     }
   ],
   "4": [
@@ -40,7 +43,8 @@
       "title": "롤 - 마크서버 봉봉팜 -",
       "time": "",
       "color": "#FFC857",
-      "link": ""
+      "link": "",
+      "icon": "adventure"
     }
   ],
   "5": [
@@ -76,7 +80,8 @@
       "title": "D1ALOGUE",
       "time": "",
       "color": "#FFC857",
-      "link": ""
+      "link": "",
+      "icon": "adventure"
     }
   ],
   "8": [
@@ -126,7 +131,8 @@
       "title": "방탈출 합방 옥난기",
       "time": "8PM",
       "color": "#C6FF3C",
-      "link": ""
+      "link": "",
+      "icon": "adventure"
     },
     {
       "title": "동계올림픽 스피드 스케이팅",
@@ -224,19 +230,22 @@
       "title": "프래그마타 데모",
       "time": "",
       "color": "#FFC857",
-      "link": ""
+      "link": "",
+      "icon": "adventure"
     },
     {
       "title": "이스 10 데모",
       "time": "",
       "color": "#FFC857",
-      "link": ""
+      "link": "",
+      "icon": "adventure"
     },
     {
       "title": "인왕 3 데모",
       "time": "",
       "color": "#FFC857",
-      "link": ""
+      "link": "",
+      "icon": "adventure"
     }
   ],
   "19": [

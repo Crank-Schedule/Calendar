@@ -106,6 +106,15 @@ function getAbbr(title) {
   return clean.substring(0, 2);
 }
 
+function isGeneralGameTitle(title){
+  return /(?:모험가\s*[앨엘]리엇|[앨엘]리엇|종겜|종합\s*게임|오구와\s*비밀의\s*숲|킵\s*드라이빙|마크서버\s*봉봉팜|프래그마타|이스\s*10|인왕\s*3|바이오하자드\s*9|포코피아|허\s*트리즈|낙원\s*[,·]\s*헤일로|레이튼\s*이상한\s*마을|활협전|레데리\s*2|클로버핏|오버워치|히오스|007\s*퍼스트\s*라이트|어쌔신\s*크리드|팀\s*매니저\s*시뮬레이터|리틀엔젤|리듬천국|웰\s*드웰러|D1ALOGUE|동의\s*게임|방탈출\s*합방\s*옥난기)/i.test(title || '');
+}
+
+function resolveScheduleIcon(title, selectedIcon){
+  if(selectedIcon && selectedIcon !== 'auto') return selectedIcon;
+  return parseTitle(title).iconHtml === '📌' ? 'adventure' : undefined;
+}
+
 function parseTitle(en) {
   let titleStr = typeof en === 'string' ? en : (en.title || '');
   let explicitIcon = typeof en === 'object' && en.icon ? en.icon : null;
@@ -178,7 +187,6 @@ function parseTitle(en) {
   const pokeRegex = /(?:포켓몬스터|포켓몬)/i;
   const erRegex = /(?:이터널\s*리턴|이리)/i;
   const truckRegex = /(?:유로\s*트럭|유로트럭|Euro\s*Truck)/i;
-  const adventureRegex = /(?:모험가\s*[앨엘]리엇|[앨엘]리엇|종겜|종합\s*게임)/i;
   const hearthstoneRegex = /(?:하스\s*스톤|하스|Hearth\s*stone)/i;
   const footballRegex = /(?:월드컵|축구)/i;
   const diabloRegex = /(?:디아블로|Diablo)/i;
@@ -249,7 +257,7 @@ function parseTitle(en) {
       displayTitle = rest === '' ? '솔랭' : rest;
   } else if(diabloRegex.test(displayTitle)) {
       isDiablo = true;
-  } else if(adventureRegex.test(displayTitle)) {
+  } else if(isGeneralGameTitle(displayTitle)) {
       isAdventure = true;
   }
 

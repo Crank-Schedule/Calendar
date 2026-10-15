@@ -1182,7 +1182,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="onsyde/onsyde-store.js?v=20260816-5"></script>
 <script src="onsyde/schedule-matcher.js?v=20260923-3"></script>
 <script src="schedule_month_cache.js?v=20260924-1"></script>
-<script src="schedule_core.js?v=20261012-1"></script>
+<script src="schedule_core.js?v=20261015-1"></script>
 <script src="schedule_replay_ui.js?v=20260925-2"></script>
 <script src="schedule_presets.js?v=20261012-5"></script>
 <script src="schedule_save_queue.js?v=20261012-2"></script>
@@ -1203,6 +1203,7 @@ const COLORS = [
 ];
 
 const PRESETS = [
+  {title:'종합게임', color:'#C6FF3C', icon:'adventure'},
   {title:'스타 II WardiTV', color:'#9900FF', icon:'sc2'},
   {title:'스타 II MoG 2', color:'#9900FF', icon:'sc2'},
   {title:'스타 II 군심 로그라이크', color:'#9900FF', icon:'sc2'},
@@ -1282,7 +1283,7 @@ window.addEventListener('beforeunload', (event)=>{
 });
 
 const ICONS = [
-  {id:'auto', name:'자동', html:'🤖'},
+  {id:'auto', name:'자동 · 기본 종겜', html:'🤖'},
   {id:'lol', name:'롤', html:'<img src="assets/images/lol_icon.png" onerror="this.outerHTML=\'⚔️\'">', color: '#33FF00'},
   {id:'sc2', name:'스타 II', html:'<img src="assets/images/sc2_icon.png" onerror="this.outerHTML=\'👾\'">', color: '#9900FF'},
   {id:'war3', name:'워3', html:'<img src="assets/images/war3_icon_reforged.png" onerror="this.outerHTML=\'🛡️\'">', color: '#4EA5FF'},
@@ -2973,7 +2974,7 @@ function updateEntryPreview(){
   const color = composerColor(title);
   preview.style.setProperty('--preview-color', getDisplayColor(color));
   const time = window.SCHEDULE_EDITOR_UTILS.normalizeTime(timeInput.value);
-  preview.innerHTML = title ? `${time ? `<strong>${escapeHtml(time)}</strong> · ` : ''}${withIcon({title, icon:pickedIcon, color})}` : '<span style="color:var(--text-dim)">제목을 입력하면 여기에 미리 보입니다</span>';
+  preview.innerHTML = title ? `${time ? `<strong>${escapeHtml(time)}</strong> · ` : ''}${withIcon({title, icon:resolveScheduleIcon(title,pickedIcon), color})}` : '<span style="color:var(--text-dim)">제목을 입력하면 여기에 미리 보입니다</span>';
 }
 
 function resetEntryEditor(focus = false){
@@ -3125,7 +3126,7 @@ function submitScheduleEntry(){
   }
   const entry = {
     title, time:window.SCHEDULE_EDITOR_UTILS.normalizeTime(timeInput.value), link:linkInput.value.trim(),
-    color:composerColor(title), icon:pickedIcon === 'auto' ? undefined : pickedIcon,
+    color:composerColor(title), icon:resolveScheduleIcon(title,pickedIcon),
   };
   const idx = editingEntryIndex;
   commitEditorDay(activeDate, list => {
