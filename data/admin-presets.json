@@ -2,6 +2,20 @@
   "version": 1,
   "presets": [
     {
+      "title": "스다주밸리",
+      "color": "#00FFFF",
+      "icon": "adventure",
+      "time": "",
+      "usedAt": 1792058297807
+    },
+    {
+      "title": "스타 II 조성주와 합방",
+      "color": "#9900FF",
+      "icon": "sc2",
+      "time": "8PM",
+      "usedAt": 1792058194616
+    },
+    {
       "title": "스타 II WardiTV 대회 같이 보기",
       "color": "#9900FF",
       "icon": "sc2",
@@ -56,21 +70,7 @@
       "icon": "mk",
       "time": "",
       "usedAt": 0
-    },
-    {
-      "title": "스타 II 쿵푸컵 결승 다시보기",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "",
-      "usedAt": 0
-    },
-    {
-      "title": "에오엠4 신규 DLC -완-",
-      "color": "#9900FF",
-      "icon": "aoe",
-      "time": "",
-      "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-15T04:54:37.116Z"
+  "updatedAt": "2026-10-15T09:58:18.917Z"
 }
