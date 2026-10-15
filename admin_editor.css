@@ -68,6 +68,8 @@ body.schedule-editor-open { overflow:hidden; }
 #overlay .icon-swatches { display:flex; flex-wrap:wrap; gap:6px; }
 #overlay .icon-sw { display:inline-flex; align-items:center; gap:5px; font-size:11px; min-height:34px; }
 #overlay .icon-sw.active { border-color:var(--neon-violet); box-shadow:0 0 0 1px var(--neon-violet); }
+#overlay .editor-icon-picker { margin-top:-3px; }
+#overlay .editor-icon-picker .icon-sw { min-height:32px; padding:5px 7px; }
 #overlay .icon-sw img { width:14px; height:14px; object-fit:contain; }
 .editor-preview { margin:16px 0; }
 .editor-preview>span { display:block; font-size:10px; color:var(--text-dim); margin-bottom:7px; }

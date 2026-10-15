@@ -144,6 +144,13 @@ function parseTitle(en) {
     else if(explicitIcon === 'football') { iconHtml = `⚽`; customIcon=true;}
     else if(explicitIcon === 'diablo') { iconHtml = `<img src="assets/images/diablo_icon.svg" onerror="this.outerHTML='🔥'" style="width:11px; height:11px; object-fit:contain; vertical-align:-1px; margin-right:3px;">`; customIcon=true;}
 
+    // Explicit tags use the same compact label as automatic detection, but only
+    // when that detection represents the selected icon. Never mutate saved titles.
+    if(customIcon){
+      const automatic = parseTitle(titleStr);
+      if(automatic.iconHtml === iconHtml) displayTitle = automatic.displayTitle;
+    }
+
     return {
         displayTitle: displayTitle,
         customIcon: customIcon,

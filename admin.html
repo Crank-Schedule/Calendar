@@ -983,7 +983,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   <link rel="stylesheet" href="schedule_css.css?v=20261005-1">
   <link rel="stylesheet" href="admin_css.css?v=20260923-2">
   <link rel="stylesheet" href="onsyde-broadcast-label.css?v=20260917-2">
-  <link rel="stylesheet" href="admin_editor.css?v=20261012-2">
+  <link rel="stylesheet" href="admin_editor.css?v=20261015-2">
 </head>
 <body class="admin-page">
 <div class="wrap">
@@ -1155,17 +1155,17 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
           <input id="presetSearch" type="search" placeholder="프리셋 검색" autocomplete="off">
           <div class="presets" id="presets"></div>
           <div class="preset-sync"><span id="presetSyncStatus" role="status">공유 프리셋 확인 중…</span><button type="button" id="retryPresetSync" hidden>재시도</button></div>
-          <details class="editor-default-presets"><summary>기본 게임 프리셋</summary><div class="presets" id="defaultPresets"></div></details>
+          <details class="editor-default-presets"><summary>기본 일정 프리셋 · 제목도 채우기</summary><div class="presets" id="defaultPresets"></div></details>
         </div>
       </section>
       <section id="editArea" class="editor-compose" style="display:none;" aria-label="일정 입력">
         <div class="editor-section-heading"><h3 id="editorFormHeading">새 일정 추가</h3><button type="button" id="cancelEditBtn" style="display:none;">수정 취소</button></div>
         <div class="form-row"><label for="titleInput">방송 제목</label><input type="text" id="titleInput" placeholder="방송할 게임이나 중계 제목" autocomplete="off" aria-describedby="editorFormError"></div>
+        <div class="form-row editor-icon-picker"><label>게임 아이콘 <span>제목·시간은 그대로 유지됩니다</span></label><div class="icon-swatches" id="iconSwatches" role="group" aria-label="게임 아이콘"></div></div>
         <div class="form-row"><label for="timeInput">시간 <span>선택</span></label><input type="text" id="timeInput" placeholder="9PM 또는 21:00" autocomplete="off"><div class="editor-time-shortcuts"><button type="button" data-time="6PM">6 PM</button><button type="button" data-time="7PM">7 PM</button><button type="button" data-time="8PM">8 PM</button><button type="button" data-time="9PM">9 PM</button><button type="button" data-time="">시간 없음</button></div></div>
-        <details class="editor-options" id="editorOptions"><summary>색상 · 아이콘 · 다시보기 링크</summary>
+        <details class="editor-options" id="editorOptions"><summary>색상 · 다시보기 링크</summary>
           <div class="form-row"><label for="linkInput">다시보기 링크</label><input type="url" id="linkInput" placeholder="https://youtube.com/..." aria-describedby="editorFormError"></div>
           <div class="form-row"><label>태그 색상</label><div class="swatches" id="swatches" role="group" aria-label="일정 색상"></div></div>
-          <div class="form-row"><label>아이콘</label><div class="icon-swatches" id="iconSwatches" role="group" aria-label="게임 아이콘"></div></div>
         </details>
         <div class="editor-preview"><span>미리보기</span><div id="entryPreview"></div></div>
         <p id="editorFormError" class="editor-form-error" role="alert" hidden></p>
@@ -1182,7 +1182,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="onsyde/onsyde-store.js?v=20260816-5"></script>
 <script src="onsyde/schedule-matcher.js?v=20260923-3"></script>
 <script src="schedule_month_cache.js?v=20260924-1"></script>
-<script src="schedule_core.js?v=20261015-1"></script>
+<script src="schedule_core.js?v=20261015-2"></script>
 <script src="schedule_replay_ui.js?v=20260925-2"></script>
 <script src="schedule_presets.js?v=20261012-5"></script>
 <script src="schedule_save_queue.js?v=20261012-2"></script>
