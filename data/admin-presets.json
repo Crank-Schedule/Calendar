@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "스타 II WardiTV 대회 같이 보기",
+      "color": "#9900FF",
+      "icon": "sc2",
+      "time": "9PM",
+      "usedAt": 1792040052331
+    },
+    {
       "title": "야구 삼성 플옵 응원",
       "color": "#FF9F43",
       "icon": "bb",
@@ -63,14 +70,7 @@
       "icon": "aoe",
       "time": "",
       "usedAt": 0
-    },
-    {
-      "title": "에오엠4 신규 DLC",
-      "color": "#9900FF",
-      "icon": "aoe",
-      "time": "",
-      "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-14T16:29:15.774Z"
+  "updatedAt": "2026-10-15T04:54:15.194Z"
 }
