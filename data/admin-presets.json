@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "롤캠프 스파링해주기",
+      "color": "#33FF00",
+      "icon": "lol",
+      "time": "2PM",
+      "usedAt": 1792091758892
+    },
+    {
       "title": "스다주밸리",
       "color": "#00FFFF",
       "icon": "adventure",
@@ -63,14 +70,7 @@
       "icon": "lol",
       "time": "",
       "usedAt": 0
-    },
-    {
-      "title": "마카",
-      "color": "#FF0000",
-      "icon": "mk",
-      "time": "",
-      "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-15T19:14:51.068Z"
+  "updatedAt": "2026-10-15T19:16:00.909Z"
 }
