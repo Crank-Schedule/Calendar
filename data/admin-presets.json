@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "스타 II 조성주와 합방",
+      "color": "#9900FF",
+      "icon": "sc2",
+      "time": "8PM",
+      "usedAt": 1792058194616
+    },
+    {
       "title": "스다주밸리",
       "color": "#00FFFF",
       "icon": "adventure",
@@ -63,14 +70,7 @@
       "icon": "mk",
       "time": "",
       "usedAt": 0
-    },
-    {
-      "title": "스타 II 쿵푸컵 결승 다시보기",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "",
-      "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-15T09:56:13.903Z"
+  "updatedAt": "2026-10-15T09:56:36.003Z"
 }
