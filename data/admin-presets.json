@@ -5,8 +5,8 @@
       "title": "스다주밸리",
       "color": "#00FFFF",
       "icon": "adventure",
-      "time": "2PM",
-      "usedAt": 1792058264410
+      "time": "",
+      "usedAt": 1792058273006
     },
     {
       "title": "스타 II 조성주와 합방",
@@ -72,5 +72,5 @@
       "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-15T09:57:45.964Z"
+  "updatedAt": "2026-10-15T09:57:54.223Z"
 }
