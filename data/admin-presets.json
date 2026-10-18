@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "롤",
+      "color": "#33FF00",
+      "icon": "lol",
+      "time": "2PM",
+      "usedAt": 1792332755229
+    },
+    {
       "title": "매스리콜 캠페인 크랭크 버전",
       "color": "#9900FF",
       "icon": "sc2",
@@ -63,14 +70,7 @@
       "icon": "sc2",
       "time": "8PM",
       "usedAt": 0
-    },
-    {
-      "title": "온사이드 유니폼 프로모션겸 선수들 불러 홍보시키기(=간단한 쇼매치 닙성주희범한솔)",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "9PM",
-      "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-15T19:16:41.126Z"
+  "updatedAt": "2026-10-18T14:12:43.886Z"
 }
