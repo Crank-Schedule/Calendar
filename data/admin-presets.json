@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "콜 오브 듀티: 모던 워페어 사",
+      "color": "#00FFFF",
+      "icon": "adventure",
+      "time": "",
+      "usedAt": 1792605269258
+    },
+    {
       "title": "지난 대회들 다시 보기",
       "color": "#9900FF",
       "icon": "sc2",
@@ -63,14 +70,7 @@
       "icon": "bb",
       "time": "",
       "usedAt": 1791995354238
-    },
-    {
-      "title": "스타 II Patch Clash",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "11:59PM",
-      "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-21T17:54:18.601Z"
+  "updatedAt": "2026-10-21T17:54:31.838Z"
 }
