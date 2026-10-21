@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "하스스톤 전장",
+      "color": "#FF0000",
+      "icon": "hearthstone",
+      "time": "",
+      "usedAt": 1792605239796
+    },
+    {
       "title": "롤",
       "color": "#33FF00",
       "icon": "lol",
@@ -51,13 +58,6 @@
       "usedAt": 1791995354238
     },
     {
-      "title": "하스스톤 전장",
-      "color": "#FF0000",
-      "icon": "hearthstone",
-      "time": "",
-      "usedAt": 1791973466140
-    },
-    {
       "title": "스타 II Patch Clash",
       "color": "#9900FF",
       "icon": "sc2",
@@ -72,5 +72,5 @@
       "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-21T17:53:53.171Z"
+  "updatedAt": "2026-10-21T17:54:02.384Z"
 }
