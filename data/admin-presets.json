@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "지난 대회들 다시 보기",
+      "color": "#9900FF",
+      "icon": "sc2",
+      "time": "",
+      "usedAt": 1792605256447
+    },
+    {
       "title": "하스스톤 전장",
       "color": "#FF0000",
       "icon": "hearthstone",
@@ -63,14 +70,7 @@
       "icon": "sc2",
       "time": "11:59PM",
       "usedAt": 0
-    },
-    {
-      "title": "스타 II Tuna Cup #150",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "8PM",
-      "usedAt": 0
     }
   ],
-  "updatedAt": "2026-10-21T17:54:02.384Z"
+  "updatedAt": "2026-10-21T17:54:18.601Z"
 }
