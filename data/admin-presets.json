@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "던 오브 워 4 출시 두둥",
+      "color": "#00FFFF",
+      "icon": "adventure",
+      "time": "",
+      "usedAt": 1792670293854
+    },
+    {
       "title": "워크 1 리메이크 캠페인",
       "color": "#4EA5FF",
       "icon": "war3",
@@ -63,14 +70,7 @@
       "icon": "adventure",
       "time": "",
       "usedAt": 1792091688782
-    },
-    {
-      "title": "스타 II 조성주와 합방",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "8PM",
-      "usedAt": 1792058194616
     }
   ],
-  "updatedAt": "2026-10-21T17:59:41.826Z"
+  "updatedAt": "2026-10-22T11:58:16.266Z"
 }
