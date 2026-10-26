@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "야구 삼성 플옵 응원",
+      "color": "#FF9F43",
+      "icon": "bb",
+      "time": "6:30PM",
+      "usedAt": 1792980403003
+    },
+    {
       "title": "콜 오브 듀티: 모던 워페어 사",
       "color": "#00FFFF",
       "icon": "adventure",
@@ -21,13 +28,6 @@
       "icon": "war3",
       "time": "",
       "usedAt": 1792605579840
-    },
-    {
-      "title": "야구 삼성 플옵 응원",
-      "color": "#FF9F43",
-      "icon": "bb",
-      "time": "6:30PM",
-      "usedAt": 1792605288922
     },
     {
       "title": "지난 대회들 다시 보기",
@@ -72,5 +72,5 @@
       "usedAt": 1792091688782
     }
   ],
-  "updatedAt": "2026-10-26T02:01:46.354Z"
+  "updatedAt": "2026-10-26T02:06:47.407Z"
 }
