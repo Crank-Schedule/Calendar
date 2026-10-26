@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "웰 드웰러",
+      "color": "#00FFFF",
+      "icon": "auto",
+      "time": "",
+      "usedAt": 1792982082045
+    },
+    {
       "title": "야구 삼성 플옵 응원",
       "color": "#FF9F43",
       "icon": "bb",
@@ -63,14 +70,7 @@
       "icon": "lol",
       "time": "2PM",
       "usedAt": 1792091758892
-    },
-    {
-      "title": "스다주밸리",
-      "color": "#00FFFF",
-      "icon": "adventure",
-      "time": "",
-      "usedAt": 1792091688782
     }
   ],
-  "updatedAt": "2026-10-26T02:06:47.407Z"
+  "updatedAt": "2026-10-26T02:34:44.342Z"
 }
