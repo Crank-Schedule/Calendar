@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "워크 1 리메이크 캠페인",
+      "color": "#4EA5FF",
+      "icon": "war3",
+      "time": "",
+      "usedAt": 1792982405784
+    },
+    {
       "title": "지난 대회들 다시 보기",
       "color": "#9900FF",
       "icon": "sc2",
@@ -37,13 +44,6 @@
       "usedAt": 1792670293854
     },
     {
-      "title": "워크 1 리메이크 캠페인",
-      "color": "#4EA5FF",
-      "icon": "war3",
-      "time": "",
-      "usedAt": 1792605579840
-    },
-    {
       "title": "하스스톤 전장",
       "color": "#FF0000",
       "icon": "hearthstone",
@@ -72,5 +72,5 @@
       "usedAt": 1792091758892
     }
   ],
-  "updatedAt": "2026-10-26T02:40:00.293Z"
+  "updatedAt": "2026-10-26T02:40:07.148Z"
 }
