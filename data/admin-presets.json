@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "지난 대회들 다시 보기",
+      "color": "#9900FF",
+      "icon": "sc2",
+      "time": "",
+      "usedAt": 1792982398765
+    },
+    {
       "title": "웰 드웰러",
       "color": "#00FFFF",
       "icon": "auto",
@@ -37,13 +44,6 @@
       "usedAt": 1792605579840
     },
     {
-      "title": "지난 대회들 다시 보기",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "",
-      "usedAt": 1792605256447
-    },
-    {
       "title": "하스스톤 전장",
       "color": "#FF0000",
       "icon": "hearthstone",
@@ -72,5 +72,5 @@
       "usedAt": 1792091758892
     }
   ],
-  "updatedAt": "2026-10-26T02:34:47.320Z"
+  "updatedAt": "2026-10-26T02:40:00.293Z"
 }
