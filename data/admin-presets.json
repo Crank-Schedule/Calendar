@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "워크 2 리메이크 캠페인",
+      "color": "#4EA5FF",
+      "icon": "war3",
+      "time": "",
+      "usedAt": 1792982410940
+    },
+    {
       "title": "워크 1 리메이크 캠페인",
       "color": "#4EA5FF",
       "icon": "war3",
@@ -63,14 +70,7 @@
       "icon": "sc2",
       "time": "",
       "usedAt": 1792605230893
-    },
-    {
-      "title": "롤캠프 스파링해주기",
-      "color": "#33FF00",
-      "icon": "lol",
-      "time": "2PM",
-      "usedAt": 1792091758892
     }
   ],
-  "updatedAt": "2026-10-26T02:40:07.148Z"
+  "updatedAt": "2026-10-26T02:40:12.326Z"
 }
