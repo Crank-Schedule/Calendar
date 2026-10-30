@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "야구 삼성 플옵 응원",
+      "color": "#FF9F43",
+      "icon": "bb",
+      "time": "6:30PM",
+      "usedAt": 1793364072039
+    },
+    {
       "title": "워크 2 리메이크 캠페인",
       "color": "#4EA5FF",
       "icon": "war3",
@@ -28,13 +35,6 @@
       "icon": "auto",
       "time": "",
       "usedAt": 1792982085890
-    },
-    {
-      "title": "야구 삼성 플옵 응원",
-      "color": "#FF9F43",
-      "icon": "bb",
-      "time": "6:30PM",
-      "usedAt": 1792980403003
     },
     {
       "title": "콜 오브 듀티: 모던 워페어 사",
@@ -72,5 +72,5 @@
       "usedAt": 1792605230893
     }
   ],
-  "updatedAt": "2026-10-26T02:40:12.326Z"
+  "updatedAt": "2026-10-30T12:41:14.531Z"
 }
