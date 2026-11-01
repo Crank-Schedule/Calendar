@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "야구 삼성 코시 응원",
+      "color": "#FF9F43",
+      "icon": "bb",
+      "time": "6:30PM",
+      "usedAt": 1793518833288
+    },
+    {
       "title": "야구 삼성 플옵 응원",
       "color": "#FF9F43",
       "icon": "bb",
@@ -63,14 +70,7 @@
       "icon": "lol",
       "time": "",
       "usedAt": 1792605231980
-    },
-    {
-      "title": "매스리콜 캠페인 크랭크 버전",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "",
-      "usedAt": 1792605230893
     }
   ],
-  "updatedAt": "2026-11-01T07:40:20.475Z"
+  "updatedAt": "2026-11-01T07:40:35.119Z"
 }
