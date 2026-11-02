@@ -4352,14 +4352,14 @@ body.is-live-now .header > .nav #themeToggleBtn {
   }
 }
 
-/* Fold inner screens: reserve an icon slot beside the full reading group.
+/* Fold inner screens: icon flows with the first line of the schedule text.
    Narrow phone layouts retain their existing text-first treatment. */
 @media (min-width: 600px) and (max-width: 1050px) {
-  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 2px !important;
+  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled),
+  #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) {
+    display: block !important;
+    align-content: center !important;
+    text-align: center !important;
     padding-left: 5px !important;
     padding-right: 5px !important;
   }
@@ -4370,11 +4370,11 @@ body.is-live-now .header > .nav #themeToggleBtn {
     position: static !important;
     inset: auto !important;
     transform: none !important;
-    flex: 0 0 10px !important;
     width: 10px !important;
     min-width: 10px !important;
     height: 10px !important;
-    margin: 0 !important;
+    margin: 0 2px 0 0 !important;
+    vertical-align: -1px !important;
   }
 
   #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon > img,
@@ -4388,11 +4388,14 @@ body.is-live-now .header > .nav #themeToggleBtn {
   }
 
   #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .title-wrap,
-  #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) .title-wrap {
-    flex: 0 1 auto !important;
+  #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) .title-wrap,
+  #scheduleGridSection .cell-tags-col.desktop-line-budget .tag.is-line-clamped:not(.onsyde-labelled) .title-wrap {
+    display: inline !important;
     width: auto !important;
     min-width: 0 !important;
-    max-width: calc(100% - 12px) !important;
+    max-width: none !important;
+    overflow: visible !important;
+    white-space: normal !important;
   }
 }
 
