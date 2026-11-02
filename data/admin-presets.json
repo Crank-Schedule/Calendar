@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "롤",
+      "color": "#33FF00",
+      "icon": "lol",
+      "time": "",
+      "usedAt": 1793599265029
+    },
+    {
       "title": "워크 2 리메이크 캠페인",
       "color": "#4EA5FF",
       "icon": "war3",
@@ -63,14 +70,7 @@
       "icon": "hearthstone",
       "time": "",
       "usedAt": 1792605239796
-    },
-    {
-      "title": "롤",
-      "color": "#33FF00",
-      "icon": "lol",
-      "time": "",
-      "usedAt": 1792605231980
     }
   ],
-  "updatedAt": "2026-11-02T06:00:45.387Z"
+  "updatedAt": "2026-11-02T06:01:06.915Z"
 }
