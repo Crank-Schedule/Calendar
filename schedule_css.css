@@ -4352,6 +4352,50 @@ body.is-live-now .header > .nav #themeToggleBtn {
   }
 }
 
+/* Fold inner screens: reserve an icon slot beside the full reading group.
+   Narrow phone layouts retain their existing text-first treatment. */
+@media (min-width: 600px) and (max-width: 1050px) {
+  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon,
+  #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) .tag-icon {
+    display: inline-flex !important;
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    flex: 0 0 10px !important;
+    width: 10px !important;
+    min-width: 10px !important;
+    height: 10px !important;
+    margin: 0 !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon > img,
+  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon > svg {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon:empty {
+    display: none !important;
+  }
+
+  #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .title-wrap,
+  #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) .title-wrap {
+    flex: 0 1 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: calc(100% - 12px) !important;
+  }
+}
+
 /* Shared icon slot for list rows, modal entries and preset chips. */
 .schedule-inline-icon {
   display: inline-flex;
