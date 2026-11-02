@@ -4354,7 +4354,9 @@ body.is-live-now .header > .nav #themeToggleBtn {
 
 /* Fold inner screens: icon flows with the first line of the schedule text.
    Narrow phone layouts retain their existing text-first treatment. */
-@media (min-width: 600px) and (max-width: 1050px) {
+@media (min-width: 461px) and (max-width: 1050px),
+       (min-width: 421px) and (max-width: 460px) and (min-aspect-ratio: 4/5) {
+ @container schedule-cell (min-width: 48px) {
   #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled),
   #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) {
     display: block !important;
@@ -4397,6 +4399,49 @@ body.is-live-now .header > .nav #themeToggleBtn {
     overflow: visible !important;
     white-space: normal !important;
   }
+
+  /* At larger mobile zoom levels, keep the icon and a time such as 6:30PM
+     together on the first line without squeezing the remaining title. */
+  @media (max-width: 560px) {
+    #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled),
+    #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) {
+      padding-left: 1px !important;
+      padding-right: 1px !important;
+    }
+    #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon,
+    #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) .tag-icon {
+      width: 8px !important;
+      min-width: 8px !important;
+      height: 8px !important;
+      margin-right: 0 !important;
+    }
+    #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon > img,
+    #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon > svg {
+      width: 8px !important;
+      height: 8px !important;
+    }
+    #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) .tag-inline-time {
+      margin-right: 1px !important;
+    }
+  }
+  @media (max-width: 460px) {
+    #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon,
+    #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) .tag-icon {
+      width: 7px !important;
+      min-width: 7px !important;
+      height: 7px !important;
+    }
+    #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon > img,
+    #scheduleGridSection .cell-tags-col .tag:not(.onsyde-labelled) .tag-icon > svg {
+      width: 7px !important;
+      height: 7px !important;
+    }
+    #scheduleGridSection .cell-tags-col .tag.has-time:not(.onsyde-labelled) .tag-inline-time {
+      font-size: 7px !important;
+      margin-right: 0 !important;
+    }
+  }
+ }
 }
 
 /* Shared icon slot for list rows, modal entries and preset chips. */
