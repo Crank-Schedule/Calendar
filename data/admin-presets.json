@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "온사이드 굿즈 포장",
+      "color": "#FF66B2",
+      "icon": "chat",
+      "time": "",
+      "usedAt": 1794205945531
+    },
+    {
       "title": "워크 2 리메이크 캠페인",
       "color": "#4EA5FF",
       "icon": "war3",
@@ -63,14 +70,7 @@
       "icon": "adventure",
       "time": "",
       "usedAt": 1792980102710
-    },
-    {
-      "title": "던 오브 워 4 출시 두둥",
-      "color": "#00FFFF",
-      "icon": "adventure",
-      "time": "",
-      "usedAt": 1792670293854
     }
   ],
-  "updatedAt": "2026-11-09T06:31:55.945Z"
+  "updatedAt": "2026-11-09T06:32:27.654Z"
 }
