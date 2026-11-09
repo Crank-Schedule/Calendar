@@ -2,18 +2,18 @@
   "version": 1,
   "presets": [
     {
+      "title": "워크 2 리메이크 캠페인",
+      "color": "#4EA5FF",
+      "icon": "war3",
+      "time": "",
+      "usedAt": 1794206187519
+    },
+    {
       "title": "온사이드 굿즈 포장",
       "color": "#FF66B2",
       "icon": "chat",
       "time": "",
       "usedAt": 1794205945531
-    },
-    {
-      "title": "워크 2 리메이크 캠페인",
-      "color": "#4EA5FF",
-      "icon": "war3",
-      "time": "",
-      "usedAt": 1794205914359
     },
     {
       "title": "워해머 서바이버",
@@ -72,5 +72,5 @@
       "usedAt": 1792980102710
     }
   ],
-  "updatedAt": "2026-11-09T06:32:27.654Z"
+  "updatedAt": "2026-11-09T06:36:28.985Z"
 }
