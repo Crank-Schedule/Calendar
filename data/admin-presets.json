@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "워해머 서바이버",
+      "color": "#00FFFF",
+      "icon": "adventure",
+      "time": "",
+      "usedAt": 1794205881718
+    },
+    {
       "title": "롤",
       "color": "#33FF00",
       "icon": "lol",
@@ -63,14 +70,7 @@
       "icon": "adventure",
       "time": "",
       "usedAt": 1792670293854
-    },
-    {
-      "title": "하스스톤 전장",
-      "color": "#FF0000",
-      "icon": "hearthstone",
-      "time": "",
-      "usedAt": 1792605239796
     }
   ],
-  "updatedAt": "2026-11-02T06:01:06.915Z"
+  "updatedAt": "2026-11-09T06:31:25.413Z"
 }
