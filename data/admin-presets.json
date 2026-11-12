@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "지난 대회들 다시 보기",
+      "color": "#9900FF",
+      "icon": "sc2",
+      "time": "",
+      "usedAt": 1794469622803
+    },
+    {
       "title": "야구 APBC 국대 vs 호주 응원",
       "color": "#FF9F43",
       "icon": "bb",
@@ -14,13 +21,6 @@
       "icon": "adventure",
       "time": "",
       "usedAt": 1794466853144
-    },
-    {
-      "title": "지난 대회들 다시 보기",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "",
-      "usedAt": 1794206294881
     },
     {
       "title": "워크 2 리메이크 캠페인",
@@ -72,5 +72,5 @@
       "usedAt": 1792982085890
     }
   ],
-  "updatedAt": "2026-11-12T07:46:49.958Z"
+  "updatedAt": "2026-11-12T07:47:04.841Z"
 }
