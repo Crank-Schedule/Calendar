@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "워크 2 리메이크 캠페인",
+      "color": "#4EA5FF",
+      "icon": "war3",
+      "time": "",
+      "usedAt": 1794469625642
+    },
+    {
       "title": "지난 대회들 다시 보기",
       "color": "#9900FF",
       "icon": "sc2",
@@ -21,13 +28,6 @@
       "icon": "adventure",
       "time": "",
       "usedAt": 1794466853144
-    },
-    {
-      "title": "워크 2 리메이크 캠페인",
-      "color": "#4EA5FF",
-      "icon": "war3",
-      "time": "",
-      "usedAt": 1794206187519
     },
     {
       "title": "온사이드 굿즈 포장",
@@ -72,5 +72,5 @@
       "usedAt": 1792982085890
     }
   ],
-  "updatedAt": "2026-11-12T07:47:04.841Z"
+  "updatedAt": "2026-11-12T07:47:08.442Z"
 }
