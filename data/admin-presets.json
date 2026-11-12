@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "워해머 서바이버",
+      "color": "#00FFFF",
+      "icon": "adventure",
+      "time": "",
+      "usedAt": 1794466853144
+    },
+    {
       "title": "지난 대회들 다시 보기",
       "color": "#9900FF",
       "icon": "sc2",
@@ -21,13 +28,6 @@
       "icon": "chat",
       "time": "",
       "usedAt": 1794205945531
-    },
-    {
-      "title": "워해머 서바이버",
-      "color": "#00FFFF",
-      "icon": "adventure",
-      "time": "",
-      "usedAt": 1794205895588
     },
     {
       "title": "롤",
@@ -72,5 +72,5 @@
       "usedAt": 1792980102710
     }
   ],
-  "updatedAt": "2026-11-09T06:38:16.908Z"
+  "updatedAt": "2026-11-12T07:00:56.319Z"
 }
