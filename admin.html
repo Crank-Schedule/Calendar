@@ -1182,7 +1182,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="onsyde/onsyde-store.js?v=20260816-5"></script>
 <script src="onsyde/schedule-matcher.js?v=20260923-3"></script>
 <script src="schedule_month_cache.js?v=20260924-1"></script>
-<script src="schedule_core.js?v=20261015-2"></script>
+<script src="schedule_core.js?v=20261113-1"></script>
 <script src="schedule_replay_ui.js?v=20260925-2"></script>
 <script src="schedule_presets.js?v=20261012-5"></script>
 <script src="schedule_save_queue.js?v=20261012-2"></script>
@@ -1513,7 +1513,8 @@ function mergePersonalAndOnsydeEntries(dateObj, personalEntries){
     const [teamEntry] = remainingOnsyde.splice(matchIndex, 1);
     return mergePersonalOnsydeEntry(personalEntry, teamEntry);
   });
-  return { personal, onsyde: remainingOnsyde, entries: [...personal, ...remainingOnsyde] };
+  const orderedPersonal = sortTimedScheduleEntries(personal);
+  return { personal: orderedPersonal, onsyde: remainingOnsyde, entries: [...orderedPersonal, ...remainingOnsyde] };
 }
 
 async function sendMonthSnapshot(key, body, retried = false){
@@ -3039,7 +3040,19 @@ function renderEntries(dateObj){
     entryList.appendChild(empty);
     return;
   }
-  entries.forEach((en, idx) => {
+  const orderedEntries=sortTimedScheduleEntries(entries);
+  if(editingEntryIndex>=0){
+    const displayIndex=orderedEntries.indexOf(entries[editingEntryIndex]);
+    if(displayIndex>=0) document.getElementById('editorFormHeading').textContent=`${displayIndex+1}번째 일정 수정`;
+  }
+  orderedEntries.forEach((en, displayIdx) => {
+    const idx=entries.indexOf(en);
+    const canMove = delta => {
+      const neighbor=orderedEntries[displayIdx+delta];
+      if(!neighbor) return false;
+      const currentTime=scheduleTimeMinutes(en.time),neighborTime=scheduleTimeMinutes(neighbor.time);
+      return currentTime===null || neighborTime===null || currentTime===neighborTime;
+    };
     const row = document.createElement('div');
     row.className = 'entry' + (editingEntryIndex === idx ? ' is-editing' : '');
     row.style.setProperty('--entry-color', getDisplayColor(en.color));
@@ -3047,7 +3060,7 @@ function renderEntries(dateObj){
     if(isAdmin){
       const actions = document.createElement('div');
       actions.className = 'editor-entry-actions';
-      actions.innerHTML = `<button type="button" class="edit" aria-label="${idx+1}번째 일정 수정">수정</button><button type="button" class="duplicate" aria-label="${idx+1}번째 일정 복제">복제</button><button type="button" class="del" aria-label="${idx+1}번째 일정 삭제">삭제</button><div class="ord"><button type="button" class="up" aria-label="${idx+1}번째 일정 위로" ${idx === 0 ? 'disabled' : ''}>↑</button><button type="button" class="down" aria-label="${idx+1}번째 일정 아래로" ${idx === entries.length-1 ? 'disabled' : ''}>↓</button></div>`;
+      actions.innerHTML = `<button type="button" class="edit" aria-label="${displayIdx+1}번째 일정 수정">수정</button><button type="button" class="duplicate" aria-label="${displayIdx+1}번째 일정 복제">복제</button><button type="button" class="del" aria-label="${displayIdx+1}번째 일정 삭제">삭제</button><div class="ord"><button type="button" class="up" aria-label="${displayIdx+1}번째 일정 위로" ${canMove(-1) ? '' : 'disabled'}>↑</button><button type="button" class="down" aria-label="${displayIdx+1}번째 일정 아래로" ${canMove(1) ? '' : 'disabled'}>↓</button></div>`;
       row.appendChild(actions);
       actions.querySelector('.edit').addEventListener('click', () => beginEntryEdit(idx));
       actions.querySelector('.duplicate').addEventListener('click', () => {
@@ -3065,16 +3078,18 @@ function renderEntries(dateObj){
           resetEntryEditor();
         } else if(editingEntryIndex > idx) editingEntryIndex--;
         commitEditorDay(dateObj, list => list.splice(idx, 1));
-        if(editingEntryIndex >= 0) document.getElementById('editorFormHeading').textContent = `${editingEntryIndex+1}번째 일정 수정`;
         showAdminToast('일정을 삭제했습니다. 되돌리기로 복구할 수 있어요.');
       });
       const move = delta => {
-        const next = idx + delta;
-        if(next < 0 || next >= entries.length) return;
-        if(editingEntryIndex === idx) editingEntryIndex = next;
-        else if(editingEntryIndex === next) editingEntryIndex = idx;
-        commitEditorDay(dateObj, list => { [list[idx], list[next]] = [list[next], list[idx]]; });
-        if(editingEntryIndex >= 0) document.getElementById('editorFormHeading').textContent = `${editingEntryIndex+1}번째 일정 수정`;
+        if(!canMove(delta)) return;
+        const editingEntry=editingEntryIndex>=0 ? entries[editingEntryIndex] : null;
+        commitEditorDay(dateObj, list => {
+          const ordered=sortTimedScheduleEntries(list);
+          const next=displayIdx+delta;
+          [ordered[displayIdx],ordered[next]]=[ordered[next],ordered[displayIdx]];
+          list.splice(0,list.length,...ordered);
+          if(editingEntry) editingEntryIndex=list.indexOf(editingEntry);
+        });
       };
       actions.querySelector('.up').addEventListener('click', () => move(-1));
       actions.querySelector('.down').addEventListener('click', () => move(1));

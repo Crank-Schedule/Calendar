@@ -2,6 +2,31 @@
 // crank_schedule.html 과 admin.html 이 공유합니다. (한 곳만 고치면 양쪽에 반영)
 // 순수 함수 모음: 색상 변환 · HTML 이스케이프 · 제목/아이콘 파싱.
 
+// Time-free and ambiguous entries retain their manual positions. Sort only
+// the slots occupied by recognizable clock times; equal times remain stable.
+function scheduleTimeMinutes(value){
+  const text=String(value || '').trim();
+  let match=text.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
+  if(match){
+    const hour=Number(match[1]),minute=Number(match[2] || 0),period=match[3].toUpperCase();
+    if(hour>12 || minute>59 || (hour===0 && period==='PM')) return null;
+    return (hour % 12 + (period==='PM' ? 12 : 0))*60+minute;
+  }
+  match=text.match(/^(\d{1,2}):(\d{2})$/);
+  if(match){const h=Number(match[1]),m=Number(match[2]);return h<24 && m<60 ? h*60+m : null;}
+  match=text.match(/^(오전|오후)\s*(\d{1,2})\s*시(?:\s*(\d{1,2})\s*분?)?$/);
+  if(match){const h=Number(match[2]),m=Number(match[3] || 0);return h>=1 && h<=12 && m<60 ? (h%12+(match[1]==='오후'?12:0))*60+m : null;}
+  return null;
+}
+function sortTimedScheduleEntries(entries){
+  const input=Array.isArray(entries) ? entries : [];
+  const timed=input.map((entry,index)=>({entry,index,minutes:scheduleTimeMinutes(entry?.time)}))
+    .filter(item=>item.minutes!==null)
+    .sort((a,b)=>a.minutes-b.minutes || a.index-b.index);
+  let next=0;
+  return input.map(entry=>scheduleTimeMinutes(entry?.time)===null ? entry : timed[next++].entry);
+}
+
 // ----- 라이트/다크 모드에 맞춰 색상 명도 자동 조절 -----
 function hexToHsl(hex){
   let r=0,g=0,b=0;
