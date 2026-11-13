@@ -2,25 +2,60 @@
   "version": 1,
   "presets": [
     {
-      "title": "롤",
-      "color": "#33FF00",
-      "icon": "lol",
-      "time": "",
-      "usedAt": 1793599265029
+      "title": "야구 APBC 국대 vs 대만 응원",
+      "color": "#FF9F43",
+      "icon": "bb",
+      "time": "6:30PM",
+      "usedAt": 1794540803564
+    },
+    {
+      "title": "야구 APBC 국대 vs 일본 응원",
+      "color": "#FF9F43",
+      "icon": "bb",
+      "time": "6:30PM",
+      "usedAt": 1794540794909
     },
     {
       "title": "워크 2 리메이크 캠페인",
       "color": "#4EA5FF",
       "icon": "war3",
       "time": "",
-      "usedAt": 1793599243016
+      "usedAt": 1794469632822
     },
     {
       "title": "지난 대회들 다시 보기",
       "color": "#9900FF",
       "icon": "sc2",
       "time": "",
-      "usedAt": 1793599235148
+      "usedAt": 1794469622803
+    },
+    {
+      "title": "야구 APBC 국대 vs 호주 응원",
+      "color": "#FF9F43",
+      "icon": "bb",
+      "time": "6:30PM",
+      "usedAt": 1794469606572
+    },
+    {
+      "title": "워해머 서바이버",
+      "color": "#00FFFF",
+      "icon": "adventure",
+      "time": "",
+      "usedAt": 1794466853144
+    },
+    {
+      "title": "온사이드 굿즈 포장",
+      "color": "#FF66B2",
+      "icon": "chat",
+      "time": "",
+      "usedAt": 1794205945531
+    },
+    {
+      "title": "롤",
+      "color": "#33FF00",
+      "icon": "lol",
+      "time": "",
+      "usedAt": 1793599265029
     },
     {
       "title": "야구 삼성 코시 응원",
@@ -35,42 +70,7 @@
       "icon": "bb",
       "time": "6:30PM",
       "usedAt": 1793518818605
-    },
-    {
-      "title": "워크 1 리메이크 캠페인",
-      "color": "#4EA5FF",
-      "icon": "war3",
-      "time": "",
-      "usedAt": 1792982405784
-    },
-    {
-      "title": "웰 드웰러",
-      "color": "#00FFFF",
-      "icon": "auto",
-      "time": "",
-      "usedAt": 1792982085890
-    },
-    {
-      "title": "콜 오브 듀티: 모던 워페어 사",
-      "color": "#00FFFF",
-      "icon": "adventure",
-      "time": "",
-      "usedAt": 1792980102710
-    },
-    {
-      "title": "던 오브 워 4 출시 두둥",
-      "color": "#00FFFF",
-      "icon": "adventure",
-      "time": "",
-      "usedAt": 1792670293854
-    },
-    {
-      "title": "하스스톤 전장",
-      "color": "#FF0000",
-      "icon": "hearthstone",
-      "time": "",
-      "usedAt": 1792605239796
     }
   ],
-  "updatedAt": "2026-11-02T06:01:06.915Z"
+  "updatedAt": "2026-11-13T03:33:25.708Z"
 }
