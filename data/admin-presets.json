@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "야구 APBC 국대 vs 대만 응원",
+      "color": "#FF9F43",
+      "icon": "bb",
+      "time": "6:30PM",
+      "usedAt": 1794540803564
+    },
+    {
       "title": "야구 APBC 국대 vs 일본 응원",
       "color": "#FF9F43",
       "icon": "bb",
@@ -63,14 +70,7 @@
       "icon": "bb",
       "time": "6:30PM",
       "usedAt": 1793518818605
-    },
-    {
-      "title": "워크 1 리메이크 캠페인",
-      "color": "#4EA5FF",
-      "icon": "war3",
-      "time": "",
-      "usedAt": 1792982405784
     }
   ],
-  "updatedAt": "2026-11-13T03:33:18.008Z"
+  "updatedAt": "2026-11-13T03:33:25.708Z"
 }
