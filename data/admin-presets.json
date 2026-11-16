@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "워크 2 리메이크 캠페인",
+      "color": "#4EA5FF",
+      "icon": "war3",
+      "time": "",
+      "usedAt": 1794839599628
+    },
+    {
       "title": "GTA6",
       "color": "#C6FF3C",
       "icon": "adventure",
@@ -37,13 +44,6 @@
       "usedAt": 1794492298629
     },
     {
-      "title": "워크 2 리메이크 캠페인",
-      "color": "#4EA5FF",
-      "icon": "war3",
-      "time": "",
-      "usedAt": 1794469632822
-    },
-    {
       "title": "지난 대회들 다시 보기",
       "color": "#9900FF",
       "icon": "sc2",
@@ -72,5 +72,5 @@
       "usedAt": 1794205945531
     }
   ],
-  "updatedAt": "2026-11-15T07:40:30.084Z"
+  "updatedAt": "2026-11-16T14:33:22.659Z"
 }
