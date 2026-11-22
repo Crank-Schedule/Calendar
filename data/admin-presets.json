@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "졸라 무지개다리 건넌 날",
+      "color": "#00FFFF",
+      "icon": "adventure",
+      "time": "",
+      "usedAt": 1795330184007
+    },
+    {
       "title": "SC4ALL: 미국 오프 (성주/희범)",
       "color": "#9900FF",
       "icon": "sc2",
@@ -63,14 +70,7 @@
       "icon": "bb",
       "time": "6:30PM",
       "usedAt": 1794727432782
-    },
-    {
-      "title": "야구 APBC 국대 vs 대만 응원",
-      "color": "#FF9F43",
-      "icon": "bb",
-      "time": "7PM",
-      "usedAt": 1794563019192
     }
   ],
-  "updatedAt": "2026-11-22T06:31:38.995Z"
+  "updatedAt": "2026-11-22T06:49:45.774Z"
 }
