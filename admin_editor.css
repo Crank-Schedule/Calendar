@@ -36,6 +36,13 @@ body.schedule-editor-open { overflow:hidden; }
 .editor-quick-label { font-size:11px; color:var(--text-dim); margin-bottom:8px; }
 .editor-quick-actions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
 #overlay #quickRest { color:var(--neon-red); }
+.editor-rest-reason { margin-top:12px; }
+.editor-rest-reason label { display:block; margin-bottom:6px; font-size:11px; color:var(--text-dim); }
+.editor-rest-reason label span { font-size:10px; }
+.editor-rest-reason > div { display:flex; gap:6px; }
+#overlay .editor-rest-reason input { font-size:12px; }
+#overlay .editor-rest-reason button { flex-shrink:0; }
+.editor-rest-reason small { display:block; color:var(--text-dim); margin-top:5px; font-size:10px; }
 .editor-custom-tag { display:flex; gap:6px; margin-top:8px; }
 #overlay .editor-custom-tag input { font-size:12px; }
 #overlay .editor-custom-tag button { flex-shrink:0; }

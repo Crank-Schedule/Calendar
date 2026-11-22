@@ -2093,6 +2093,60 @@ h1 span {
   opacity: .78 !important;
 }
 
+/* A rest reason belongs with the rest marker, not in a normal game card. */
+#scheduleGridSection .cell.has-rest-reason .cell-body {
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 5px !important;
+}
+#scheduleGridSection .cell.is-rest .rest-label.has-reason {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 6px 4px !important;
+  border-radius: 8px !important;
+  background: rgba(197, 125, 145, .12) !important;
+  opacity: 1 !important;
+}
+#scheduleGridSection .cell.is-rest .rest-label.has-reason .rest-icon {
+  width: auto !important;
+  height: auto !important;
+  font-size: 18px !important;
+}
+#scheduleGridSection .cell.is-rest .rest-heading {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  color: #ffd3df !important;
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+}
+#scheduleGridSection .cell.is-rest .rest-reason {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+  overflow: hidden !important;
+  max-width: 100% !important;
+  color: #f4d5df !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  overflow-wrap: anywhere !important;
+  word-break: keep-all !important;
+}
+:root[data-theme='light'] #scheduleGridSection .cell.is-rest .rest-reason { color: #713e4e !important; }
+:root[data-theme='light'] #scheduleGridSection .cell.is-rest .rest-heading { color: #9b4a65 !important; }
+@media (max-width: 560px) {
+  #scheduleGridSection .cell.is-rest .rest-label.has-reason { gap: 2px !important; padding: 4px 2px !important; }
+  #scheduleGridSection .cell.is-rest .rest-label.has-reason .rest-icon { font-size: 14px !important; }
+  #scheduleGridSection .cell.is-rest .rest-reason { font-size: 8px !important; }
+  #scheduleGridSection .cell.is-rest .rest-heading { font-size: 8px !important; gap: 1px !important; }
+}
+
 /* Restore the desktop reference layout: schedules on the left and replay
    thumbnails on the right, both centered on the cell's vertical axis. */
 @media (min-width: 681px) {

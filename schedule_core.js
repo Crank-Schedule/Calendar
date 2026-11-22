@@ -369,9 +369,15 @@ function getIcon(title){
   if(generalGames.some(k=>t.includes(k))) return '🎮';
   return '📌';
 }
+function getRestReason(entry){
+  if(!entry || typeof entry !== 'object' || !String(entry.title || '').includes('휴방')) return '';
+  return typeof entry.restReason === 'string' ? entry.restReason.trim() : '';
+}
+
 function withIcon(en){
   const parsed = parseTitle(en);
-  const safe = escapeHtml(parsed.displayTitle);
+  const reason = getRestReason(en);
+  const safe = escapeHtml(parsed.displayTitle + (reason ? ' · ' + reason : ''));
   return parsed.iconHtml
     ? `<span class="schedule-inline-icon" aria-hidden="true">${parsed.iconHtml}</span><span class="schedule-inline-title">${safe}</span>`
     : safe;

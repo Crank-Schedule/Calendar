@@ -31,7 +31,7 @@ test('a draft entered while saving is not discarded when the response arrives', 
   const button={disabled:false,textContent:'저장하고 닫기'};
   const context=vm.createContext({
     document:{getElementById:()=>button},
-    isComposerDirty:()=>draft, activeDate:date, modalOpenRequest:1,
+    isComposerDirty:()=>draft, isRestReasonDirty:()=>false, activeDate:date, modalOpenRequest:1,
     storageKey:()=>key, dirtyMonthKeys:new Set([key]),
     monthSaveQueue:{hasPending:()=>false},
     saveMonth:()=>new Promise(resolve=>{resolveSave=resolve;}),
