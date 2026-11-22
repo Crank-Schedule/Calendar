@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "Stellar Fest 2: 캐나다 오프 (희범)",
+      "color": "#9900FF",
+      "icon": "sc2",
+      "time": "",
+      "usedAt": 1795329074632
+    },
+    {
       "title": "SC4ALL: 캐나다 오프 (성주/희범)",
       "color": "#9900FF",
       "icon": "sc2",
@@ -63,14 +70,7 @@
       "icon": "bb",
       "time": "6:30PM",
       "usedAt": 1794540794909
-    },
-    {
-      "title": "신규 DLC 출시기념",
-      "color": "#F4A261",
-      "icon": "truck",
-      "time": "",
-      "usedAt": 1794492298629
     }
   ],
-  "updatedAt": "2026-11-22T05:34:52.498Z"
+  "updatedAt": "2026-11-22T06:31:16.270Z"
 }
