@@ -983,7 +983,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
   // 사용자가 다크 모드를 선택하면 localStorage 값을 우선합니다.
   if(localStorage.getItem('crank_theme') !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
 </script>
-  <link rel="stylesheet" href="schedule_css.css?v=20261122-1">
+  <link rel="stylesheet" href="schedule_css.css?v=20261122-2">
   <link rel="stylesheet" href="onsyde-broadcast-label.css?v=20260917-2">
 </head>
 <body>
@@ -1100,7 +1100,7 @@ body::after { content:''; position:fixed; inset:0; pointer-events:none; backgrou
 <script src="onsyde/onsyde-store.js?v=20260816-5"></script>
 <script src="onsyde/schedule-matcher.js?v=20260923-3"></script>
 <script src="schedule_month_cache.js?v=20260924-1"></script>
-<script src="schedule_core.js?v=20261122-1"></script>
+<script src="schedule_core.js?v=20261122-2"></script>
 <script src="schedule_replay_ui.js?v=20260925-2"></script>
 <script>
 
@@ -1319,7 +1319,7 @@ function getFirstChar(title) {
 function buildTagEl(en){
   const parsed = parseTitle(en);
   const t = document.createElement('div');
-  t.className='tag' + (parsed.customIcon ? ' tag-custom-icon' : '') + (en.time ? ' has-time' : '') + (en.__onsyde ? ' onsyde-tag' : '') + (en.__onsydeMerged ? ' onsyde-personal-tag' : '');
+  t.className='tag' + (parsed.customIcon ? ' tag-custom-icon' : '') + (en.time ? ' has-time' : '') + (en.__onsyde ? ' onsyde-tag' : '') + (en.__onsydeMerged ? ' onsyde-personal-tag' : '') + (isMemorialEntry(en) ? ' memorial-tag' : '');
   t.setAttribute('data-first-char', getFirstChar(parsed.displayTitle));
   t.style.borderColor = getDisplayColor(en.color);
   t.style.setProperty('--tag-color', getDisplayColor(en.color));
@@ -1685,12 +1685,14 @@ async function renderCalendarMonth(){
     if (hasRest) {
       const restLabel = document.createElement('div');
       const reason = specials.map(getRestReason).find(Boolean) || '';
-      restLabel.className = 'rest-label' + (reason ? ' has-reason' : '');
+      const memorial = specials.some(isMemorialEntry);
+      restLabel.className = 'rest-label' + (reason ? ' has-reason' : '') + (memorial ? ' memorial-rest' : '');
       restLabel.innerHTML = '<span class="rest-icon" aria-hidden="true">😴</span>';
       if(reason){
-        restLabel.innerHTML='<span class="rest-heading"><span class="rest-icon" aria-hidden="true">😴</span><span>휴방</span></span>';
+        restLabel.innerHTML=memorial ? '<span class="rest-heading">✧ 기억하며</span>' : '<span class="rest-heading"><span class="rest-icon" aria-hidden="true">😴</span><span>휴방</span></span>';
         const reasonText=document.createElement('span'); reasonText.className='rest-reason'; reasonText.textContent=reason;
         restLabel.appendChild(reasonText); restLabel.title=`휴방 · ${reason}`; c.classList.add('has-rest-reason');
+        if(memorial){const status=document.createElement('span');status.className='memorial-rest-status';status.textContent='휴방';restLabel.appendChild(status);}
       }
       restLabel.setAttribute('aria-label', reason ? `휴방 · ${reason}` : '휴방');
       cellBody.appendChild(restLabel);
@@ -1881,7 +1883,7 @@ async function renderListMonth({ preserveScroll = false } = {}){
     } else {
         entries.forEach(en => {
             const t = document.createElement('span');
-            t.className = 'schedule-tag' + (en.__onsyde ? ' onsyde-tag' : '') + (en.__onsydeMerged ? ' onsyde-personal-tag' : '');
+            t.className = 'schedule-tag' + (en.__onsyde ? ' onsyde-tag' : '') + (en.__onsydeMerged ? ' onsyde-personal-tag' : '') + (isMemorialEntry(en) ? ' memorial-tag' : '');
             t.style.borderColor = getDisplayColor(en.color);
             t.style.setProperty('--schedule-color', getDisplayColor(en.color));
             t.innerHTML = `<span class="marquee-text" style="display:inline-block; white-space:nowrap; flex-shrink:0;">${withIcon(en)} ${en.time ? '· '+escapeHtml(en.time) : ''}</span>`;

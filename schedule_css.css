@@ -4628,3 +4628,91 @@ img.aoe-series-icon,
   object-position: left center !important;
   border-radius: 0 !important;
 }
+
+/* Quiet remembrance treatment shared by standalone memorials and rest notes. */
+#scheduleGridSection .cell-tags-col .tag.memorial-tag {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+  padding: 7px 4px !important;
+  border: 1px solid #a98db7 !important;
+  border-left-width: 2px !important;
+  border-radius: 9px !important;
+  background: linear-gradient(145deg, #3a2c43, #28232f) !important;
+  color: #f5eaf8 !important;
+  box-shadow: none !important;
+}
+#scheduleGridSection .cell-tags-col .tag.memorial-tag::before {
+  content: '✧ 기억하며';
+  display: block;
+  color: #d9bfe3;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+#scheduleGridSection .cell-tags-col .tag.memorial-tag .tag-icon,
+#scheduleGridSection .cell-tags-col .tag.memorial-tag .tag-abbr { display: none !important; }
+#scheduleGridSection .cell-tags-col .tag.memorial-tag .title-wrap,
+#scheduleGridSection .cell-tags-col.desktop-line-budget .tag.memorial-tag .title-wrap {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+  flex: 0 1 auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: normal !important;
+  text-align: center !important;
+  line-height: 1.2 !important;
+}
+#scheduleGridSection .cell-tags-col .tag.memorial-tag .tag-title {
+  color: #f5eaf8 !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+#scheduleGridSection .cell.is-rest .rest-label.memorial-rest {
+  background: linear-gradient(145deg, #3a2c43, #28232f) !important;
+  border: 1px solid #a98db7 !important;
+  gap: 4px !important;
+}
+#scheduleGridSection .cell.is-rest .memorial-rest .rest-heading { color: #d9bfe3 !important; }
+#scheduleGridSection .cell.is-rest .memorial-rest .rest-reason { color: #f5eaf8 !important; }
+#scheduleGridSection .cell.is-rest .memorial-rest-status {
+  color: #d5bbc7;
+  font-size: 9px;
+  line-height: 1;
+}
+:root[data-theme='light'] #scheduleGridSection .cell-tags-col .tag.memorial-tag,
+:root[data-theme='light'] #scheduleGridSection .cell.is-rest .rest-label.memorial-rest {
+  background: linear-gradient(145deg, #faf5fc, #f1eaf4) !important;
+  border-color: #bea8c8 !important;
+}
+:root[data-theme='light'] #scheduleGridSection .cell-tags-col .tag.memorial-tag::before,
+:root[data-theme='light'] #scheduleGridSection .cell.is-rest .memorial-rest .rest-heading { color: #805c8f !important; }
+:root[data-theme='light'] #scheduleGridSection .cell-tags-col .tag.memorial-tag .tag-title,
+:root[data-theme='light'] #scheduleGridSection .cell.is-rest .memorial-rest .rest-reason { color: #4d3955 !important; }
+:root[data-theme='light'] #scheduleGridSection .cell.is-rest .memorial-rest-status { color: #8b6c7d; }
+.schedule-tag.memorial-tag { border-color: #a98db7 !important; background: rgba(171, 142, 183, .12) !important; }
+@media (max-width: 560px) {
+  #scheduleGridSection .cell-tags-col .tag.memorial-tag { gap: 2px !important; padding: 5px 2px !important; }
+  #scheduleGridSection .cell-tags-col .tag.memorial-tag::before { font-size: 7px !important; }
+  #scheduleGridSection .cell-tags-col .tag.memorial-tag .tag-title { font-size: 8px !important; }
+  #scheduleGridSection .cell.is-rest .rest-label.memorial-rest { gap: 2px !important; }
+  #scheduleGridSection .cell.is-rest .memorial-rest-status { font-size: 8px; }
+}
+@media (max-width: 420px) {
+  #scheduleGridSection .cell-tags-col .tag.memorial-tag .title-wrap,
+  #scheduleGridSection .cell-tags-col.desktop-line-budget .tag.memorial-tag .title-wrap,
+  #scheduleGridSection .cell.is-rest .memorial-rest .rest-reason {
+    -webkit-line-clamp: 5 !important;
+  }
+  #scheduleGridSection .cell.is-rest .memorial-rest .rest-heading { font-size: 7px !important; white-space: nowrap !important; }
+}

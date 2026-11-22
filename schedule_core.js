@@ -140,12 +140,21 @@ function resolveScheduleIcon(title, selectedIcon){
   return parseTitle(title).iconHtml === '📌' ? 'adventure' : undefined;
 }
 
+function isMemorialEntry(entry){
+  if(!entry || typeof entry !== 'object' || entry.__onsyde) return false;
+  return /무지개\s*다리/i.test(String(entry.title || '')) || /무지개\s*다리/i.test(String(entry.restReason || ''));
+}
+
 function parseTitle(en) {
   let titleStr = typeof en === 'string' ? en : (en.title || '');
   let explicitIcon = typeof en === 'object' && en.icon ? en.icon : null;
   if(explicitIcon === 'auto') explicitIcon = null;
 
   let displayTitle = titleStr || '';
+
+  // Memorial entries retain their exact wording and use a quiet marker even
+  // when an older saved preset still has the generic game icon.
+  if(isMemorialEntry(en)) return {displayTitle, customIcon:true, iconHtml:'✧'};
 
   if (explicitIcon && explicitIcon !== 'none') {
     let customIcon = false;

@@ -49,7 +49,7 @@ function harness(view) {
     isSameYMD:(a,b) => a.toDateString() === b.toDateString(),
     getDisplayColor:color=>color, parseTitle:en=>({displayTitle:en.title,iconHtml:''}),
     buildTagEl:en=>{const el=new Element();el.textContent=en.title;return el;},
-    escapeHtml:text=>text, withIcon:en=>en.title, safeUrl:()=>'', labelOnsydeBroadcast(){},
+    escapeHtml:text=>text, withIcon:en=>en.title, safeUrl:()=>'', labelOnsydeBroadcast(){}, isMemorialEntry:()=>false,
     applyDesktopLineBudget(){}, initGridDragDrop(){}, openModal(){},
     attachKnownChzzkThumbnail:video=>video, manualReplayFromEntries:()=>null, liveLinkForToday:()=>null,
     hideEmptyDays:false, updateEmptyFilterButton(){}, requestAnimationFrame:fn=>fn(),
