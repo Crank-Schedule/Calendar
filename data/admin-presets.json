@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "멀피 보내고 첫 노가리 방송",
+      "color": "#FF66B2",
+      "icon": "chat",
+      "time": "",
+      "usedAt": 1795416724907
+    },
+    {
       "title": "RSL 2026 파이널 다시 보기",
       "color": "#9900FF",
       "icon": "sc2",
@@ -63,14 +70,7 @@
       "icon": "sc2",
       "time": "",
       "usedAt": 1794839619272
-    },
-    {
-      "title": "GTA6",
-      "color": "#C6FF3C",
-      "icon": "adventure",
-      "time": "11:59PM",
-      "usedAt": 1794728427730
     }
   ],
-  "updatedAt": "2026-11-23T06:51:52.893Z"
+  "updatedAt": "2026-11-23T06:52:07.014Z"
 }
