@@ -3,10 +3,10 @@
   "presets": [
     {
       "title": "GTA6",
-      "color": "#00FFFF",
+      "color": "#C6FF3C",
       "icon": "adventure",
       "time": "",
-      "usedAt": 1795512534658
+      "usedAt": 1795512560716
     },
     {
       "title": "멀피 보내고 첫 노가리 방송",
@@ -72,5 +72,5 @@
       "usedAt": 1795325009502
     }
   ],
-  "updatedAt": "2026-11-24T09:28:56.946Z"
+  "updatedAt": "2026-11-24T09:29:22.762Z"
 }
