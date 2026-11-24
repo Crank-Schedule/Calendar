@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "GTA6",
+      "color": "#00FFFF",
+      "icon": "adventure",
+      "time": "",
+      "usedAt": 1795512534658
+    },
+    {
       "title": "멀피 보내고 첫 노가리 방송",
       "color": "#FF66B2",
       "icon": "chat",
@@ -63,14 +70,7 @@
       "icon": "sc2",
       "time": "",
       "usedAt": 1795325009502
-    },
-    {
-      "title": "LiuLi Cup #55 같이 보기",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "",
-      "usedAt": 1794839619272
     }
   ],
-  "updatedAt": "2026-11-23T06:52:07.014Z"
+  "updatedAt": "2026-11-24T09:28:56.946Z"
 }
