@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "워크 3 맵 컨테스트 결선맵 알아보기",
+      "color": "#4EA5FF",
+      "icon": "war3",
+      "time": "",
+      "usedAt": 1795667725734
+    },
+    {
       "title": "GTA6",
       "color": "#C6FF3C",
       "icon": "adventure",
@@ -63,14 +70,7 @@
       "icon": "war3",
       "time": "",
       "usedAt": 1795325015118
-    },
-    {
-      "title": "지난 대회들 다시 보기",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "",
-      "usedAt": 1795325009502
     }
   ],
-  "updatedAt": "2026-11-24T09:29:22.762Z"
+  "updatedAt": "2026-11-26T04:35:27.696Z"
 }
