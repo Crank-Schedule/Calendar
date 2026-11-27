@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "지난대회 다시 같이 보기",
+      "color": "#9900FF",
+      "icon": "sc2",
+      "time": "",
+      "usedAt": 1795747182440
+    },
+    {
       "title": "워크 2 리메이크 캠페인",
       "color": "#4EA5FF",
       "icon": "war3",
@@ -63,14 +70,7 @@
       "icon": "sc2",
       "time": "",
       "usedAt": 1795329082274
-    },
-    {
-      "title": "SC4ALL: 캐나다 오프 (성주/희범)",
-      "color": "#9900FF",
-      "icon": "sc2",
-      "time": "",
-      "usedAt": 1795325691360
     }
   ],
-  "updatedAt": "2026-11-27T02:39:33.999Z"
+  "updatedAt": "2026-11-27T02:39:44.021Z"
 }
