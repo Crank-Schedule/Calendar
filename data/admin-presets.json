@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "노가리 방송",
+      "color": "#FF66B2",
+      "icon": "chat",
+      "time": "",
+      "usedAt": 1795747154657
+    },
+    {
       "title": "워크 3 맵 컨테스트 결선맵 알아보기",
       "color": "#4EA5FF",
       "icon": "war3",
@@ -63,14 +70,7 @@
       "icon": "adventure",
       "time": "",
       "usedAt": 1795325041720
-    },
-    {
-      "title": "워크 2 리메이크 캠페인",
-      "color": "#4EA5FF",
-      "icon": "war3",
-      "time": "",
-      "usedAt": 1795325015118
     }
   ],
-  "updatedAt": "2026-11-26T04:36:02.325Z"
+  "updatedAt": "2026-11-27T02:39:16.342Z"
 }
