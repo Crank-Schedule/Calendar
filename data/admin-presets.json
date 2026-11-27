@@ -2,6 +2,13 @@
   "version": 1,
   "presets": [
     {
+      "title": "워크 2 리메이크 캠페인",
+      "color": "#4EA5FF",
+      "icon": "war3",
+      "time": "",
+      "usedAt": 1795747172364
+    },
+    {
       "title": "노가리 방송",
       "color": "#FF66B2",
       "icon": "chat",
@@ -63,14 +70,7 @@
       "icon": "sc2",
       "time": "",
       "usedAt": 1795325691360
-    },
-    {
-      "title": "멀피 무지개다리 건넌 날",
-      "color": "#00FFFF",
-      "icon": "adventure",
-      "time": "",
-      "usedAt": 1795325041720
     }
   ],
-  "updatedAt": "2026-11-27T02:39:16.342Z"
+  "updatedAt": "2026-11-27T02:39:33.999Z"
 }
